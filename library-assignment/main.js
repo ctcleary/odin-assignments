@@ -97,7 +97,7 @@ newBookDialog.onclose = () => {
         newBookForm.title.value,
         newBookForm.author.value,
         newBookForm.pages.value,
-        newBookForm.isRead.value === 'true' ? true : false
+        newBookForm.isRead.checked
     )
 
     myLibrary.push(newBook);
@@ -105,7 +105,7 @@ newBookDialog.onclose = () => {
     newBookForm.title.value = '';
     newBookForm.author.value = '';
     newBookForm.pages.value = '';
-    newBookForm.isRead.value = false;
+    newBookForm.isRead.checked = false;
     displayLibrary();
 }
 
