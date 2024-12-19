@@ -71,7 +71,7 @@ const gameboard = (function(firstPlayer, secondPlayer) {
 
     }
     function checkRow(rowArray) {
-        checkArrayForWin(rowArray);
+        return checkArrayForWin(rowArray);
     }
 
     function checkCol(colIndex) {
