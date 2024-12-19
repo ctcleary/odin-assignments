@@ -1,0 +1,37 @@
+table {
+    border: thin solid #ccc;
+}
+
+thead {
+    text-align: left;
+}
+
+th,
+td {
+    border: thin solid #ccc;
+    min-width: 150px;
+}
+
+td p {
+    display: inline-block;
+}
+
+td.is-read {
+    display: grid;
+    grid-template-columns: 35px 1fr;
+    align-items: center;
+}
+td.remove-book {
+    text-align: center;
+}
+
+.dialog-form-input {
+    display: grid;
+    grid-template-columns: 150px 1fr;
+}
+
+
+
+.toggle-read-btn {
+    margin-left: 2rem;
+}

@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Odin Form Assignment</title>
+
+    <style>
+        :root * {
+            
+            --link-inactive: #568fcf;
+            --link-active: #95cfec;
+            --link-hover: #60acd8;
+
+            --off-white: #f5f5fc;
+            --shadow-dark: rgba(200,200,200, 0.5);
+
+            box-sizing: border-box;
+            font-family: sans-serif;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        #main-flex {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            min-height:100vh;
+        }
+
+        #header-container {
+            flex: 0 1 auto;
+
+            background: url('splash.jpg');
+            background-size: cover;
+            background-position: 50% 50%;
+            width: 600px;
+
+        }
+        header {
+            color: white;
+            width: 100%;;
+            flex: 1 1 auto;
+        }
+
+        #odin-callout {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            
+            margin-top: 12rem;
+            width: 100%;
+            height: 160px;
+            background: rgba(0, 0, 0, 0.25);
+        }
+
+        #odin-logo {
+            max-height: 80px;
+            display: inline;
+        }
+        #odin-header {
+            display: inline-block;
+            padding-left: 1rem;
+            font-weight: 300;
+        }
+
+        #form-section {
+            flex: 1 1 auto;
+
+            background: var(--off-white);
+            display: flex; 
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        #form-blurb {
+            font-size: 1.8rem;
+            max-width: 66ch;
+            padding: clamp(2rem, 8%, 3rem) clamp(4rem, 5%, 5rem);
+        }
+        
+        #form-container {
+            display: flex;
+
+            width: 100%;
+        }
+
+        form {
+            display: flex;
+            /* justify-content: flex-start; */
+            /* gap: 10%; */
+            flex-wrap: wrap;
+
+            flex: 1 0 auto;
+
+            width: 100%;
+        }
+
+        #form-inputs-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            flex: 1 0 auto;
+
+            border-top: thin solid var(--shadow-dark);
+            padding: clamp(2.5rem, 10%, 4.5rem) clamp(3rem, 5%, 4.5rem);
+
+            background: white;
+            box-shadow: 0px 3px 8px var(--shadow-dark);
+            width: 100%;
+        }
+
+        #form-inputs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10%;
+            max-width: 1000px;
+        }
+
+        form h2 {
+            flex: 1 0 100%;
+            margin-top: 0;
+            font-size: 1.6rem;
+        }
+        form .input-group {
+            flex: 1 0 auto;
+            margin-top: 1rem;
+            width: clamp(32ch, 40%, 50ch);
+        }
+
+         .input-group  label, 
+         .input-group  input {
+            display: block;
+        }
+
+
+        .input-group label {
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.1ch;
+        }
+        .input-group input {
+            margin-top: 0.5rem;
+            width: 100%;
+            border-radius: 5px;
+            border: thin solid #aaa;
+            padding: 0.5rem 1rem;
+            box-shadow: 0px 2px var(--shadow-dark);
+        }
+
+        input:focus {
+            outline-color: var(--link-inactive);
+        }
+
+        input.invalid,
+        label:has(+ input.invalid) {
+            outline-color: red;
+            border-color: red;
+            color: red;
+        }
+
+        button[type="submit"] {
+            padding: 1rem 2rem;
+            background: var(--link-inactive);
+            color: var(--off-white);
+            border-color: var(--off-white);
+            outline: none;
+            font-weight: 600;
+            border-radius: 10px;
+            box-shadow: 3px 3px var(--shadow-dark);
+        }
+
+        button[type="submit"]:hover {
+            background: var(--link-hover);
+        }
+        button[type="submit"]:active {
+            background: var(--link-active);
+        }
+
+        #submit-container,
+        p#already-have {
+            padding: 3rem clamp(4rem, 5%, 5rem) 0.5rem clamp(4rem, 5%, 5rem);
+        }
+
+        p#already-have {
+            font-size: 1.2rem;
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+        p#already-have a {
+            color: var(--link-inactive);
+            font-weight: 600;
+            text-decoration: none;
+        }
+        
+        p#already-have a:hover {
+            color: var(--link-hover);
+        }
+    </style>
+</head>
+<body>
+    <div id="main-flex">
+        <div id="header-container">
+            <header>
+                <div id="odin-callout">
+                    <img id="odin-logo" src="odin-lined.png" />
+                    <h1 id="odin-header">Odin Project</h1>
+                </div>
+            </header>
+        </div>
+        <section id="form-section">
+            <div id="form-blurb">
+                <p>This is not a real online service!</p>
+                <p>You know you need something like this in your life to help you realize your deepest dreams. Sign up <em>now</em> to get started!</p>
+                <p>You <em>know</em> you want to...</p>
+            </div>
+            <div id="form-container">
+                <form onsubmit="fakeCreateAccount()" method="post">
+                    <div id="form-inputs-wrapper">
+                        <h2>Let's do this!</h2>
+                            <div id="form-inputs">
+                                <div class="input-group">
+                                    <label for="firstname">First Name*</label>
+                                    <input type="text" id="firstname" name="first_name" pattern="([a-zA-Z]*)" required/>
+                                </div>
+                                <div class="input-group">
+                                    <label for="lastname">Last Name</label>
+                                    <input type="text" id="lastname" name="last_name" />
+                                </div>
+                                <div class="input-group">
+                                    <label for="useremail">Email*</label>
+                                    <input type="email" id="useremail" name="user_email" required/>
+                                </div>
+                                <div class="input-group">
+                                    <label for="phone">Phone Number</label>
+                                    <input type="text" id="phone" name="user_phone" pattern="([\+]?[1]?[\s]?[\-]?[\s]?[\(]?[0-9][0-9][0-9][\)]?[\s]?[\-]?[\s]?[0-9][0-9][0-9][\s]?[\-]?[\s]?[0-9][0-9][0-9][0-9])" />
+                                </div>
+                                <div class="input-group">
+                                    <label for="password_first">Password*</label>
+                                    <input type="password" id="password_first" name="user_pwd" required />
+                                </div>
+                                <div class="input-group">
+                                    <label for="password_confirm">Confirm Password*</label>
+                                    <input type="password" id="password_confirm" required />
+                                </div>
+                            </div>
+                        </div>
+                    <div id="submit-container">
+                        <button type="submit">Create Account</button>
+                    </div>
+                </form>
+            </div>
+            <p id="already-have">Already have an account? <a href="#">Log in</a></p>
+        </section>
+    </div>
+
+    <script>
+        function fakeCreateAccount(e) {
+            e.preventDefault();
+            alert('Your form would have been submitted if this were a real sign up page.');
+        }
+
+        var pwFirst = document.getElementById('password_first');
+        var pwConfirm = document.getElementById('password_confirm');
+
+        function checkSamePassword() {
+            console.log('checkSamePassword');
+            if (pwFirst.value === pwConfirm.value) {
+                pwFirst.classList.remove('invalid');
+                pwFirst.classList.add('valid');
+                pwConfirm.classList.remove('invalid');
+                pwConfirm.classList.add('valid');
+            } else {
+
+                pwFirst.classList.remove('valid');
+                pwFirst.classList.add('invalid');
+                pwConfirm.classList.remove('valid');
+                pwConfirm.classList.add('invalid');
+            }
+        }
+
+        pwFirst.onkeyup = () => checkSamePassword();
+        pwConfirm.onkeyup = () => checkSamePassword();
+
+        var fName = document.getElementById('firstname');
+        var emailInput = document.getElementById('useremail');
+
+        function checkReqInputValidity(input) {
+            if (input.checkValidity() === false) {
+                input.classList.remove('valid');
+                input.classList.add('invalid');
+            } else {
+                input.classList.remove('invalid');
+                input.classList.add('valid');
+            }
+
+        }
+
+        fName.onkeyup = () => checkReqInputValidity(fName);
+        emailInput.onkeyup = () => checkReqInputValidity(emailInput);
+    </script>
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Odin Project - Javascript Library Project</title>
+
+    <link rel="stylesheet" href="styles.css">
+
+</head>
+<body>
+    <div id="wrapper">
+
+        <h1> Odin Project - My Library </h1>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Pages</th>
+                    <th>Has Been Read?</th>
+                    <th>Remove?</th>
+                </tr>
+            </thead>
+            <tbody id="library-output">
+            </tbody>
+        </table>
+
+        <button id="newBookButton" type="button">
+            Add New Book
+        </button>
+
+        <dialog id="newBookDialog">
+            <form id="newBookForm" method="dialog">
+                <div class="dialog-form-input">
+                    <label for="title">Title</label>
+                    <input type="text" id="title" name="title"  required/>
+                </div>
+                <div class="dialog-form-input">
+                    <label for="author">Author</label>
+                    <input type="text" id="author" name="author"  required/>
+                </div>
+                <div class="dialog-form-input">
+                    <label for="pages">Pages</label>
+                    <input type="text" id="pages" name="pages" required />
+                </div>
+                <div class="dialog-form-input">
+                    <label for="isRead">Has Been Read?</label>
+                    <input type="checkbox" id="isRead" name="isRead" value="false" />
+                </div>
+                <button type="submit">Submit</button>
+            </form>
+        </dialog>
+    </div>
+
+    
+    <script src="main.js"></script>
+</body>
+</html>
