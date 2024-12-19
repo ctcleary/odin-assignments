@@ -1,0 +1,63 @@
+:root {
+    font-size: 16px;
+}
+
+:root * {
+    box-sizing: border-box;
+}
+
+#gameboard {
+    display: grid;
+    grid-template-columns: repeat(3, 4rem);
+    grid-template-rows: repeat(3, 4rem);
+    align-items: stretch;
+    text-align: center;
+
+    font-size: 3rem;
+}
+
+#gameboard .gamecell {
+    border: thin solid #ccc;
+    
+    display: grid;
+    align-items: center;
+
+    transition: background-color 250ms linear;
+}
+
+#gameboard .won-game.gamecell {
+    background-color: #ccc;
+}
+
+#gameboard .gamecell:hover {
+    background-color: rgba(128, 128, 256, 0.5);
+    cursor: pointer;
+}
+
+#gameboard .gamecell:active {
+    background-color: blue;
+    transition: none;
+}
+
+#gameboard .gamecell[data-mark='X']:active,
+#gameboard .gamecell[data-mark='O']:active {
+    background-color: red;
+    transition: none;
+}
+
+/* No reaction for ended game */
+#gameboard .won-game.gamecell:hover,
+#gameboard .won-game.gamecell:active,
+#gameboard .won-game.gamecell[data-mark='x']:active,
+#gameboard .won-game.gamecell[data-mark='o']:active {
+    background-color: #ccc;
+}
+
+.restart-button {
+    margin-top: 1rem;
+    margin-left: 1rem;
+}
+
+#changePlayers {
+    margin-top: 2.5rem;
+}
