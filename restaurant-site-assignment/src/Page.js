@@ -15,6 +15,7 @@ class Page {
     }
 
     render = (contentEl) => {
+        contentEl.innerHTML = '';
         contentEl.appendChild(this.content);
     }
 }
