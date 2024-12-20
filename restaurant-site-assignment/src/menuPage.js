@@ -19,7 +19,7 @@ const menuItems = [
     {
         item: 'Porridge Hoagie',
         price: 9.27,
-        description: "Move over, sloppy joes, there's a new messiest sandwich in town, and it's name is the Porridge Hoagie. This drippy, drooly swamp of a sandwich will be enough to make you finally wear one of our classic bibs. (Bibs sold separately.)"
+        description: "Move over, sloppy joes, there's a new messiest sandwich in town, and its name is the Porridge Hoagie. This drippy, drooly swamp of a sandwich will be enough to make you finally wear one of our classic bibs. (Bibs sold separately.)"
     },
     {
         item: "Rudy's Bib",
