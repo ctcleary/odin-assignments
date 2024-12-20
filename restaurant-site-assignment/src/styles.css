@@ -1,0 +1,102 @@
+/* --- CSS "Modern Reset" by Josh W Comeau
+------ https://www.joshwcomeau.com/css/custom-css-reset/ */
+
+/* 1. Use a more-intuitive box-sizing model */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+/* 2. Remove default margin */
+* {
+    margin: 0;
+}
+body {
+    /* 3. Add accessible line-height */
+    line-height: 1.5;
+    /* 4. Improve text rendering */
+    -webkit-font-smoothing: antialiased;
+}
+/* 5. Improve media defaults */
+img, picture, video, canvas, svg {
+    display: block;
+    max-width: 100%;
+}
+/* 6. Inherit fonts for form controls */
+input, button, textarea, select {
+    font: inherit;
+}
+/* 7. Avoid text overflows */
+p, h1, h2, h3, h4, h5, h6 {
+    overflow-wrap: break-word;
+}
+/* 8. Improve line wrapping */
+p {
+    text-wrap: pretty;
+}
+h1, h2, h3, h4, h5, h6 {
+    text-wrap: balance;
+}
+/* 9. Create a root stacking context */
+/* #root, #__next { isolation: isolate; } */
+
+/*----------------------------*/
+
+:root {
+    --off-white: snow;
+}
+
+
+body {
+    font-family: sans-serif;
+    color: snow;
+    background-color: purple;
+}
+
+header {
+    padding: 3rem 3rem 1.5rem 3rem;
+    border-bottom: thin solid var(--off-white);
+}
+
+nav {
+    padding: 2rem 3rem;
+    border-bottom: thin solid var(--off-white);
+}
+
+#content {
+    padding: 2rem 3rem;
+}
+
+header ul,
+nav ul {
+    padding: 0;
+}
+
+header ul li,
+nav ul li {
+    list-style-type: none;
+    margin-left: 0;
+}
+
+header ul {
+}
+
+nav ul {
+    display: grid;
+    grid-template-columns: repeat(3, 5rem);
+}
+
+nav button {
+    appearance: none;
+}
+
+nav a {
+    color: var(--off-white);
+    text-decoration: none;
+    padding: 0.75rem;
+    border-radius: 12px;
+    background: rgb(82, 12, 82);
+}
+nav a:hover {
+    background: rgb(102, 21, 102);
+    box-shadow: 0px 3px 3px rgba(49, 6, 49, 0.15)
+
+}
