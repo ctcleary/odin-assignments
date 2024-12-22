@@ -1,0 +1,106 @@
+*, *:before, *:after {
+    box-sizing: border-box;
+}
+
+body {
+    background-color: rebeccapurple;
+    padding: 0;
+    margin: 0;
+}
+
+#wrapper {
+    display: grid;
+    grid-template-columns: 35ch 1fr;
+    grid-template-rows: minmax(100vh, 1fr);
+}
+
+#sidebar {
+    color: white;
+}
+
+#content {
+    background: white;
+}
+
+#sidebar,
+#content {
+    padding: 2.2rem;
+}
+
+#sidebar>h2,
+#content>h1 {
+    margin-top: 0;
+}
+
+#projects {
+    display: grid;
+    gap: 0.5rem;
+}
+
+.project-nav {
+    font-size: 1rem;
+    display: grid;
+    grid-template-columns: 1fr 6ch;
+    align-items: center;
+    gap: 1rem;
+}
+
+.project-nav-button {
+    font-size: 1.5rem;
+}
+
+.todo {
+    width: 80ch;
+    border: thin solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 2rem;
+}
+
+.todo>* {
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+.todo .todo-notes {
+    padding-left: 3rem;
+}
+
+.todo .todo-title {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.todo .todo-due-date {
+    background: #eee;
+    font-size: 1.2rem;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+
+.todo .todo-priority {
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+
+.todo .todo-priority-1 { background: red; }
+.todo .todo-priority-2 { background: orange; }
+.todo .todo-priority-3 { background: yellow; }
+.todo .todo-priority-4 { background: greenyellow; }
+.todo .todo-priority-5 { background: yellowgreen; }
+
+.todo .todo-description {
+    font-size: 1.2rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.todo .todo-notes {
+    color: #888;
+    margin-top: 0;
+}
+.todo .todo-note {
+    margin-bottom: 0.25rem;
+}
