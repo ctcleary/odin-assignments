@@ -10,10 +10,11 @@ class Renderer {
             const projectEl = document.createElement('div');
             projectEl.classList.add('project-nav')
             
-            const title = document.createElement('button');
-            title.classList.add('project-nav-button');
-            title.innerText = project.getTitle();
-            projectEl.appendChild(title);
+            const projectButton = document.createElement('button');
+            projectButton.classList.add('project-nav-button');
+            projectButton.innerText = project.getTitle();
+            projectButton.dataset.projectId = project.getId();
+            projectEl.appendChild(projectButton);
 
             const numTodos = document.createElement('div');
             numTodos.classList.add('project-num-todos');
@@ -26,6 +27,13 @@ class Renderer {
 
     
     renderTodos(todos, contentsEl) {
+        if (todos.length === 0) {
+            const noTodosEl = document.createElement('div');
+            noTodosEl.innerText = "No Todos for this project yet!";
+            contentsEl.appendChild(noTodosEl);
+            return;
+        }
+        
         for (let i = 0; i < todos.length; i++) {
             const currTodo = todos[i];
 

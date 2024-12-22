@@ -3,8 +3,15 @@ import Todo from "./Todo.js";
 class Project {
     static lastId = 0;
 
-    constructor(title, todos) {
-        this.id = ++Project.lastId;
+    constructor(title, todos, overrideId = null) {
+        if (overrideId) {
+            this.id = overrideId;
+            if (overrideId > Project.lastId) {
+                Project.lastId = overrideId;
+            }
+        } else {
+            this.id = ++Project.lastId;
+        }
         this.title = title ? title.toString() : 'Project ' + this.id;
         this.todos = todos || []; // []
     }
@@ -12,7 +19,7 @@ class Project {
     getId() {
         return this.id;
     }
-    
+
     getTitle() {
         return this.title;
     }
@@ -28,6 +35,10 @@ class Project {
             throw new Error('Invalid argument provided to Project.addTodo(). Must be an instance of Todo. To create a new Todo using Project methods, use "Project.addNewTodo(...)"')
         }
     }
+
+    // sortTodos() {
+    //     console.log("TODO, sort todos by some criteria");
+    // }
 
     removeTodo(todoId) {
         const idx = this.todos.indexOf(this.todos.find((todo) => { return todo.getId() === todoId; }));
