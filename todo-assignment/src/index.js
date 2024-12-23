@@ -126,7 +126,7 @@ const controller = (function(renderer, projects, store) {
 
     const renderActiveProjectTodos = () => {
         const currProjectHeadline = document.getElementById('current-project');
-        currProjectHeadline.innerText = 'Project: ' + activeProject.getTitle();
+        currProjectHeadline.innerText = activeProject.getTitle();
 
         const contentsEl = document.getElementById('todos');
         contentsEl.innerHTML = '';
@@ -303,3 +303,4 @@ deleteTodoForm.addEventListener('submit', (e) => {
 deleteTodoClose.addEventListener('click', (e) => {
     deleteTodoDialog.close();
 });
+
