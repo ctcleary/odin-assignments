@@ -4,6 +4,7 @@ import { greeting } from "./greeting.js"
 import Todo from "./Todo.js";
 import Project from "./Project.js";
 import Renderer from "./Renderer.js";
+import { SORT_BY } from "./Renderer.js";
 import Store from "./Store.js";
 
 
@@ -46,7 +47,6 @@ console.log(tempProject.getTodos());
 // tempProject.removeTodo(tempTodo.getId());
 // console.log(tempProject.getTodos());
 
-const tempRenderer = new Renderer();
 const tempProjectsArray = [
     tempProject,
     tempProject2,
@@ -55,6 +55,7 @@ const tempProjectsArray = [
 
 /* ------------ ^ TEMP ^ ================ */
 
+const tempRenderer = new Renderer();
 const store = new Store();
 const currActiveProjectId = store.loadActiveProjectId() || 0;
 const projectsObjects = store.loadProjects();
@@ -140,7 +141,7 @@ const controller = (function(renderer, projects, store) {
                 deleteTodoForm['todo-delete-id'].value = deleteBtn.dataset.todoId;
                 deleteTodoTitle.innerText = e.target.dataset.todoTitle;
                 deleteTodoDialog.showModal();
-            })
+            });
         });
     }
 
@@ -200,6 +201,60 @@ const controller = (function(renderer, projects, store) {
         store.storeProjects(projects);
         renderProjectsList();
     }
+    const renameProject = (newTitle) => {
+        activeProject.setTitle(newTitle);
+
+        store.storeProjects(projects);
+        renderProjectsList();
+        renderActiveProjectTodos();
+    }
+
+    const sortByButton = document.getElementById('todos-sort-by');
+    const savedSortBy = store.loadTodoSortBy();
+    const updateSortByButton = () => {
+        let newSortBy = sortByButton.dataset.sortBy;
+
+        switch (sortByButton.dataset.sortBy) {
+            case SORT_BY.DATE_ASCENDING:
+                newSortBy = SORT_BY.DATE_DESCENDING;
+                sortByButton.dataset.sortBy = newSortBy;
+                sortByButton.innerHTML = 'Sort by: Date &downarrow;';
+                break;
+            case SORT_BY.DATE_DESCENDING:
+                newSortBy = SORT_BY.PRIORITY_ASCENDING;
+                sortByButton.dataset.sortBy = newSortBy;
+                sortByButton.innerHTML = 'Sort by: Priority &uparrow;';
+                break;
+            case SORT_BY.PRIORITY_ASCENDING:
+                newSortBy = SORT_BY.PRIORITY_DESCENDING;
+                sortByButton.dataset.sortBy = newSortBy;
+                sortByButton.innerHTML = 'Sort by: Priority &downarrow;';
+                break;
+            case SORT_BY.PRIORITY_DESCENDING:
+                newSortBy = SORT_BY.DATE_ASCENDING;
+                sortByButton.dataset.sortBy = newSortBy;
+                sortByButton.innerHTML = 'Sort by: Date &uparrow;';
+                break;
+        }
+
+        return newSortBy;
+    }
+    console.log('savedSortBy' + savedSortBy);
+    if (savedSortBy) {
+        tempRenderer.changeSortBy(savedSortBy);1
+        updateSortByButton();
+        sortByButton.dataset.sortBy = savedSortBy;
+    } else {
+        sortByButton.dataset.sortBy = SORT_BY.DATE_ASCENDING; // default
+    }
+    sortByButton.addEventListener('click', (e) => {
+        let newSortBy = sortByButton.dataset.sortBy;
+        newSortBy = updateSortByButton();
+        
+        tempRenderer.changeSortBy(newSortBy);
+        store.storeTodoSortBy(newSortBy);
+        renderActiveProjectTodos();
+    });
 
     return {
         getActiveProjectId,
@@ -210,6 +265,7 @@ const controller = (function(renderer, projects, store) {
         deleteTodo,
         addProject,
         deleteProject,
+        renameProject,
     }
 })(tempRenderer, projectsArr, store)
 
@@ -275,10 +331,30 @@ deleteProjectButton.addEventListener('click', () => {
 });
 deleteProjectForm.addEventListener('submit', (el, e) => {
     controller.deleteProject(controller.getActiveProjectId())
-})
+});
 deleteProjectClose.addEventListener('click', (el, e) => {
     deleteProjectDialog.close();
+});
+
+const renameProjectButton = document.getElementById('button-rename-project');
+const renameProjectDialog = document.getElementById('dialog-rename-project');
+const renameProjectForm = document.getElementById('form-rename-project');
+const renameProjectClose = document.querySelector('#dialog-rename-project .dialog-close');
+
+renameProjectButton.addEventListener('click', (e) => {
+    renameProjectDialog.showModal();
+});
+
+renameProjectForm.addEventListener('submit', (e) => {
+    controller.renameProject(renameProjectForm['project-new-title'].value);
+
+    renameProjectForm['project-new-title'].value = '';
 })
+
+renameProjectClose.addEventListener('click', (e) => {
+    renameProjectDialog.close();
+    renameProjectForm['project-new-title'].value = '';
+});
 
 const deleteTodoDialog = document.getElementById('dialog-delete-todo');
 const deleteTodoTitle = document.getElementById('dialog-delete-todo-title');

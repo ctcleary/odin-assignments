@@ -1,8 +1,11 @@
 class Renderer {
     constructor() {
-
     }
+    
+    #todos;
+    #contentsEl;
 
+    
     renderProjects(projects, projectsEl, currActiveProjectId) {
         for (let i = 0; i < projects.length; i++) {
             const project = projects[i];
@@ -29,17 +32,81 @@ class Renderer {
         }
     }
 
+    getCurrSorting() {
+        return this.#sortBy;
+    }
+    changeSortBy(newSorting) {
+        this.#sortBy = newSorting;
+        if (this.#todos) {
+            this.renderTodos(this.#todos, this.#contentsEl);
+        }
+    }
+
+    #sortBy = SORT_BY.DATE_ASCENDING;
+    #sortTodos(todos) {
+        switch (this.#sortBy) {
+            case SORT_BY.DATE_ASCENDING:
+                console.log('todo sort by date asc');
+                todos.sort((a, b) => {
+                    if (a.dueDate >= b.dueDate) {
+                        return 1;
+                    } else {
+                        return -1;
+                    }
+                });
+                break;
+            case SORT_BY.DATE_DESCENDING:
+                console.log('todo sort by date desc');
+                todos.sort((a, b) => {
+                    if (a.dueDate >= b.dueDate) {
+                        return -1;
+                    } else {
+                        return 1;
+                    }
+                });
+                break;
+            case SORT_BY.PRIORITY_ASCENDING:
+                console.log('todo sort by priority asc');
+                todos.sort((a, b) => {
+                    if (a.priority > b.priority) {
+                        return -1;
+                    } else {
+                        return 1;
+                    }
+                });
+                break;
+            case SORT_BY.PRIORITY_DESCENDING:
+                console.log('todo sort by priority desc');
+                todos.sort((a, b) => {
+                    if (a.priority > b.priority) {
+                        return 1;
+                    } else {
+                        return -1;
+                    }
+                });
+                break;
+        }
+
+        return todos;
+    }
+
     
     renderTodos(todos, contentsEl) {
+        this.#contentsEl = contentsEl;
+
         if (todos.length === 0) {
             const noTodosEl = document.createElement('div');
             noTodosEl.innerText = "No Todos for this project yet!";
-            contentsEl.appendChild(noTodosEl);
+            this.#contentsEl.appendChild(noTodosEl);
+            this.#todos = [];
             return;
         }
 
-        for (let i = 0; i < todos.length; i++) {
-            const currTodo = todos[i];
+        const sortedTodos = this.#sortTodos(todos);
+        this.#todos = sortedTodos;
+
+        for (let i = 0; i < sortedTodos.length; i++) {
+            const currTodo = sortedTodos[i];
 
             const wrapEl = document.createElement('div');
             wrapEl.classList.add('todo');
@@ -70,25 +137,25 @@ class Renderer {
             const priority = document.createElement('div');
             priority.classList.add('todo-priority');
             priority.classList.add('todo-priority-'+currTodo.getPriority()); // e.g. 'todo-priority-3'
-            let priorityText;
+            let priorityText = currTodo.getPriority() + ' - ';
             switch (currTodo.getPriority()) {
                 case 1:
-                    priorityText = "Very High";
+                    priorityText += "Very High";
                     break;
                 case 2:
-                    priorityText = "High";
+                    priorityText += "High";
                     break;
                 case 3:
-                    priorityText = "Medium";
+                    priorityText += "Medium";
                     break;
                 case 4:
-                    priorityText = "Low";
+                    priorityText += "Low";
                     break;
                 case 5:
-                    priorityText = "Very Low";
+                    priorityText += "Very Low";
                     break;
                 default:
-                    priorityText = "Priority not found.";
+                    priorityText += "Priority not found.";
             }
 
             priority.innerText = 'Priority: ' + priorityText;
@@ -117,9 +184,16 @@ class Renderer {
                 wrapEl.appendChild(notesEl);
             }
      
-            contentsEl.appendChild(wrapEl);
+            this.#contentsEl.appendChild(wrapEl);
         }
     }
 }
 
 export default Renderer;
+
+export const SORT_BY = {
+    DATE_ASCENDING: 'date-asc',
+    DATE_DESCENDING: 'date-desc',
+    PRIORITY_ASCENDING: 'priority-asc',
+    PRIORITY_DESCENDING: 'priority-desc', 
+};

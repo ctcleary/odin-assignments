@@ -8,6 +8,20 @@ body {
     background-color: rebeccapurple;
     padding: 0;
     margin: 0;
+
+    font-family: Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif;
+}
+
+button,
+input {
+    border-radius: 5px;
+    border: 1px solid #aaa;
+}
+button {
+    cursor: pointer;
+}
+input {
+    padding: 0.25rem;
 }
 
 #wrapper {
@@ -21,7 +35,7 @@ body {
 }
 
 #content {
-    background: white;
+    background: #fffaff;
 }
 #content-contents,
 #content-header {
@@ -91,6 +105,7 @@ body {
 
 .todo {
     border: thin solid #ccc;
+    background-color: white;
     border-radius: 5px;
     margin-bottom: 2rem;
 }
@@ -179,10 +194,11 @@ body {
     text-align: center;
 }
 
-#form-new-project,
+/* #form-new-project,
 #form-new-todo,
 #form-confirm-project-delete,
-#form-delete-todo {
+#form-delete-todo { */
+.dialog-form {
     display: grid;
     grid-template-rows: repeat(auto-fit, 1fr);
     gap: 0.5rem;

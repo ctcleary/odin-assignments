@@ -24,10 +24,13 @@
                         <div>Project:</div>
                         <h1 id="current-project">Todo List - Current Project</h1>
                     </div>
-                    <button id="button-delete-project" type="button">- Delete Project</button>
+                    <div id="current-project-menu">
+                        <button id="button-delete-project" type="button">- Delete Project</button>
+                        <button id="button-rename-project" type="button">Rename Project</button>
+                    </div>
                 </div>
                 <div id="todos-menu">
-                    <button id="todos-sort-by-date" type="button">Sort by Date</button>
+                    <button id="todos-sort-by" type="button">Sort by: Date &uparrow;</button>
                     <button id="todos-new-todo" type="button">+ New Todo</button>
                 </div>
             </div>
@@ -45,7 +48,7 @@
             <h3>Add New Project</h3> 
             <button type="button" class="dialog-close">X</button>
         </div>
-        <form id="form-new-project" method="dialog">
+        <form id="form-new-project" class="dialog-form" method="dialog">
             <div class="dialog-label-input">
                 <label for="new-project-title">Name:</label>
                 <input type="text" id="new-project-title" required />
@@ -59,7 +62,7 @@
             <h3>Add New Todo</h3> 
             <button type="button" class="dialog-close">X</button>
         </div>
-        <form id="form-new-todo" method="dialog">
+        <form id="form-new-todo" class="dialog-form" method="dialog">
             <div class="dialog-label-input">
                 <label for="new-todo-title">Title:</label>
                 <input type="text" id="new-todo-title" required />
@@ -89,12 +92,26 @@
             <h3>Delete Current Project</h3> 
             <button type="button" class="dialog-close">X</button>
         </div>
-        <form id="form-confirm-project-delete" method="dialog">
+        <form id="form-confirm-project-delete" class="dialog-form" method="dialog">
             <div class="dialog-label-input">
                 <label for="project-delete-confirm">Type "delete" to confirm:</label>
                 <input type="text" id="project-delete-confirm" placeholder="delete" pattern="(delete)"/>
             </div>
             <button type="submit">Confirm Delete</button>
+        </form>
+    </dialog>
+
+    <dialog id="dialog-rename-project">
+        <div class="dialog-header">
+            <h3>Rename Current Project</h3> 
+            <button type="button" class="dialog-close">X</button>
+        </div>
+        <form id="form-rename-project" class="dialog-form" method="dialog">
+            <div class="dialog-label-input">
+                <label for="project-new-title">Rename Current Project:</label>
+                <input type="text" id="project-new-title" required />
+            </div>
+            <button type="submit">Confirm Rename</button>
         </form>
     </dialog>
 
@@ -106,7 +123,7 @@
         <h2 id="dialog-delete-todo-title">
             Title not found!
         </h2>
-        <form id="form-delete-todo" method="dialog">
+        <form id="form-delete-todo" class="dialog-form" method="dialog">
             <div class="dialog-label-input hidden">
                 <label for="todo-delete-id">Todo ID:</label>
                 <input type="text" id="todo-delete-id" />

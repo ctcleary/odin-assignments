@@ -21,6 +21,19 @@ class Store {
         }
     }
 
+    storeTodoSortBy(sortBy) {
+        localStorage.setItem('todoSortBy', sortBy);
+    }
+    loadTodoSortBy() {
+        const savedSortBy = localStorage.getItem('todoSortBy');
+        if (savedSortBy) {
+            return savedSortBy;
+        } else {
+            return null;
+        }
+
+    }
+
     storeProjects(projectsArray) {
         const result = projectsArray.map((project) => {
             return this.objectifyProject(project);

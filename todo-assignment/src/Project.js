@@ -24,6 +24,11 @@ class Project {
         return this.title;
     }
 
+    setTitle(newTitle) {
+        this.title = newTitle;
+        return this.title;
+    }
+
     getTodos() {
         return this.todos.slice(); // Make a copy to protect internal data
     }
