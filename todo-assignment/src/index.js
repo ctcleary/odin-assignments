@@ -79,8 +79,6 @@ if (projectsObjects) {
     projectsArr = tempProjectsArray;
 }
 
-
-
 /* ------------------------------------------
 
                 CONTROLLER
@@ -102,14 +100,16 @@ const controller = (function(renderer, projects, store) {
     const projectButtonListenerFunc =  (e) => {
         const projectId = e.target.dataset.projectId;
         changeActiveProject(projectId);
-        store.storeActiveProjectId(projectId);
+        // store.storeActiveProjectId(projectId);
     };
 
     const renderProjectsList = () => {
+        const activeProjectId = activeProject.getId();
+
         const projectsEl = document.getElementById('projects');
         projectsEl.innerHTML = '';
 
-        renderer.renderProjects(projects, projectsEl);
+        renderer.renderProjects(projects, projectsEl, activeProjectId);
         
         // Remove existing event listeners if they exist
         if (projectButtons.length > 0) {
@@ -125,16 +125,34 @@ const controller = (function(renderer, projects, store) {
     }
 
     const renderActiveProjectTodos = () => {
+        const currProjectHeadline = document.getElementById('current-project');
+        currProjectHeadline.innerText = 'Project: ' + activeProject.getTitle();
+
         const contentsEl = document.getElementById('todos');
         contentsEl.innerHTML = '';
+
         renderer.renderTodos(activeProject.getTodos(), contentsEl);
+
+        const deleteTodos = document.querySelectorAll('.todo-delete');
+        deleteTodos.forEach((deleteBtn) => {
+            deleteBtn.addEventListener('click', (e) => {
+                console.log('delete todo clicked; todo-id :: ', e.target.dataset.todoId);
+                deleteTodoForm['todo-delete-id'].value = deleteBtn.dataset.todoId;
+                deleteTodoTitle.innerText = e.target.dataset.todoTitle;
+                deleteTodoDialog.showModal();
+            })
+        });
     }
 
     const changeActiveProject = (projectId) => {
         activeProject = projects.find((project) => { 
             return project.getId() == projectId;
         });
+        store.storeActiveProjectId(activeProject.getId());
 
+        console.log('activeProject', activeProject);
+
+        renderProjectsList();
         renderActiveProjectTodos(); 
     }
 
@@ -144,9 +162,25 @@ const controller = (function(renderer, projects, store) {
 
         // const projectObj = store.objectifyProject(activeProject);
         // console.log(JSON.stringify(projectObj));
-        store.storeProjects(projects);
 
+        store.storeProjects(projects);
         renderActiveProjectTodos();
+    }
+    const deleteTodo = (todoId) => {
+        // const currTodos = activeProject.getTodos();
+        // const idx = currTodos.indexOf(
+        //     currTodos.find((todo) => { return todo.getId() === todoId; })
+        // );
+        // // TODO does this need to be a Project.deleteTodo function?
+        // currTodos.splice(idx, 1);
+        activeProject.deleteTodo(todoId);
+
+        store.storeProjects(projects);
+        renderActiveProjectTodos();
+    }
+
+    const getActiveProjectId = () => {
+        return activeProject.getId();
     }
 
     const addProject = (title) => {
@@ -154,16 +188,28 @@ const controller = (function(renderer, projects, store) {
         projects.push(newProject);
 
         store.storeProjects(projects);
-
+        renderProjectsList();
+    }
+    const deleteProject = (projectId) => {
+        controller.changeActiveProject(projects[0].getId());
+        const idx = projects.indexOf(
+            projects.find((project) => { return project.getId() === projectId; })
+        );
+        projects.splice(idx, 1);
+        
+        store.storeProjects(projects);
         renderProjectsList();
     }
 
     return {
+        getActiveProjectId,
         renderProjectsList,
         renderActiveProjectTodos,
         changeActiveProject,
         addTodo,
-        addProject
+        deleteTodo,
+        addProject,
+        deleteProject,
     }
 })(tempRenderer, projectsArr, store)
 
@@ -176,24 +222,29 @@ controller.renderProjectsList();
 const newProjectButton = document.getElementById('projects-new-project');
 const newProjectDialog = document.getElementById('dialog-new-project');
 const newProjectForm = document.getElementById('form-new-project');
+const newProjectClose = document.querySelector('#dialog-new-project .dialog-close');
 
 newProjectButton.addEventListener('click', (el, e) => {
     newProjectDialog.showModal()
 });
-newProjectDialog.addEventListener('close', (el, e) => {
+newProjectForm.addEventListener('submit', (el, e) => {
     controller.addProject(newProjectForm['new-project-title'].value);
 
     newProjectForm['new-project-title'].value = '';
 });
+newProjectClose.addEventListener('click', () => {
+    newProjectDialog.close();
+})
 
 const newTodoButton = document.getElementById('todos-new-todo');
 const newTodoDialog = document.getElementById('dialog-new-todo');
 const newTodoForm = document.getElementById('form-new-todo');
+const newTodoClose = document.querySelector('#dialog-new-todo .dialog-close');
 
 newTodoButton.addEventListener('click', (el, e) => {
     newTodoDialog.showModal()
 });
-newTodoDialog.addEventListener('close', (el, e) => {
+newTodoForm.addEventListener('submit', (el, e) => {
     controller.addTodo(
         newTodoForm['new-todo-title'].value,
         newTodoForm['new-todo-due-date'].value,
@@ -204,10 +255,51 @@ newTodoDialog.addEventListener('close', (el, e) => {
     // Clear form inputs
     newTodoForm['new-todo-title'].value = '';
     newTodoForm['new-todo-due-date'].value = '';
-    newTodoForm['new-todo-priority'].value = '';
+    newTodoForm['new-todo-priority'].value = 3;
     newTodoForm['new-todo-description'].value = '';
 });
+newTodoClose.addEventListener('click', (el, e) => {
+    newTodoDialog.close();
+})
 
 
+// const sortTodosButton = document.getElementById('todos-sort-by-date');
 
-const sortTodosButton = document.getElementById('todos-sort-by-date');
+const deleteProjectButton = document.getElementById('button-delete-project');
+const deleteProjectDialog = document.getElementById('dialog-delete-project');
+const deleteProjectForm = document.getElementById('form-confirm-project-delete');
+const deleteProjectClose = document.querySelector('#dialog-delete-project .dialog-close');
+
+deleteProjectButton.addEventListener('click', () => {
+    deleteProjectDialog.showModal();
+});
+deleteProjectForm.addEventListener('submit', (el, e) => {
+    controller.deleteProject(controller.getActiveProjectId())
+})
+deleteProjectClose.addEventListener('click', (el, e) => {
+    deleteProjectDialog.close();
+})
+
+const deleteTodoDialog = document.getElementById('dialog-delete-todo');
+const deleteTodoTitle = document.getElementById('dialog-delete-todo-title');
+const deleteTodoForm = document.getElementById('form-delete-todo');
+const deleteTodoClose = document.querySelector('#dialog-delete-todo .dialog-close');
+
+const deleteTodos = document.querySelectorAll('.todo-delete');
+deleteTodos.forEach((deleteBtn) => {
+    deleteBtn.addEventListener('click', (e) => {
+        console.log('delete todo clicked; todo-id :: ', e.target.dataset.todoId);
+        deleteTodoForm['todo-delete-id'].value = deleteBtn.dataset.todoId;
+        deleteTodoTitle.innerText = e.target.dataset.todoTitle;
+        deleteTodoDialog.showModal();
+    })
+});
+
+deleteTodoForm.addEventListener('submit', (e) => {
+    console.log('delete form onsubmit -- id value', deleteTodoForm['todo-delete-id'].value);
+    controller.deleteTodo(deleteTodoForm['todo-delete-id'].value);
+});
+
+deleteTodoClose.addEventListener('click', (e) => {
+    deleteTodoDialog.close();
+});

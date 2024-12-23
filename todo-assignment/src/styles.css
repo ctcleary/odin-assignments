@@ -2,6 +2,8 @@
     box-sizing: border-box;
 }
 
+
+
 body {
     background-color: rebeccapurple;
     padding: 0;
@@ -25,18 +27,18 @@ body {
 #content-header {
     max-width: 85ch;
 }
-#content-contents>h1 {
-    margin-top: 0;
-}
 
 #sidebar,
 #content {
     padding: 2.2rem;
 }
 
-#sidebar>h2,
-#content-header>h1 {
+#sidebar>h2 {
     margin-top: 0;
+}
+
+#content-header h1 {
+    margin: 0 0 1rem 0;
 }
 
 #sidebar-header {
@@ -49,6 +51,10 @@ body {
 #projects {
     display: grid;
     gap: 0.5rem;
+}
+
+.active-project button {
+    background: #fba4fb;
 }
 
 .project-nav {
@@ -69,6 +75,14 @@ body {
     align-items: center;
 }
 
+/* #todos-header {
+
+} */
+
+#button-delete-project {
+    margin-bottom: 1rem;
+}
+
 #todos-menu {
     text-align: right;
     margin-bottom: 1rem;
@@ -83,6 +97,13 @@ body {
 .todo>* {
     padding-left: 1rem;
     padding-right: 1rem;
+}
+
+.todo-header {
+    display: grid;
+    grid-template-columns: 1fr 15ch;
+    gap: 1rem;
+    align-items: center;
 }
 .todo .todo-notes {
     padding-left: 3rem;
@@ -136,8 +157,7 @@ body {
     gap: 1rem;
 }
 
-#dialog-new-project h3,
-#dialog-new-todo h3,
+.dialog-header h3,
 .dialog-close {
     margin: 0 0 1rem 0;
 }
@@ -145,6 +165,7 @@ body {
 .dialog-header {
     display: grid;
     grid-template-columns: 1fr 3ch;
+    gap: 2rem;
     align-items: center;
 }
 
@@ -152,8 +173,15 @@ body {
     border-radius: 50%;
 }
 
+#dialog-delete-todo-title {
+    margin: 0 0 1rem 0;
+    text-align: center;
+}
+
 #form-new-project,
-#form-new-todo {
+#form-new-todo,
+#form-confirm-project-delete,
+#form-delete-todo {
     display: grid;
     grid-template-rows: repeat(auto-fit, 1fr);
     gap: 0.5rem;
@@ -165,3 +193,6 @@ body {
     margin-top: 0.5rem;
 }
 
+.hidden {
+    display: none;
+}

@@ -3,12 +3,16 @@ class Renderer {
 
     }
 
-    renderProjects(projects, projectsEl) {
+    renderProjects(projects, projectsEl, currActiveProjectId) {
         for (let i = 0; i < projects.length; i++) {
             const project = projects[i];
 
             const projectEl = document.createElement('div');
             projectEl.classList.add('project-nav')
+
+            if (project.getId() === currActiveProjectId) {
+                projectEl.classList.add('active-project');
+            }
             
             const projectButton = document.createElement('button');
             projectButton.classList.add('project-nav-button');
@@ -33,17 +37,29 @@ class Renderer {
             contentsEl.appendChild(noTodosEl);
             return;
         }
-        
+
         for (let i = 0; i < todos.length; i++) {
             const currTodo = todos[i];
 
             const wrapEl = document.createElement('div');
             wrapEl.classList.add('todo');
 
-            const title = document.createElement('h2');
-            title.classList.add('todo-title');
-            title.innerText = currTodo.getTitle();
-            wrapEl.appendChild(title);
+            const todoHeader = document.createElement('div');
+            todoHeader.classList.add('todo-header');
+
+                const title = document.createElement('h2');
+                title.classList.add('todo-title');
+                title.innerText = currTodo.getTitle() || 'No title found!';
+                todoHeader.appendChild(title);
+
+                const deleteTodo = document.createElement('button');
+                deleteTodo.classList.add('todo-delete');
+                deleteTodo.dataset.todoId = currTodo.getId();
+                deleteTodo.dataset.todoTitle = currTodo.getTitle();
+                deleteTodo.innerText = "- Delete Todo";
+                todoHeader.appendChild(deleteTodo);
+
+            wrapEl.appendChild(todoHeader);
 
             const dueDate = document.createElement('p');
             dueDate.classList.add('todo-due-date');

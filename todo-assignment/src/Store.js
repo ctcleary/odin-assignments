@@ -7,7 +7,7 @@ class Store {
     }
 
     storeActiveProjectId(projectId) {
-        console.log('localstorage ', projectId)
+        // console.log('localstorage ', projectId)
         localStorage.setItem('activeProjectId', projectId);
     }
 
@@ -26,7 +26,7 @@ class Store {
             return this.objectifyProject(project);
         });
 
-        console.log('storeProjects result', result);
+        // console.log('storeProjects result', result);
         localStorage.setItem('projectsJSON', JSON.stringify(result));
     }
 
@@ -38,7 +38,7 @@ class Store {
 
         const parsedObj = JSON.parse(json);
         console.log('parsedObj', parsedObj);
-        
+
         return parsedObj;
     }
 
@@ -63,7 +63,7 @@ class Store {
             return mapItem;
         });
 
-        console.log(result);
+        // console.log(result);
         return result;
     }
 }

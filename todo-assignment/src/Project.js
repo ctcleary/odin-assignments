@@ -37,11 +37,17 @@ class Project {
     }
 
     // sortTodos() {
-    //     console.log("TODO, sort todos by some criteria");
+    //     console.log("TODO, sort todos by date / priority");
     // }
 
-    removeTodo(todoId) {
-        const idx = this.todos.indexOf(this.todos.find((todo) => { return todo.getId() === todoId; }));
+    deleteTodo(todoId) {
+        const parsedTodoId = parseInt(todoId, 10);
+        const todoToDelete = this.todos.find((todo) => { 
+            return todo.getId() === parsedTodoId; 
+        });
+
+        const idx = this.todos.indexOf(todoToDelete);
+        // console.log('Project.deleteTodo -- idx', idx);
         this.todos.splice(idx, 1);
     }
 
