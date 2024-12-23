@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Odin Project - Webpack Practice</title>
+<script defer src="main.js"></script></head>
+<body>
+    <div id="wrapper">
+        <nav id="sidebar">
+            <div id="sidebar-header">
+                <h2>Projects</h2>
+                <button id="projects-new-project" type="button">+ New Project</button>
+            </div>
+            <div id="projects">
+                <!-- <div>dummy</div>
+                <div>another dummy</div> -->
+            </div>
+        </nav>
+        <section id="content">
+            <div id="content-header">
+                <div id="todos-header">
+                    <div id="current-project-header">
+                        <div>Project:</div>
+                        <h1 id="current-project">Todo List - Current Project</h1>
+                    </div>
+                    <div id="current-project-menu">
+                        <button id="button-delete-project" type="button">- Delete Project</button>
+                        <button id="button-rename-project" type="button">Rename Project</button>
+                    </div>
+                </div>
+                <div id="todos-menu">
+                    <button id="todos-sort-by" type="button">Sort by: Date &uparrow;</button>
+                    <button id="todos-new-todo" type="button">+ New Todo</button>
+                </div>
+            </div>
+            <div id="content-contents">
+                <div id="todos">
+                </div>
+            </div>
+        </section>
+    </div>
+
+
+    <!----------- dialogs  -------------->
+    <dialog id="dialog-new-project">
+        <div class="dialog-header">
+            <h3>Add New Project</h3> 
+            <button type="button" class="dialog-close">X</button>
+        </div>
+        <form id="form-new-project" class="dialog-form" method="dialog">
+            <div class="dialog-label-input">
+                <label for="new-project-title">Name:</label>
+                <input type="text" id="new-project-title" required />
+            </div>
+            <button type="submit">Create New Project</button>
+        </form>
+    </dialog>
+
+    <dialog id="dialog-new-todo">
+        <div class="dialog-header">
+            <h3>Add New Todo</h3> 
+            <button type="button" class="dialog-close">X</button>
+        </div>
+        <form id="form-new-todo" class="dialog-form" method="dialog">
+            <div class="dialog-label-input">
+                <label for="new-todo-title">Title:</label>
+                <input type="text" id="new-todo-title" required />
+            </div>
+            <div class="dialog-label-input">
+                <label for="new-todo-due-date">Due Date:</label>
+                <input type="date" id="new-todo-due-date" required />
+            </div>
+            <div class="dialog-label-input">
+                <label for="new-todo-priority">Priority (1 (High) - 5 (Low)):</label>
+                <input type="number" id="new-todo-priority" pattern="([1-5])" value="3" required />
+            </div>
+            <div class="dialog-label-input">
+                <label for="new-todo-description">Description:</label>
+                <input type="text" id="new-todo-description" placeholder="(Optional)" />
+            </div>
+            <!-- <div class="dialog-label-input">
+                <label for="new-todo-notes">Notes (TODO):</label>
+                <input type="text" id="new-todo-notes" />
+            </div> -->
+            <button type="submit">Create New Todo</button>
+        </form>
+    </dialog>
+
+    <dialog id="dialog-delete-project">
+        <div class="dialog-header">
+            <h3>Delete Current Project</h3> 
+            <button type="button" class="dialog-close">X</button>
+        </div>
+        <form id="form-confirm-project-delete" class="dialog-form" method="dialog">
+            <div class="dialog-label-input">
+                <label for="project-delete-confirm">Type "delete" to confirm:</label>
+                <input type="text" id="project-delete-confirm" placeholder="delete" pattern="(delete)"/>
+            </div>
+            <button type="submit">Confirm Delete</button>
+        </form>
+    </dialog>
+
+    <dialog id="dialog-rename-project">
+        <div class="dialog-header">
+            <h3>Rename Current Project</h3> 
+            <button type="button" class="dialog-close">X</button>
+        </div>
+        <form id="form-rename-project" class="dialog-form" method="dialog">
+            <div class="dialog-label-input">
+                <label for="project-new-title">Rename Current Project:</label>
+                <input type="text" id="project-new-title" required />
+            </div>
+            <button type="submit">Confirm Rename</button>
+        </form>
+    </dialog>
+
+    <dialog id="dialog-delete-todo">
+        <div class="dialog-header">
+            <h3>Delete This Todo?</h3> 
+            <button type="button" class="dialog-close">X</button>
+        </div>
+        <h2 id="dialog-delete-todo-title">
+            Title not found!
+        </h2>
+        <form id="form-delete-todo" class="dialog-form" method="dialog">
+            <div class="dialog-label-input hidden">
+                <label for="todo-delete-id">Todo ID:</label>
+                <input type="text" id="todo-delete-id" />
+            </div>
+            <button type="submit">Confirm Delete</button>
+        </form>
+
+    </dialog>
+</body>
+</html>
