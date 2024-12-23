@@ -26,29 +26,32 @@ input {
 
 #wrapper {
     display: grid;
-    grid-template-columns: 35ch 1fr;
+    grid-template-columns: clamp(20ch, 25%, 35ch) 1fr;
     grid-template-rows: minmax(100vh, 1fr);
 }
 
 #sidebar {
     color: white;
+    padding: 1.2rem;
 }
 
 #content {
     background: #fffaff;
+    padding: 2.2rem;
 }
 #content-contents,
 #content-header {
     max-width: 85ch;
 }
 
-#sidebar,
-#content {
-    padding: 2.2rem;
-}
-
 #sidebar>h2 {
     margin-top: 0;
+}
+
+#content-header {
+    display: grid;
+    grid-template-columns: minmax(25ch, 50ch) 1fr;
+    align-items: center;
 }
 
 #content-header h1 {
@@ -75,20 +78,16 @@ input {
 .project-nav {
     font-size: 1rem;
     display: grid;
-    grid-template-columns: 1fr 6ch;
+    grid-template-columns: 1fr 5ch;
     align-items: center;
     gap: 1rem;
 }
 
 .project-nav-button {
-    font-size: 1rem;
+    font-size: 1.25rem;
 }
 
-#content-header {
-    display: grid;
-    grid-template-columns: 50ch 1fr;
-    align-items: center;
-}
+
 
 /* #todos-header {
 
@@ -130,7 +129,7 @@ input {
 
 .todo-header {
     display: grid;
-    grid-template-columns: 1fr 15ch;
+    grid-template-columns: 1fr clamp(10ch, 15%, 15ch);
     gap: 1rem;
     align-items: center;
 }
