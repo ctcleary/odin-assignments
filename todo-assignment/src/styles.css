@@ -96,11 +96,24 @@ input {
 
 #button-delete-project {
     margin-bottom: 1rem;
+    color: white;
+    background: red;
+    font-weight: 700;
 }
 
 #todos-menu {
     text-align: right;
     margin-bottom: 1rem;
+    margin-top: -1rem;
+}
+#todos-menu button {
+    font-size: 1.25rem;
+    margin-left: 1rem;
+}
+
+#todos-new-todo {
+    color: white;
+    background: green;
 }
 
 .todo {
@@ -129,6 +142,12 @@ input {
     font-size: 2rem;
     margin-top: 0.75rem;
     margin-bottom: 0.5rem;
+}
+
+.todo .todo-delete {
+    color: white;
+    background-color: red;
+    font-weight: 700;
 }
 
 .todo .todo-due-date {
