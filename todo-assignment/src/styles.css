@@ -21,6 +21,13 @@ body {
 #content {
     background: white;
 }
+#content-contents,
+#content-header {
+    max-width: 85ch;
+}
+#content-contents>h1 {
+    margin-top: 0;
+}
 
 #sidebar,
 #content {
@@ -28,8 +35,15 @@ body {
 }
 
 #sidebar>h2,
-#content>h1 {
+#content-header>h1 {
     margin-top: 0;
+}
+
+#sidebar-header {
+    display: grid;
+    grid-template-columns: 10ch 1fr;
+    gap: 1rem;
+    align-items: center;
 }
 
 #projects {
@@ -46,11 +60,21 @@ body {
 }
 
 .project-nav-button {
-    font-size: 1.5rem;
+    font-size: 1rem;
+}
+
+#content-header {
+    display: grid;
+    grid-template-columns: 50ch 1fr;
+    align-items: center;
+}
+
+#todos-menu {
+    text-align: right;
+    margin-bottom: 1rem;
 }
 
 .todo {
-    width: 80ch;
     border: thin solid #ccc;
     border-radius: 5px;
     margin-bottom: 2rem;
@@ -105,3 +129,39 @@ body {
 .todo .todo-note {
     margin-bottom: 0.25rem;
 }
+
+.dialog-label-input {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 1rem;
+}
+
+#dialog-new-project h3,
+#dialog-new-todo h3,
+.dialog-close {
+    margin: 0 0 1rem 0;
+}
+
+.dialog-header {
+    display: grid;
+    grid-template-columns: 1fr 3ch;
+    align-items: center;
+}
+
+.dialog-close {
+    border-radius: 50%;
+}
+
+#form-new-project,
+#form-new-todo {
+    display: grid;
+    grid-template-rows: repeat(auto-fit, 1fr);
+    gap: 0.5rem;
+}
+
+#form-new-project button[type='submit'],
+#form-new-todo button[type='submit'] {
+    float: right;
+    margin-top: 0.5rem;
+}
+

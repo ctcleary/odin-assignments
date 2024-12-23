@@ -61,8 +61,9 @@ class Todo {
         return false;
     }
     #makeValidPriority(val) {
-        if (val >= 0 && val <= 5) {
-            return val;
+        const parsedVal = parseInt(val, 10);
+        if (parsedVal >= 0 && parsedVal <= 5) {
+            return parsedVal;
         }
 
         return 3; // Default to "Medium" on invalid priority

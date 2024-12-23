@@ -79,6 +79,13 @@ if (projectsObjects) {
     projectsArr = tempProjectsArray;
 }
 
+
+
+/* ------------------------------------------
+
+                CONTROLLER
+
+-----------------------------------------------*/
 const controller = (function(renderer, projects, store) {
     //renderer;
     //projects;
@@ -87,8 +94,16 @@ const controller = (function(renderer, projects, store) {
         projects.find((project) => { return project.getId() == currActiveProjectId }) :
         projects[0];
     // let activeProject = projects[0];
+
+
     
     let projectButtons = [];
+
+    const projectButtonListenerFunc =  (e) => {
+        const projectId = e.target.dataset.projectId;
+        changeActiveProject(projectId);
+        store.storeActiveProjectId(projectId);
+    };
 
     const renderProjectsList = () => {
         const projectsEl = document.getElementById('projects');
@@ -99,17 +114,13 @@ const controller = (function(renderer, projects, store) {
         // Remove existing event listeners if they exist
         if (projectButtons.length > 0) {
             projectButtons.forEach((btn) => {
-                btn.removeEventListener('click');
+                btn.removeEventListener('click', projectButtonListenerFunc);
             })
         }
         // Set up project button event listeners
         projectButtons = document.querySelectorAll('.project-nav-button');
         projectButtons.forEach((btn) => {
-            btn.addEventListener('click', (e) => {
-                const projectId = e.target.dataset.projectId;
-                changeActiveProject(projectId);
-                store.storeActiveProjectId(projectId);
-            })
+            btn.addEventListener('click', projectButtonListenerFunc)
         });
     }
 
@@ -138,11 +149,21 @@ const controller = (function(renderer, projects, store) {
         renderActiveProjectTodos();
     }
 
+    const addProject = (title) => {
+        const newProject = new Project(title);
+        projects.push(newProject);
+
+        store.storeProjects(projects);
+
+        renderProjectsList();
+    }
+
     return {
         renderProjectsList,
         renderActiveProjectTodos,
         changeActiveProject,
-        addTodo
+        addTodo,
+        addProject
     }
 })(tempRenderer, projectsArr, store)
 
@@ -150,3 +171,43 @@ controller.renderActiveProjectTodos();
 controller.renderProjectsList();
 
 // controller.addTodo('Get dog food', '2024-12-28 12:00', 2, 'FreshPet Multi-Protein Formula - Freeze Dried');
+
+
+const newProjectButton = document.getElementById('projects-new-project');
+const newProjectDialog = document.getElementById('dialog-new-project');
+const newProjectForm = document.getElementById('form-new-project');
+
+newProjectButton.addEventListener('click', (el, e) => {
+    newProjectDialog.showModal()
+});
+newProjectDialog.addEventListener('close', (el, e) => {
+    controller.addProject(newProjectForm['new-project-title'].value);
+
+    newProjectForm['new-project-title'].value = '';
+});
+
+const newTodoButton = document.getElementById('todos-new-todo');
+const newTodoDialog = document.getElementById('dialog-new-todo');
+const newTodoForm = document.getElementById('form-new-todo');
+
+newTodoButton.addEventListener('click', (el, e) => {
+    newTodoDialog.showModal()
+});
+newTodoDialog.addEventListener('close', (el, e) => {
+    controller.addTodo(
+        newTodoForm['new-todo-title'].value,
+        newTodoForm['new-todo-due-date'].value,
+        newTodoForm['new-todo-priority'].value,
+        newTodoForm['new-todo-description'].value
+    );
+
+    // Clear form inputs
+    newTodoForm['new-todo-title'].value = '';
+    newTodoForm['new-todo-due-date'].value = '';
+    newTodoForm['new-todo-priority'].value = '';
+    newTodoForm['new-todo-description'].value = '';
+});
+
+
+
+const sortTodosButton = document.getElementById('todos-sort-by-date');
