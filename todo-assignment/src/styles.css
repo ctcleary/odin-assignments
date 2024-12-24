@@ -71,6 +71,10 @@ input {
     gap: 0.5rem;
 }
 
+#projects-new-project {
+    padding: 0.25rem;
+}
+
 .active-project button,
 .active-project button:hover {
     background: #fba4fb;
