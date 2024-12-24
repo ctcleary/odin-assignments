@@ -50,7 +50,7 @@ input {
 
 #content-header {
     display: grid;
-    grid-template-columns: minmax(25ch, 50ch) 1fr;
+    grid-template-columns: 1fr clamp(12ch, 35%, 25ch);
     align-items: center;
 }
 
@@ -71,7 +71,8 @@ input {
     gap: 0.5rem;
 }
 
-.active-project button {
+.active-project button,
+.active-project button:hover {
     background: #fba4fb;
 }
 
@@ -85,19 +86,59 @@ input {
 
 .project-nav-button {
     font-size: 1.25rem;
+    padding: 0.5rem 0;
+}
+.project-nav-button,
+#button-rename-project,
+#todos-sort-by,
+.dialog-form button[type='submit'],
+#projects-new-project {
+    background: #e0d8e0;
 }
 
+.project-nav-button:hover,
+#button-rename-project:hover,
+#todos-sort-by:hover,
+.dialog-form button[type='submit']:hover,
+#projects-new-project:hover {
+    background: #f7e3f7;
+}
+.project-nav-button:active,
+#button-rename-project:active,
+#todos-sort-by:active,
+.dialog-form button[type='submit']:active,
+#projects-new-project:active {
+    background: #ccc;
+}
 
+#button-delete-project,
+.todo .todo-delete {
+    background: red;
+}
+#button-delete-project:hover,
+.todo .todo-delete:hover {
+    background: rgb(253, 83, 83);
+}
+#button-delete-project:active,
+.todo .todo-delete:active {
+    background: darkred;
+}
 
 /* #todos-header {
 
 } */
 
+#current-project-menu button {
+    padding: 0.5rem;
+}
 #button-delete-project {
-    margin-bottom: 1rem;
     color: white;
     background: red;
     font-weight: 700;
+}
+#button-delete-project,
+#button-rename-project {
+    margin-bottom: 1rem;
 }
 
 #todos-menu {
@@ -107,12 +148,19 @@ input {
 }
 #todos-menu button {
     font-size: 1.25rem;
-    margin-left: 1rem;
+    padding: 0.5rem;
+    margin: 0 0 1rem 1rem;
 }
 
 #todos-new-todo {
     color: white;
     background: green;
+}
+#todos-new-todo:hover {
+    background: rgb(7, 173, 7);
+}
+#todos-new-todo:active {
+    background: darkgreen;
 }
 
 .todo {
@@ -120,6 +168,7 @@ input {
     background-color: white;
     border-radius: 5px;
     margin-bottom: 2rem;
+    box-shadow: 2px 3px 5px 2px rgba(230, 200, 230, 0.5);
 }
 
 .todo>* {
@@ -129,7 +178,7 @@ input {
 
 .todo-header {
     display: grid;
-    grid-template-columns: 1fr clamp(10ch, 15%, 15ch);
+    grid-template-columns: 1fr clamp(6ch, 15%, 15ch);
     gap: 1rem;
     align-items: center;
 }
@@ -145,8 +194,8 @@ input {
 
 .todo .todo-delete {
     color: white;
-    background-color: red;
     font-weight: 700;
+    padding: 0.5rem;
 }
 
 .todo .todo-due-date {
@@ -222,12 +271,16 @@ input {
     gap: 0.5rem;
 }
 
-#form-new-project button[type='submit'],
-#form-new-todo button[type='submit'] {
-    float: right;
+.dialog-form button[type='submit'] {
     margin-top: 0.5rem;
 }
 
 .hidden {
     display: none;
+}
+
+
+@media (width <= 800px) {
+    #content-header h1 { font-size: 1.75rem; }   
+    .todo .todo-title { font-size: 1.25rem; }
 }
