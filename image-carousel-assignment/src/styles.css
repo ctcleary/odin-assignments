@@ -20,7 +20,38 @@ header h1 {
 #content {
     text-align: center;
 }
+
+.arrow {
+    position: absolute;
+    top: 9rem;
+    
+    cursor: pointer;
+    user-select: none;
+
+    padding: 1.5rem;
+    border-radius: 12px;
+    background: teal;
+}
+
+.arrow:hover {
+    background: rgb(29, 182, 182);
+}
+
+.arrow:active {
+    background: rgb(54, 212, 212);
+}
+
+#arrow-left {
+    left: calc(-3.5rem + 1ch);
+}
+
+#arrow-right {
+    right: calc(-3.5rem + 1ch);
+}
+
 #image-carousel-window-outer {
+    position: relative;
+
     margin-top: 3rem;
     display: inline-block;
     width: 40rem;
@@ -54,9 +85,13 @@ header h1 {
 }
 
 #images-wide {
+    position: relative;
+    left: calc(-36rem * 0);
+
     display: grid;
     grid-template-columns: repeat(auto-fit, 36rem);
-    width: 5000px;
+    grid-template-rows: 21rem;
+    width: calc(36rem * 15);
 }
 .image-container {
     display:inline-block;
