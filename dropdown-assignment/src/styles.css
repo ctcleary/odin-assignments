@@ -1,3 +1,85 @@
+*, *:before, *:after {
+    box-sizing: border-box;
+}
 body {
-    background-color: rebeccapurple;
+    background-color: rgb(232, 221, 243);
+    margin: 0;
+}
+
+header {
+    background-color: rgb(198, 180, 216);
+    /* display: grid;
+    grid-template-columns: 3fr 1fr;
+    align-items: center;
+    justify-items: center; */
+    text-align: center;
+}
+header h1 {
+    display: inline-block;
+    margin-right: 10rem;
+    padding: 1rem 2rem;
+}
+
+#hamburger-button {
+    font-weight: 700;
+    cursor: pointer;
+    border-radius: 3px;
+    padding: 0.5rem 1rem;
+}
+
+#hamburger-button:hover {
+    background: white;
+}
+
+#hamburger-button:active {
+    background: #999;
+}
+
+#dropdown-container {
+    position: relative;
+    display: inline-block;
+    width: 4rem;
+    height: 2rem;
+    overflow: visible;
+}
+
+#dropdown {
+    position: absolute;
+    left: -12ch;
+    width: 20ch;
+
+    background-color: white;
+    border: thin solid black;
+    display: none;
+
+    text-align: left;
+}
+
+#dropdown.visible {
+    display: block;
+}
+
+.dropdown-item:not(:last-child) {
+    border-bottom: thin solid #ccc;
+}
+
+.dropdown-item a {
+    display: block;
+    padding: 1rem 2rem;
+    text-decoration: none;
+    color: black;
+    width: 100%;
+    height: 100%;
+}
+
+.dropdown-item a:hover {
+    background: #e0cce7;
+}
+.dropdown-item a:active {
+    background: #c2aaca;
+}
+
+#content {
+    padding: 1rem 1.8rem;
+    text-align: center;
 }
