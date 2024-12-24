@@ -30,23 +30,25 @@ header h1 {
 
     padding: 1.5rem;
     border-radius: 12px;
-    background: teal;
+    background: rgb(11, 165, 165);
 }
 
 .arrow:hover {
-    background: rgb(29, 182, 182);
+    background: rgb(38, 202, 202);
 }
 
 .arrow:active {
-    background: rgb(54, 212, 212);
+    background: rgb(69, 230, 230);
 }
 
 #arrow-left {
     left: calc(-3.5rem + 1ch);
+    border-radius: 12px 25px 25px 12px;
 }
 
 #arrow-right {
     right: calc(-3.5rem + 1ch);
+    border-radius: 25px 12px 12px 25px;
 }
 
 #image-carousel-window-outer {
