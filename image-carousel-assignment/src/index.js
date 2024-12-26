@@ -6,9 +6,14 @@ const carousel = (function() {
     const imgAssetPath = './img/';
     const imgWidthRem = 36;
     const imgTransitionStr = 'left 250ms linear';
+
     const imagesWide = document.getElementById('images-wide');
+    const leftArrow = document.getElementById('arrow-left');
+    const rightArrow = document.getElementById('arrow-right');
+    const navDots = document.getElementById('nav-dots');
     
     const numPictures = 10;
+    let activePicNum = 1;
     
     // Append the last image first for looping
     appendImageChild(numPictures);
@@ -24,10 +29,31 @@ const carousel = (function() {
     
         containerDiv.appendChild(img);
         imagesWide.appendChild(containerDiv);
+
+    }
+
+    function appendNavDot(picNum) {
+        const dotOuter = document.createElement('div');
+        dotOuter.classList.add('nav-dot-outer');
+        dotOuter.dataset.relatedImage = picNum;
+
+        dotOuter.addEventListener('click', (e) => {
+            goToSlide(picNum);
+            highlightActiveDot(picNum);
+        })
+
+        const dot = document.createElement('div');
+        dot.classList.add('nav-dot');
+
+        dotOuter.appendChild(dot);
+
+        navDots.appendChild(dotOuter);
+
     }
     
     for (let i = 1; i <= numPictures; i++) {
         appendImageChild(i);
+        appendNavDot(i);
     }
     // Append the first image last for looping
     appendImageChild(1);
@@ -38,17 +64,15 @@ const carousel = (function() {
     // Since we need to remove the transition during looping repositioning
     imagesWide.style.transition = imgTransitionStr;
     
-    const leftArrow = document.getElementById('arrow-left');
-    const rightArrow = document.getElementById('arrow-right');
 
     function changeSlideRight() {
         const currLeftStr = imagesWide.style.left;
         const currLeft = parseInt(currLeftStr);
     
         const newLeft = currLeft - imgWidthRem;
-        
-        console.log('changeSlideRight newLeft', newLeft);
         imagesWide.style.left = `${newLeft}rem`;
+
+        activePicNum += 1;
     }
 
     function changeSlideLeft() {
@@ -56,9 +80,34 @@ const carousel = (function() {
         const currLeft = parseInt(currLeftStr);
     
         const newLeft = currLeft + imgWidthRem;
-
-        console.log('changeSlideLeft newLeft', newLeft);
         imagesWide.style.left = `${newLeft}rem`;
+
+        activePicNum -= 1;
+    }
+
+    function goToSlide(picNum) {
+        imagesWide.style.transition = '';
+        imagesWide.style.left = `${-36 * picNum}rem`;
+        setTimeout(() => {
+            imagesWide.style.transition = imgTransitionStr;
+        }, 0);
+
+        activePicNum = picNum;
+    }
+
+    function highlightActiveDot() {
+        const dots = document.querySelectorAll('.nav-dot-outer');
+        dots.forEach((dot) => {
+            dot.classList.remove('active-dot');
+        })
+
+        console.log(dots);
+
+        const newActiveDot = Array.from(dots).find((dot) => {
+            return parseInt(dot.dataset.relatedImage, 10) === activePicNum;
+        })
+
+        newActiveDot.classList.add('active-dot');
     }
 
     function loopIfShould(e) {
@@ -71,6 +120,8 @@ const carousel = (function() {
                 imagesWide.style.transition = imgTransitionStr;
             }, 0);
 
+            activePicNum = numPictures;
+
         } else if (currLeft === (-imgWidthRem * (numPictures + 1))) {
             console.log('should loop from end');
             imagesWide.style.transition = '';
@@ -78,11 +129,14 @@ const carousel = (function() {
             setTimeout(() => {
                 imagesWide.style.transition = imgTransitionStr;
             }, 0);
+
+            activePicNum = 1;
         }
     }
     
     imagesWide.addEventListener('transitionend', (e) => {
         loopIfShould(e);
+        highlightActiveDot();
     })
 
     rightArrow.addEventListener('click', () => {
