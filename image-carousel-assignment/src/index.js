@@ -95,6 +95,8 @@ const carousel = (function() {
         }, 0);
 
         activePicNum = picNum;
+        
+        startTransitionTimer();
     }
 
     function highlightActiveDot() {
@@ -158,7 +160,7 @@ const carousel = (function() {
     })
 
     startTransitionTimer();
-    
+
     return {
         changeSlideLeft,
         changeSlideRight
