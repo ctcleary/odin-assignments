@@ -14,6 +14,7 @@ const carousel = (function() {
     
     const numPictures = 10;
     let activePicNum = 1;
+    let transitionTimeout;
     
     // Append the last image first for looping
     appendImageChild(numPictures);
@@ -57,6 +58,7 @@ const carousel = (function() {
     }
     // Append the first image last for looping
     appendImageChild(1);
+    highlightActiveDot();
     
     // Since we have the last img appended first, start at -{imgWidthRem}
     imagesWide.style.left = `-${imgWidthRem}rem`;
@@ -133,10 +135,19 @@ const carousel = (function() {
             activePicNum = 1;
         }
     }
+
+    function startTransitionTimer() {
+        clearTimeout(transitionTimeout);
+
+        transitionTimeout = setTimeout(() => {
+            changeSlideRight();
+        }, 5000)
+    }
     
     imagesWide.addEventListener('transitionend', (e) => {
         loopIfShould(e);
         highlightActiveDot();
+        startTransitionTimer();
     })
 
     rightArrow.addEventListener('click', () => {
@@ -146,6 +157,8 @@ const carousel = (function() {
         changeSlideLeft();
     })
 
+    startTransitionTimer();
+    
     return {
         changeSlideLeft,
         changeSlideRight
