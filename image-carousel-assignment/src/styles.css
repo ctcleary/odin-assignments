@@ -94,6 +94,9 @@ header h1 {
     grid-template-columns: repeat(auto-fit, 36rem);
     grid-template-rows: 21rem;
     width: calc(36rem * 15);
+
+    background: black;
+    /* transition: left 250ms linear; */
 }
 .image-container {
     display:inline-block;
