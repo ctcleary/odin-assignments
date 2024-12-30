@@ -1,5 +1,6 @@
 import "./styles.css";
 
+// This is a free public API Key, in a production environment this would require back-end work to protect.
 const VISUAL_CROSSING_API_KEY = 'PCGWK76LSAU6S5CDBNM5DCV4M';
 const VISUAL_CROSSING_BASE_REQ = 'https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/';
 
@@ -74,7 +75,6 @@ function renderWeatherData(data) {
 const customSearchForm = document.getElementById('custom-search-form');
 const locSearchInput = document.getElementById('search-location');
 
-const dateSearchForm = document.getElementById('date-search-form');
 const dateSearchInput = document.getElementById('search-date');
 
 customSearchForm.addEventListener('submit', (e) => {
