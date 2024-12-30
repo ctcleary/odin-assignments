@@ -1,0 +1,74 @@
+*, *:before, *:after {
+    box-sizing: border-box;
+}
+
+body {
+    background-color: slategrey;
+    margin: 0;
+    padding: 0;
+
+    font-family: Bahnschrift, 'DIN Alternate', 'Franklin Gothic Medium', 'Nimbus Sans Narrow', sans-serif-condensed, sans-serif;
+    font-weight: normal;
+}
+
+h1 {
+    margin: 0 0 1rem 0;
+}
+
+#wrapper {
+    padding: 2rem;
+}
+
+#content {
+    background: white;
+    padding: 2rem;
+    width: 80ch;
+    border-radius: 5px;
+    box-shadow: 3px 3px 3px 3px rgba(64, 64, 64, 0.5);
+}
+
+#location-headline {
+    font-weight: normal;
+}
+
+#location {
+    font-weight: bold;
+}
+
+#weather-results {
+    display: grid;
+    grid-template-columns: 1fr 5fr;
+    grid-template-rows: 3fr 1fr;
+    align-items: center;
+}
+
+#temp,
+#temp + span {
+    font-size: 3.35rem;
+    font-weight: 700;
+}
+
+#temp-max-container,
+#temp-min-container {
+    display: inline-block;
+}
+
+#temp-max-container,
+#temp-min-container {
+    font-weight: 600;
+}
+
+#conditions {
+    font-size: 1.5rem;
+}
+#description {
+    font-size: 1.15rem;
+}
+
+#precipitation-container {
+    font-size: 0.8rem;
+}
+
+#form-container {
+    margin-top: 3rem;
+}
