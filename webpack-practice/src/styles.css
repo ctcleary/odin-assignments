@@ -1,3 +1,10 @@
+*, *:before, *:after {
+    box-sizing: border-box;
+}
+
+
 body {
     background-color: rebeccapurple;
+    margin: 0;
+    padding: 0;
 }
