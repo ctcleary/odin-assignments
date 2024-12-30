@@ -11,36 +11,42 @@
             <h1>The Odin Project - Weather App Assignment</h1>
         </header>
         <div id="content">
-            <h3 id="location-headline">Location: <span id="location"></span></h3>
-            <h4 id="date-headline">Date: <span id="date"></span></h4>
+            <h3 id="location-headline">Location: <span id="location">----------</span></h3>
+            <h4 id="date-headline">Date: <span id="date">--- --- -- ----</span></h4>
             <div id="weather-results">
                 <div id="temp-container">
-                    <span id="temp"></span>
+                    <span id="temp">--&deg;</span>
                 </div>
                 <div id="text-info">
-                    <div id="conditions"></div>
-                    <div id="description"></div>
+                    <div id="conditions">--------</div>
+                    <div id="description">-------------------</div>
                 </div>
                 <div id="temp-high-low">
                     <div id="temp-max-container">
-                        <span id="temp-max"></span>
+                        <span id="temp-max">--&deg;</span>
                     </div>
-                    <span> / </span>
                     <div id="temp-min-container">
-                        <span id="temp-min"></span>
+                        <span id="temp-min">--&deg;</span>
                     </div>
                 </div>
                 <div id="precipitation-container">
-                    <span>Chance of rain:</span>
-                    <span id="precipitation"></span>
+                    <span>Chance of precipitation:</span>
+                    <span id="precipitation">--%</span>
                 </div>
             </div>
             <div id="form-container">
-                <form id="location-search-form" action="#">
-                    <label for="search-location">Search for another location:</label>
-                    <input type="text" id="search-location" minlength="3" required>
-                    <button type="submit">Go!</button>
+                <form id="custom-search-form" action="#">
+                    <div class="label-input">
+                        <label for="search-location">Search for another location:</label>
+                        <input type="text" id="search-location" minlength="3" placeholder="Manhattan, NY">
+                    </div>
+                    <div class="label-input">
+                        <label for="search-date">Search for another date:</label>
+                        <input type="text" id="search-date" minlength="10" maxlength="10" placeholder="yyyy-MM-dd">
+                    </div>
+                    <button id="custom-search-submit" type="submit">Search!</button>
                 </form>
+                <p id="fetch-error"></p>
             </div>
         </div>
     </div>
