@@ -1,0 +1,109 @@
+*, *:before, *:after {
+    box-sizing: border-box;
+}
+
+body {
+    background-color: lightgrey;
+    margin: 0;
+    padding: 0;
+
+    font-family: Bahnschrift, 'DIN Alternate', 'Franklin Gothic Medium', 'Nimbus Sans Narrow', sans-serif-condensed, sans-serif;
+    font-weight: normal;
+}
+
+#wrapper {
+    text-align: center;
+    display: grid;
+    grid-template-columns: 1fr;
+    justify-items: center;
+}
+
+
+header {
+    background: slategrey;
+    margin-bottom: 2rem;
+    width: 100%;
+}
+header h1 {
+    margin: 0;
+    padding: 2rem 0;
+}
+
+#content {
+    text-align: center;
+    width: 80ch;
+}
+
+form {
+    text-align: center;
+    padding: 3rem 1.5rem;
+    background: white;
+    border-radius: 10px;
+    border: thin solid #aaa;
+}
+
+form  .label-input {
+    display: grid;
+    grid-template-columns: 10rem 25rem;
+    margin-bottom: 1rem;
+    align-items: center;
+    text-align: right;
+}
+
+.label-input label {
+    margin-right: 1.5rem;
+}
+.label-input input {
+    padding: 0.35rem;
+    border-radius: 5px;
+    border-width: 1px;
+    border-style: ridge;
+}
+
+
+form button[type="submit"] {
+    font-size: 1.25rem;
+    padding: 0.5rem;
+    border-radius: 5px;
+    border-width: 1px;
+    background-color: slateblue;
+    color: white;
+    cursor: pointer;
+}
+
+form button[type="submit"]:hover {
+    background-color: blue;
+}
+form button[type="submit"]:active {
+    background-color: darkslateblue;
+}
+
+form p {
+    margin: 0 0 1rem 0;
+}
+
+/* .label-input input:invalid:not([value]), */
+.label-input input.invalid:not([value]) {
+    border-color: red;
+    border-width: 2px;
+}
+
+/* .label-input input:valid, */
+.label-input input.valid {
+    border-color: lightgreen;
+    border-width: 2px;
+}
+
+.label-input .input-errors {
+    margin: 0;
+    padding: 0;
+    grid-column: 2 / 3;
+    color: red;
+    text-align: left;
+}
+
+.label-input .input-errors li {
+    list-style-type: none;
+    margin-left: 0;
+    margin-top: 0.15rem;
+}
