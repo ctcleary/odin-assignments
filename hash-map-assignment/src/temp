@@ -1,0 +1,22 @@
+I'm also having trouble with the HashMap assignment, I'm trying to picture what each "bucket" should contain and I keep getting lost. The part I'm particularly having trouble with in the curriculum is where in [HashMap Assignment, step 2](https://www.theodinproject.com/lessons/javascript-hashmap) it tells you to look at [Dealing with collisions](https://www.theodinproject.com/lessons/javascript-hashmap-data-structure#collisions) from the previous page. But "Dealing with collisions" seems unclear to me about what exactly it's telling me to do with LinkedLists -- particualrly in its seemingly inconsistent use of the terms `Node` and "bucket".
+
+Basically, I'm having trouble "picturing" what the contents of a bucket should look like. Let's say I'm trying to store `{ key: 'Carlos', value: 'CarlosNameTag' }` and the key `'Carlos'` hashes to `3`  (and so does `{ key: 'Carla', value: 'CarlaNameTag' }`) so I go to store this key/value pair in  `this.hashMap[3]`. What do the contents look like? 
+
+Why would I use a LinkedList instead of an object I can just use `this.hashMap[3]['Carlos']` to lookup?
+
+`// this.hashMap[3] ::
+{
+    'Carlos': 'CarlosNameTag',
+    'Carla': 'CarlaNameTag',
+}`
+
+And if I'm using a LinkedList, what does `this.hashMap[3]` look like if a LinkedList is just for a set of values? Do I use an array so I can search for keys like `this.hashMap[3].find()
+
+`// this.hashMap[3] :: <LinkedList>
+{
+    value: ['Carlos', 'CarlosNameTag'],
+    nextNode: {
+        value: ['Carla', 'CarlaNameTag' ]
+        nextNode: null
+    }
+}
