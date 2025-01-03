@@ -2,7 +2,7 @@ import LLNode from "./LLNode.js"
 
 class LinkedList {
     constructor(valsArr = null) {
-        this.list = new LLNode();
+        this.list = null;
 
         if (valsArr === null) {
             return;
@@ -65,7 +65,7 @@ class LinkedList {
     }
 
     isEmpty() {
-        return this.list.value === null && this.list.nextNode === null;
+        return this.list === null;
     }
 
     append(val) {
@@ -135,6 +135,7 @@ class LinkedList {
     removeAt(index) {
         if (index === 0) {
             this.list = this.list.getNext();
+            // this.list may now be null if empty
             return;
         }
 
@@ -187,14 +188,30 @@ class LinkedList {
             if (searchNode.value === value) {
                 return i;
             } else if (searchNode.getNext() === null) {
-                return;
+                return -1;
             }
 
             i += 1;
             searchNode = searchNode.getNext();
         }
         
-        return false;
+        return -1;
+    }
+
+    findNode(node) {
+        if (this.list === node) {
+            return 0;
+        }
+
+        let searchNode = this.list;
+        let i = 0;
+
+        while (searchNode && searchNode !== node) {
+            searchNode = searchNode.getNext();
+            i += 1;
+        }
+
+        return i;
     }
 
     toString(searchNode = null) {
