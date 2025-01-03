@@ -18,6 +18,9 @@ test.set('jacket', 'blue')
 test.set('kite', 'pink')
 test.set('lion', 'golden')
 
+// 13th, force the HashMap to expand capacity
+test.set('moon', 'silver')
+
 window.hmA = test;
 
 const test2 = new HashMap();
@@ -26,5 +29,3 @@ test2.set('Carla', 'CarlaNameTag');
 test2.set('Alex', 'AlexNameTag');
 
 window.hmB = test2;
-
-[ ['apple', 'red'], ['banana', 'yellow'], ['carrot', 'orange'], ['dog', 'brown'], ['elephant', 'gray'], ['frog', 'green'], ['grape', 'purple'], ['hat', 'black'], ['ice cream', 'white'], ['jacket', 'blue'], ['kite', 'pink'], ['lion', 'golden'] ] 

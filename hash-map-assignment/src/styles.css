@@ -8,3 +8,11 @@ body {
     padding: 3rem;
     font-family: system-ui, sans-serif;
 }
+
+p {
+    max-width: 80ch;
+}
+
+li {
+    margin-bottom: 0.25rem;
+}
