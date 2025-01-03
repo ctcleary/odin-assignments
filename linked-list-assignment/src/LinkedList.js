@@ -1,20 +1,20 @@
 import LLNode from "./LLNode.js"
 
 class LinkedList {
-    constructor(valsArr) {
-        this.list = null;
+    constructor(valsArr = null) {
+        this.list = new LLNode();
 
-        if (!valsArr || valsArr === null) {
-            throw new Error('LinkedList requires initial values array.');
+        if (valsArr === null) {
+            return;
         }
-
+        
         for (let i = 0; i < valsArr.length; i++) {
             this.append(valsArr[i]);
         }
 
     }
 
-    tail(node = null) {
+    tail() {
         return this.#findTail();
     }
     
@@ -64,10 +64,14 @@ class LinkedList {
         return searchNode;
     }
 
+    isEmpty() {
+        return this.list.value === null && this.list.nextNode === null;
+    }
+
     append(val) {
         const node = new LLNode(val, null);
 
-        if (this.list === null) {
+        if (this.isEmpty()) { // Initial empty list.
             this.list = node;
         } else {
             this.tail().setNext(node);
@@ -75,11 +79,20 @@ class LinkedList {
     }
 
     prepend(val) {
-        const node = new LLNode(val, this.list)
+        let node;
+        if (this.isEmpty()) {
+            node = new LLNode(val, null);
+        } else {
+            node = new LLNode(val, this.list)
+        }
         this.list = node;
     }
 
     pop() {
+        if (this.isEmpty()) {
+            return;
+        }
+
         let searchNode = this.list;
 
         while (searchNode) {
