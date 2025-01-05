@@ -2,8 +2,15 @@ import BSTNode from "./BSTNode.js";
 
 class Tree {
     constructor(arr) {
-        const arrCopy = arr.slice();
+        const sortedArr = this.#sortArrAndRemoveDuplicates(arr);
 
+        this.root = this.buildTree(sortedArr);
+        
+        this.prettyPrint();
+    }
+
+    #sortArrAndRemoveDuplicates(arr) {
+        const arrCopy = arr.slice();
         let sortedArr = arrCopy.sort((a, b) => {
             if (a < b) {
                 return -1;
@@ -13,10 +20,20 @@ class Tree {
         });
 
         sortedArr = this.#removeDuplicates(sortedArr);
+        return sortedArr;
+    }
 
-        this.root = this.buildTree(sortedArr);
-        
-        this.prettyPrint(this.root);
+    #removeDuplicates(arr) {
+        const result = arr.slice();
+
+        for (let i = 0; i < result.length; i++) {
+            const num = result[i];
+            if (num === result[i-1] || num === result[i+1]) {
+                result.splice(i, 1);
+            }
+        }
+
+        return result;
     }
 
     buildTree(arr) {
@@ -30,8 +47,6 @@ class Tree {
 
         const arrCopy = arr.slice();
         const midIdx = start + Math.floor((end - start) / 2);
-        
-        // console.log('mid', arrCopy[midIdx]);
 
         const node = new BSTNode(arrCopy[midIdx]);
 
@@ -42,10 +57,7 @@ class Tree {
     }
 
     insert(num) {
-        console.log('this', this);
-        console.log('this.root', this.root);
         let searchNode = this.root;
-        console.log('searchNode', searchNode);
 
         while (!!searchNode && searchNode.left !== null || searchNode.right !== null) {
             if ((num < searchNode.data && !searchNode.left) || num > searchNode.data && !searchNode.right) {
@@ -64,8 +76,6 @@ class Tree {
                 throw new Error('Unexpected case reached in Tree.insert().');
             }
         }
-
-        console.log(searchNode);
 
         const newNode = new BSTNode(num);
 
@@ -175,6 +185,89 @@ class Tree {
         return treeRoot;
     }
 
+    levelOrder(cb) {
+        if (!cb || typeof cb !== 'function') {
+            throw new Error('Callback function is required :: Tree.levelOrder(cb).')
+        }
+
+        // Create a Queue
+        this.q = [];
+        this.q.push({ node: this.root });
+
+        let searchNode;
+
+        while (this.q.length > 0) {
+            // Pull the first item off the Queue
+            searchNode = this.q.shift().node;
+
+            cb(searchNode);
+
+            if (!!searchNode.left) {
+                this.q.push({ node: searchNode.left });
+            }
+
+            if (!!searchNode.right) {
+                this.q.push({ node: searchNode.right });
+            }
+        }
+    }
+
+    preOrder(cb) {
+        if (!cb || typeof cb !== 'function') {
+            throw new Error('Callback function is required :: Tree.preOrder(cb).')
+        }
+
+        this.#preOrderRec(this.root, cb);
+    }
+
+    #preOrderRec(node, cb) {
+        if (node === null) {
+            return null;
+        }
+
+        cb(node);
+        this.#preOrderRec(node.left, cb);
+        this.#preOrderRec(node.right, cb);
+    }
+
+    inOrder(cb) {
+        if (!cb || typeof cb !== 'function') {
+            throw new Error('Callback function is required :: Tree.inOrder(cb).')
+        }
+
+        this.#inOrderRec(this.root, cb);
+    }
+
+    #inOrderRec(node, cb) {
+        if (node === null) {
+            return null;
+        }
+
+        this.#inOrderRec(node.left, cb);   
+        cb(node);
+        this.#inOrderRec(node.right, cb);
+    }
+
+
+    postOrder(cb) {
+        if (!cb || typeof cb !== 'function') {
+            throw new Error('Callback function is required :: Tree.postOrder(cb).')
+        }
+
+        this.#postOrderRec(this.root, cb);
+    }
+
+    #postOrderRec(node, cb) {
+        if (node === null) {
+            return null;
+        }
+
+        this.#postOrderRec(node.left, cb);   
+        this.#postOrderRec(node.right, cb);
+        cb(node);
+    }
+
+
     find(num) {
         // return this.#findBreadthFirst(num);
         return this.#findDepthFirst(num);
@@ -204,15 +297,14 @@ class Tree {
             }
         }
 
-        return false;
+        return null;
     }
 
     #findDepthFirst(num) {
         return this.#findDepthFirstRec(this.root, num);
     }
 
-    #findDepthFirstRec(node, num) {
-        // console.log('Node:', !!node ? node.data : null);
+    #findDepthFirstRec(node, num) {;
         if (node === null) {
             return null;
         }
@@ -236,30 +328,151 @@ class Tree {
         return false;
     }
 
-    #removeDuplicates(arr) {
-        const result = arr.slice();
+    // Uses breadth-first traversal to track height as it follows every
+        // path until it finds a leaf node, at which point
+        // it adds the height re: that leaf node to `heightsArray`,
+        // then returns the highest height in `heightsArray`
+    height(node) {
+        if (!node.left && !node.right) {
+            // Is leaf.
+            return 0;
+        }
+        
+        // Create a Queue
+        this.q = [];
+        this.q.push({ node: node, height: 0 });
+        
+        let heightsArray = [];
+        let searchObj;
+        let searchNode;
 
-        for (let i = 0; i < result.length; i++) {
-            const num = result[i];
-            if (num === result[i-1] || num === result[i+1]) {
-                result.splice(i, 1);
+        while (this.q.length > 0) {
+            // Pull the first item off the Queue
+            searchObj = this.q.shift();
+            searchNode = searchObj.node;
+
+            if (!!searchNode.left) {
+                this.q.push({ node: searchNode.left, height: searchObj.height + 1 });
+            }
+
+            if (!!searchNode.right) {
+                this.q.push({ node: searchNode.right, height: searchObj.height + 1 });
+            }
+
+            if (!searchNode.left && !searchNode.right) {
+                // Found a leaf node, push its `height` to `heightsArray`
+                heightsArray.push(searchObj.height);
             }
         }
 
-        return result;
+        // Return highest value from `heightsArray`
+        heightsArray.sort();
+        return heightsArray.pop();
+    }
+
+    depth(depthNode) {
+        // Create a Queue
+        this.q = [];
+        this.q.push({ node: this.root, depth: 0 });
+
+        let searchObj;
+
+        while (this.q.length > 0) {
+            // Pull the first item off the Queue
+            searchObj = this.q.shift();
+
+            if (searchObj.node === depthNode) {
+                return searchObj.depth;
+            }
+
+            if (!!searchObj.node.left) {
+                this.q.push({ node: searchObj.node.left, depth: searchObj.depth + 1 });
+            }
+
+            if (!!searchObj.node.right) {
+                this.q.push({ node: searchObj.node.right, depth: searchObj.depth + 1 });
+            }
+        }
+
+        return null;
+    }
+
+
+    // Uses breadth-first traversal to push every value in
+        // the tree to an array and returns that array
+    values() {
+        // Create a Queue
+        this.q = [];
+        this.q.push({ node: this.root });
+
+        const valuesArray = [];
+        let searchNode;
+
+        while (this.q.length > 0) {
+            // Pull the first item off the Queue
+            searchNode = this.q.shift().node;
+
+            valuesArray.push(searchNode.data);
+
+            if (!!searchNode.left) {
+                this.q.push({ node: searchNode.left });
+            }
+
+            if (!!searchNode.right) {
+                this.q.push({ node: searchNode.right });
+            }
+        }
+
+        return valuesArray;
+    }
+
+    isBalanced() {
+        // TODO
+
+        const leftHeight = this.root.left ? this.height(this.root.left) : 0;
+        const rightHeight = this.root.right ? this.height(this.root.right) : 0;
+
+        if (leftHeight > rightHeight+1 || leftHeight < rightHeight-1) {
+            return false;
+        }
+
+        return true;
+    }
+
+
+    rebalance() {
+        // Skip rebalancing if not needed
+        if (this.isBalanced()) {
+            return false;
+        }
+        const valuesArr = this.values();
+        const sortedArr = this.#sortArrAndRemoveDuplicates(valuesArr);
+        this.root = this.buildTree(sortedArr);
+        return true;
+    }
+
+
+
+
+    // ---------------------------------------------
+
+    // ------------- CONSOLE PRINTING --------------
+
+    prettyPrint() {
+        this.#prettyPrint(this.root);
     }
 
     // This function provided by The Odin Project
-    prettyPrint(node, prefix = "", isLeft = true) {
+    #prettyPrint(node, prefix = "", isLeft = true) {
         if (node === null) {
             return;
         }
         if (node.right !== null) {
-            this.prettyPrint(node.right, `${prefix}${isLeft ? "│   " : "    "}`, false);
+            this.#prettyPrint(node.right, `${prefix}${isLeft ? "│   " : "    "}`, false);
         }
         console.log(`${prefix}${isLeft ? "└── " : "┌── "}${node.data}`);
         if (node.left !== null) {
-            this.prettyPrint(node.left, `${prefix}${isLeft ? "    " : "│   "}`, true);
+            this.#prettyPrint(node.left, `${prefix}${isLeft ? "    " : "│   "}`, true);
         }
     }
 }

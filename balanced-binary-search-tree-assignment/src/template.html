@@ -9,10 +9,30 @@
     <body>
         <h1>The Odin Project - Balanced Binary Search Tree Assignment</h1>
         <p>All the magic is in the console.</p>
-        <p>Create a new balanced BST with:</p>
-        <pre>new Tree([number, number, .... ])</pre>
-        <p>And see the result printed in the console. Which will also show the "pretty printed" results of:</p>
-        <pre>new Tree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324])</pre>
-        <p>The numbers will be sorted, and duplicates removed (as per the assignment spec).</p>
+        <p>The console will initially show the "pretty printed" results of:</p>
+        <pre>
+window.tree = new Tree(randArrBelow100(23)); // randArrBelow100(count) returns `count` numbers below 100</pre>
+        <p>The provided array of numbers will have duplicate numbers removed (as per the assignment spec).</p>
+        <br/>
+        <p>Create a new Balanced Binary Search Tree with:</p>
+        <pre>new Tree([number, number, .... ]);</pre>
+        <p>And see the results "pretty printed" in the console by calling</p>
+        <pre>Tree.prettyPrint();</pre>
+        <p>Other available functions for the `Tree` class</p>
+        <ul>
+            <li>insert(num) - inserts the given value (may unbalance tree)</li>
+            <li>deleteItem(num) - delete the given value from the tree, rearranging any children as needed</li>
+            <li>find(num) - returns the node with the given `num`, or null if not found</li>
+            <li>levelOrder(callbackFunc) - runs `callbackFunc(node)` on every node in "level order", or breadth-first</li>
+            <li>inOrder(callbackFunc) - runs `callbackFunc(node)` on every node via depth-first "in order" sequence (left, root, right) </li>
+            <li>preOrder(callbackFunc) - runs `callbackFunc(node)` on every node via depth-first "pre order" sequence (root, left, right) </li>
+            <li>postnOrder(callbackFunc) - runs `callbackFunc(node)` on every node via depth-first "post order" sequence (left, right, root)</li>
+            <li>height(node) - returns the height of a given node (furthest distance to a descendant "leaf" node)</li>
+            <li>depth(node) - returns the depth of a given node (distance from the tree's "root" node)</li>
+            <li>isBalanced() - returns true if the tree is balanced, false if not</li>
+            <li>rebalance() - rebalances the tree, returns true if the tree was rebalanced, returns false if it was already balanced</li>
+            <li>values() - returns all values in the tree, in breadth-first "level order"</li>
+        </ul>
+
 </body>
 </html>
