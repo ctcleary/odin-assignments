@@ -14,3 +14,24 @@ body {
 li {
     margin-bottom: 0.5rem;
 }
+
+
+.board {
+    display: grid;
+    grid-template-columns: repeat(9, 3.5rem);
+    grid-template-rows: repeat(9, 3.5rem);
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.board div.number {
+    justify-self: center;
+    align-self: center;
+}
+.board div:not(.number):nth-child( odd ) {
+    background: black;
+}
+
+.board div:not(.number) {
+    border: thin solid black;
+}
