@@ -1,0 +1,16 @@
+*, *:before, *:after {
+    box-sizing: border-box;
+}
+
+
+body {
+    background-color: white;
+    margin: 0;
+    font-family: system-ui, sans-serif;
+
+    padding: 3rem;
+}
+
+li {
+    margin-bottom: 0.5rem;
+}
