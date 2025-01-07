@@ -9,6 +9,22 @@ body {
     font-family: system-ui, sans-serif;
 }
 
+@media (width <= 500px) {
+    body {
+        margin: 1rem;
+        max-width: 90vw;
+    }
+
+    body h1 {
+        margin-top: 0;
+    }
+
+    pre {
+        overflow-x: scroll;
+        padding-bottom: 1rem;
+    }
+}
+
 p {
     max-width: 80ch;
 }

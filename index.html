@@ -8,18 +8,41 @@
     <style>
         body {
             font-family: system-ui, sans-serif;
-            padding: 3rem;
+            margin: 3rem;
+        }
+
+        @media (width <= 500px) {
+            body {
+                margin: 1rem;
+                max-width: 90vw;
+            }
+
+            body h1 {
+                margin-top: 0;
+            }
+
+            pre {
+                overflow-x: scroll;
+                padding-bottom: 1rem;
+            }
         }
 
         #top-wrapper {
-            padding: 1rem 3rem;
+            /* padding: 1rem 3rem; */
             font-size: 1.15rem;
         }
         .intro {
             max-width: 70ch;
         }
-        li {
+        ul>li>ul,
+        .toc {
             margin-bottom: 0.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: thin solid #ccc;
+        }
+        .toc {
+            border-top: thin solid #ccc;
+            padding-top: 0.25rem;
         }
     </style>
 </head>
@@ -30,7 +53,7 @@
         <p class="intro">These are assignments from the well-respected Full Stack Web Developer training curriculum, "The Odin Project".</p>
         <p class="intro">Please note: On the topic of UX, I have great instincts and well-researched perspectives, but I am <em>not</em> a visual designer -- I am also slightly color blind. So please don't hold the <em>visual designs</em> of these programming assignments against me. As you can see from the first couple assignments, I can create a pixel-perfect match to a design reference if given one.</p>
         
-        <h2>Table of Contents</h2>
+        <h2 class="toc">Table of Contents</h2>
         <ul>
             <li>
                 <a href="./form-assignment/">HTML/CSS - Form Assignment</a>
