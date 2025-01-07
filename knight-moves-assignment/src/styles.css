@@ -5,10 +5,9 @@
 
 body {
     background-color: white;
-    margin: 0;
     font-family: system-ui, sans-serif;
 
-    padding: 3rem;
+    margin: 3rem;
 }
 
 @media (width <= 500px) {
