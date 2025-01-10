@@ -33,19 +33,26 @@ class View {
         for (let i = 0; i <= sizeXY[1]; i++) {
             const yRow = this.giveDiv([ 'y-row' ], [ ['y', i ]]);
             for (let j = 0; j <= sizeXY[0]; j++) {
-                const xyDiv = this.giveDiv([ 'cell' ], [ ['x', j ], ['y', i ] ]);
+                const xyDiv = this.giveDiv([ ], [ ['x', j ], ['y', i ] ]);
 
                 if (i === 0 && j === 0) { // Dead cell, top left
-                    xyDiv.innerHTML = '/';
-                    xyDiv.classList.add('dead');
+                    // xyDiv.innerHTML = '/';
+                    xyDiv.classList.add('dead-cell');
                 } else if (i === 0) { // First row of numbers
                     xyDiv.innerHTML = j;
                     xyDiv.classList.add('number-cell');
                 } else if (j === 0) { // First column of numbers
                     xyDiv.innerHTML = i;
                     xyDiv.classList.add('number-cell');
-                } 
-                // console.log(xyDiv);
+                } else {
+                    xyDiv.classList.add('cell');
+                    const span = document.createElement('span');
+                    span.classList.add('coords')
+                    span.innerHTML = `${j},${i}`
+                    xyDiv.appendChild(span);
+                }
+
+                // xyDiv.after(span);
 
                 yRow.appendChild(xyDiv);
             }
