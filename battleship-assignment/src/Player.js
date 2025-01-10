@@ -1,5 +1,7 @@
 class Player {
-    constructor(ownGameboard, oppGameboard) {
+    constructor(playerStr, ownGameboard, oppGameboard) {
+        this.player = playerStr;
+        
         this.ownGB = ownGameboard;
         this.oppGB = oppGameboard;
     }

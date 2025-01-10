@@ -10,7 +10,20 @@
     <div id="wrapper">
         <h1>The Odin Project - Battleship Game Assignment</h1>
 
+        <div id="gameboard-container">
+
+        </div>
     </div>
-    <script src="main.js" type="module"></script>
+    <script>
+        const render = () => {
+            const view = new window.View();
+
+            this.gameboardContainer = document.getElementById('gameboard-container');
+            this.gameboardContainer.innerHTML = '';
+            this.gameboardContainer.appendChild(view.render());
+        }
+    </script>
+    <script src="main.js" type="module" onload="render()"></script>
+    
 </body>
 </html>

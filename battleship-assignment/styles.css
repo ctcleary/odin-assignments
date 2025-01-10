@@ -5,3 +5,38 @@
 *, *:before, *:after {
     box-sizing: border-box;
 }
+
+body {
+    margin: 0;
+    padding: 1rem;
+    font-family: system-ui, sans-serif;
+}
+
+.gameboard {
+    display: grid;
+    grid-template-rows: repeat(21, 2rem);
+}
+
+.y-row {
+    display: grid;
+    grid-template-columns: repeat(21, 2rem);
+    justify-items: stretch;
+    align-items: stretch;
+}
+.cell {
+    border: thin solid #ccc;
+    background: steelblue;
+    display: inline-block;
+}
+
+.number-cell {
+    display: grid;
+    justify-content: center;
+    align-content: center;
+    user-select: none;
+}
+
+.cell:not(.number-cell):not(.dead):hover {
+    background: blue;
+    cursor: pointer;
+}

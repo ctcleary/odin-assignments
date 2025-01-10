@@ -6,17 +6,27 @@ const PLAYER = {
     TWO: 'playerTwo',
 };
 
+// Game is a "mediator"
 class Game {
     constructor(sizeXY = [20,20]) {
         this.size = sizeXY;
 
         this.gameboards = {
-            playerOne : new Gameboard(sizeXY, PLAYER.ONE),
-            playerTwo : new Gameboard(sizeXY, PLAYER.TWO),
+            [PLAYER.ONE] : new Gameboard(sizeXY, PLAYER.ONE),
+            [PLAYER.TWO] : new Gameboard(sizeXY, PLAYER.TWO),
         };
         
-        this.playerOne = new Player(this.gameboards.playerOne, this.gameboards.playerTwo);
-        this.playerTwo = new Player(this.gameboards.playerTwo, this.gameboards.playerOne);
+        this.players = {
+            [PLAYER.ONE] : new Player(PLAYER.ONE, this.gameboards[PLAYER.ONE], this.gameboards[PLAYER.TWO]),
+            [PLAYER.TWO] : new Player(PLAYER.TWO, this.gameboards[PLAYER.TWO], this.gameboards[PLAYER.ONE]),
+        };
+
+        this.activePlayer = PLAYER.ONE;
+    }
+
+    switchActivePlayer() {
+        this.activePlayer = (this.activePlayer === PLAYER.ONE) ? PLAYER.TWO : PLAYER.ONE;
+        return this.activePlayer;
     }
 }
 
