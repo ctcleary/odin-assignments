@@ -1,38 +1,76 @@
 class Ship {
-    constructor(length = 1, x = 0, y = 0, isHori = true) {
+    constructor(length = 1, xy = [0,0], isHori = true) {
         this.length = length;
-        this.hitCt = 0;
+        this.hits = [];
 
-        this.coords = this.determineCoords(length, x, y, isHori);
+        this.coords = this.determineCoords(length, xy, isHori);
     }
 
-    // Returns true if the ship is sunk.
-    hit() {
-        if (this.hitCt >= this.length) {
-            throw new Error('Ship.hit() called on a Ship that is already sunk.');
+    // Returns true if xy hits and the ship is sunk.
+    hit(xy) {
+        if (this.getHitCt() >= this.length) {
+            return true;
         }
 
-        this.hitCt += 1;
+        if (!xy) {
+            throw new Error('Ship.hit() was given invalid coordinates.');
+        }
+
+        if (this.areShipCoords(xy)) {
+            this.hits.push(xy);
+        }
 
         return this.isSunk();
     }
 
+    areShipCoords(xy) {
+        const foundHit = this.coords.find((coord) => {
+            return coord[0] === xy[0] && coord[1] === xy[1];
+        });
+
+        return !!foundHit;
+    }
+
+    getHits() {
+        return this.hits.slice();
+    }
+
+    getHitCt() {
+        return this.hits.length;
+    }
+
     isSunk() {
-        return this.hitCt >= this.length;
+        // This relies on hit() functioning properly to determine invalid coords.
+        return this.hits.length >= this.length;
     }
 
     // x,y is always the START node of the array
-    determineCoords(length, x, y, isHori) {
+    determineCoords(length, xy, isHori) {
         const coords = [];
 
         for (let i = 0; i < length; i++) {
-            const currX = isHori ? x + i : x;
-            const currY = !isHori? y + i : y;
+            const currX = isHori ? xy[0] + i : xy[0];
+            const currY = !isHori? xy[1] + i : xy[1];
 
             coords.push([currX, currY]);
         }
 
         return coords;
+    }
+
+    // setGameboard(gb) {
+    //     this.gb = gb;
+    //     this.gb.addEventListener('hit', this.hitListener);
+    // }
+
+    hitListener(e) {
+        const hitCoords = e.detail.xy;
+        if (this.areShipCoords(hitCoords)) {
+            this.hit(hitCoords);
+            return this.getHits();
+        }
+        
+        return false;
     }
 }
 
