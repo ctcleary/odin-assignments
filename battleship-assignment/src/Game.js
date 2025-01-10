@@ -1,4 +1,5 @@
 import Gameboard from "./Gameboard.js";
+import MessageBus from "./MessageBus.js";
 import Player from "./Player.js";
 
 const PLAYER = {
@@ -10,6 +11,7 @@ const PLAYER = {
 class Game {
     constructor(sizeXY = [20,20]) {
         this.size = sizeXY;
+        this.bus = new MessageBus();
 
         this.gameboards = {
             [PLAYER.ONE] : new Gameboard(sizeXY, PLAYER.ONE),

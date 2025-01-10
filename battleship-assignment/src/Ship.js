@@ -1,9 +1,11 @@
 class Ship {
-    constructor(length = 1, xy = [0,0], isHori = true) {
+    constructor(length = 1, xy = [-1,-1], isHori = true) {
         this.length = length;
         this.hits = [];
 
-        this.coords = this.determineCoords(length, xy, isHori);
+        this.shipCoords = this.determineCoords(length, xy, isHori);
+
+        this.representation = this.setRepresentation(length);
     }
 
     // Returns true if xy hits and the ship is sunk.
@@ -18,13 +20,14 @@ class Ship {
 
         if (this.areShipCoords(xy)) {
             this.hits.push(xy);
+            return true;
         }
 
-        return this.isSunk();
+        return false;
     }
 
     areShipCoords(xy) {
-        const foundHit = this.coords.find((coord) => {
+        const foundHit = this.shipCoords.find((coord) => {
             return coord[0] === xy[0] && coord[1] === xy[1];
         });
 
@@ -56,6 +59,27 @@ class Ship {
         }
 
         return coords;
+    }
+
+    setRepresentation(length) {
+        let representation = '';
+        switch(length) {
+            case 4:
+                representation = '<==}';
+                break;
+            case 3:
+                representation = '<=}';
+                break;
+            case 2:
+                representation = '<}';
+                break;
+            case 1:
+            default:
+                representation = '0';
+                break;
+        }
+        
+        return representation;
     }
 
     // setGameboard(gb) {

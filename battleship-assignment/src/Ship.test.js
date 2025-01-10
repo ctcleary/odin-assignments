@@ -4,7 +4,7 @@ import Ship from "./Ship.js";
 it('ship has correct default properties', () => {
     const ship = new Ship();
     expect(ship.length).toBe(1);
-    expect(ship.coords).toEqual([ [0,0] ]);
+    expect(ship.shipCoords).toEqual([ [-1,-1] ]);
     expect(ship.hits).toEqual([]);
 })
 
@@ -55,10 +55,11 @@ it('Ship.hit(xy) correctly registers valid hits', () => {
     expect(ship.getHits()).toEqual([ [2,4], [2,2] ]);
 })
 
-it('Ship.hit(xy) returns true if ship is sunk after the hit', () => {
+it('Ship.hit(xy) returns true if a hit lands on one of its coords', () => {
     const ship = new Ship(2, [1,1], false);
 
-    expect(ship.hit([1,1])).toBe(false);
+    expect(ship.hit([1,1])).toBe(true);
+    expect(ship.hit([12, 16])).toBe(false);
     expect(ship.hit([1,2])).toBe(true);
 })
 
@@ -78,7 +79,7 @@ it('Ship.isSunk() returns correct result', () => {
     shipUnsunk.hit([2,0]);
     expect(shipUnsunk.isSunk()).toBe(false);
 
-    const ship = new Ship(2);
+    const ship = new Ship(2, [0,0], true);
     ship.hit([0,0]);
     ship.hit([1,0]);
     expect(ship.isSunk()).toBe(true);
@@ -91,31 +92,45 @@ it('Ship.isSunk() returns correct result', () => {
     expect(ship2.isSunk()).toBe(true);
 })
 
-it('Ship.hitListener(event) correctly reacts to "hit" CustomEvents', () => {
-    const ship = new Ship(3, [1,1], false);
-    const spy = jest.spyOn(ship, 'hitListener');
+it('Ship.setRepresentation(length) set correct representation', () => {
+    const s4 = new Ship(4);
+    expect(s4.representation.length).toBe(4);
 
-    const ceMiss = new CustomEvent('hit', { detail: { xy: [5,5] }});
-    ship.hitListener(ceMiss);
+    const s3 = new Ship(3);
+    expect(s3.representation.length).toBe(3);
 
-    expect(spy.mock.results[0].value).toEqual(false);
-    expect(ship.getHits()).toEqual([]);
+    const s2 = new Ship(2);
+    expect(s2.representation.length).toBe(2);
 
-    const ceHit = new CustomEvent('hit', { detail: { xy: [1,3] }});
-    ship.hitListener(ceHit);
-
-    expect(spy.mock.results[1].value).toEqual([ [1,3] ]);
-    expect(ship.getHits()).toEqual([ [1,3] ]);
-
-    const ceMiss2 = new CustomEvent('hit', { detail: { xy: [12,7] }});
-    ship.hitListener(ceMiss2);
-
-    expect(spy.mock.results[2].value).toEqual(false);
-    expect(ship.getHits()).toEqual([ [1,3] ]);
-    
-    const ceHit2 = new CustomEvent('hit', { detail: { xy: [1,1] }});
-    ship.hitListener(ceHit2);
-
-    expect(spy.mock.results[3].value).toEqual([ [1,3], [1,1] ]);
-    expect(ship.getHits()).toEqual([ [1,3], [1,1] ]);
+    const s1 = new Ship(1);
+    expect(s1.representation.length).toBe(1);
 })
+
+// it('Ship.hitListener(event) correctly reacts to "hit" CustomEvents', () => {
+//     const ship = new Ship(3, [1,1], false);
+//     const spy = jest.spyOn(ship, 'hitListener');
+
+//     const ceMiss = new CustomEvent('hit', { detail: { xy: [5,5] }});
+//     ship.hitListener(ceMiss);
+
+//     expect(spy.mock.results[0].value).toEqual(false);
+//     expect(ship.getHits()).toEqual([]);
+
+//     const ceHit = new CustomEvent('hit', { detail: { xy: [1,3] }});
+//     ship.hitListener(ceHit);
+
+//     expect(spy.mock.results[1].value).toEqual([ [1,3] ]);
+//     expect(ship.getHits()).toEqual([ [1,3] ]);
+
+//     const ceMiss2 = new CustomEvent('hit', { detail: { xy: [12,7] }});
+//     ship.hitListener(ceMiss2);
+
+//     expect(spy.mock.results[2].value).toEqual(false);
+//     expect(ship.getHits()).toEqual([ [1,3] ]);
+    
+//     const ceHit2 = new CustomEvent('hit', { detail: { xy: [1,1] }});
+//     ship.hitListener(ceHit2);
+
+//     expect(spy.mock.results[3].value).toEqual([ [1,3], [1,1] ]);
+//     expect(ship.getHits()).toEqual([ [1,3], [1,1] ]);
+// })
