@@ -3,19 +3,24 @@ class Ship {
         this.length = length;
         this.hits = [];
 
+        // console.log('shipCoords', this.determineCoords(length, xy, isHori));
         this.shipCoords = this.determineCoords(length, xy, isHori);
 
         this.representation = this.setRepresentation(length);
     }
 
-    // Returns true if xy hits and the ship is sunk.
-    hit(xy) {
-        if (this.getHitCt() >= this.length) {
-            return true;
-        }
+    setBus(messageBus) {
+        this.bus = messageBus;
+    }
 
+    // Returns true if xy hits or the ship is sunk.
+    hit(xy) {
         if (!xy) {
             throw new Error('Ship.hit() was given invalid coordinates.');
+        }
+
+        if (this.getHitCt() >= this.length) {
+            return true;
         }
 
         if (this.areShipCoords(xy)) {
@@ -35,7 +40,7 @@ class Ship {
     }
 
     getHits() {
-        return this.hits.slice();
+        return this.hits;
     }
 
     getHitCt() {
@@ -45,6 +50,14 @@ class Ship {
     isSunk() {
         // This relies on hit() functioning properly to determine invalid coords.
         return this.hits.length >= this.length;
+    }
+
+    getShipCoords() {
+        return this.shipCoords;
+    }
+
+    setShipCoords(xy, isHori) {
+        this.shipCoords = this.determineCoords(this.length, xy, isHori);
     }
 
     // x,y is always the START node of the array
@@ -78,7 +91,7 @@ class Ship {
                 representation = '0';
                 break;
         }
-        
+
         return representation;
     }
 
@@ -87,15 +100,15 @@ class Ship {
     //     this.gb.addEventListener('hit', this.hitListener);
     // }
 
-    hitListener(e) {
-        const hitCoords = e.detail.xy;
-        if (this.areShipCoords(hitCoords)) {
-            this.hit(hitCoords);
-            return this.getHits();
-        }
+    // hitListener(e) {
+    //     const hitCoords = e.detail.xy;
+    //     if (this.areShipCoords(hitCoords)) {
+    //         this.hit(hitCoords);
+    //         return this.getHits();
+    //     }
         
-        return false;
-    }
+    //     return false;
+    // }
 }
 
 export default Ship;

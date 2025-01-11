@@ -22,27 +22,36 @@ class View {
     render(game) {
         const pOneGB = game.gameboards[PLAYER.ONE];
         const pTwoGB = game.gameboards[PLAYER.TWO];
+        
+        // game.switchActivePlayer();
 
         const result = this.giveDiv([ 'boards-container' ]);
+        // const screenOne = this.giveDiv([ 'screen' ]);
+        // const screenTwo = this.giveDiv([ 'screen' ]);
 
         const pOne = this.giveDivWithID('gameboard-' + pOneGB.player, ['gameboard-container'], { player: pOneGB.player });
         const headerOne = document.createElement('h2');
         headerOne.classList.add('header');
-        headerOne.innerHTML = 'YOUR BOARD';
+        headerOne.innerHTML = game.activePlayer === PLAYER.ONE ? 'YOUR BOARD' : 'OPPONENT BOARD';
         pOne.appendChild(headerOne);
 
         
         const pTwo = this.giveDivWithID('gameboard-' + pTwoGB.player, ['gameboard-container'], { player: pTwoGB.player });
         const headerTwo = document.createElement('h2');
         headerTwo.classList.add('header');
-        headerTwo.innerHTML = 'OPPONENT BOARD';
-        pTwo.appendChild(headerTwo)
+        headerTwo.innerHTML = game.activePlayer === PLAYER.TWO ? 'YOUR BOARD' : 'OPPONENT BOARD';
+        pTwo.appendChild(headerTwo);
+        
 
         pOne.appendChild(this.makeGameboardDOM(pOneGB));
         pTwo.appendChild(this.makeGameboardDOM(pTwoGB));
+        
+        // pOne.appendChild(screenOne);
+        // pTwo.appendChild(screenTwo);
 
         result.appendChild(pOne);
         result.appendChild(pTwo);
+        
         return result;
     }
 
@@ -66,8 +75,6 @@ class View {
         const result = this.giveDiv(['gameboard']);
         const sizeXY = gameboard.size;
         const hits = gameboard.getHits();
-
-
 
         for (let i = 0; i <= sizeXY[1]; i++) {
             const yRow = this.giveDiv([ 'y-row' ], [ ['y', i ]]);
@@ -109,6 +116,9 @@ class View {
             result.appendChild(yRow);
         }
 
+        const screen = this.giveDiv([ 'screen' ]);
+        result.appendChild(screen);
+        
         return result;
     }
 

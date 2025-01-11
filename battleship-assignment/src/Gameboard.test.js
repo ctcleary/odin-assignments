@@ -56,13 +56,22 @@ it('Gameboard correctly assesses Gameboard.isAlreadyHit(xy)', () => {
     expect(gb.isAlreadyHit([10,7])).toBe(true);
 })
 
-it('Gameboard.registerShip() correctly stores the ship', () => {
-    const gb = new Gameboard();
+// it('Gameboard.registerShip() correctly stores the ship', () => {
+//     const gb = new Gameboard();
     
-    gb.registerShip(4, [4,4], true);
-    expect(gb.getShips()[0]).not.toBeUndefined();
-    gb.registerShip(2, [10,8], false);
-    expect(gb.getShips()[1]).not.toBeUndefined();
+//     gb.registerShip(4, [4,4], true);
+//     expect(gb.getShips()[0]).not.toBeUndefined();
+//     gb.registerShip(2, [10,8], false);
+//     expect(gb.getShips()[1]).not.toBeUndefined();
+// })
+
+it('Gameboard.setShipCoords(args) correctly sets the ship coords', () => {
+    const gb = new Gameboard();
+
+    const ship21 = gb.getShips().find((shipObj) => { return shipObj.id === '2-1' }).ship;
+    expect(ship21.getShipCoords()).toEqual([ [-1,-1], [0, -1]])
+    gb.setShipCoords('2-1', [1,3], true);
+    expect(ship21.getShipCoords()).toEqual([ [1,3], [2,3] ]);
 })
 
 it('Gameboard correctly calls Gameboard.lose() when all ships are destroyed', () => {
@@ -70,24 +79,61 @@ it('Gameboard correctly calls Gameboard.lose() when all ships are destroyed', ()
 
     const loseSpy = jest.spyOn(gb, 'lose');
 
-    gb.registerShip(2, [3,3], false);
-    gb.registerShip(3, [10,4], false);
+    gb.setShipCoords('4-1', [1,1], true);
 
-    gb.receiveHit([3,3])
-    gb.receiveHit([3,4]);
+    gb.setShipCoords('3-1', [1,3], true);
+    gb.setShipCoords('3-2', [5,3], true);
 
-    gb.receiveHit([10,4]);
-    gb.receiveHit([10,5]);
-    gb.receiveHit([10,6]);
+    gb.setShipCoords('2-1', [1,6], true);
+    gb.setShipCoords('2-2', [4,6], true);
+    gb.setShipCoords('2-3', [7,6], true);
+
+    gb.setShipCoords('1-1', [1,8], true);
+    gb.setShipCoords('1-2', [3,8], true);
+    gb.setShipCoords('1-3', [5,8], true);
+    gb.setShipCoords('1-4', [7,8], true);
+
+    //4-1
+    gb.receiveHit([1,1]);
+    gb.receiveHit([2,1]);
+    gb.receiveHit([3,1]);
+    gb.receiveHit([4,1]);
+    //3-1
+    gb.receiveHit([1,3]);
+    gb.receiveHit([2,3]);
+    gb.receiveHit([3,3]);
+    //3-2
+    gb.receiveHit([5,3]);
+    gb.receiveHit([6,3]);
+    gb.receiveHit([7,3]);
+    //2-1
+    gb.receiveHit([1,6]);
+    gb.receiveHit([2,6]);
+    //2-2
+    gb.receiveHit([4,6]);
+    gb.receiveHit([5,6]);
+    gb.receiveHit([6,6]);
+    //2-3
+    gb.receiveHit([7,6]);
+    gb.receiveHit([8,6]);
+
+    //1s
+    gb.receiveHit([1,8]);
+    gb.receiveHit([3,8]);
+    gb.receiveHit([5,8]);
+    gb.receiveHit([7,8]);
+
 
     expect(loseSpy).toHaveBeenCalled();
 })
 
 it('Gameboard.hit(xy) returns true if a ship is hit', () => {
     const gb = new Gameboard();
-    gb.registerShip(3, [5,5], false);
-    let wasHit = gb.receiveHit([7,7]);
+
+    gb.setShipCoords('4-1', [2,2], false);
+
+    let wasHit = gb.receiveHit([5,5]);
     expect(wasHit).toBe(false);
-    wasHit = gb.receiveHit([5,5]);
+    wasHit = gb.receiveHit([2,2]);
     expect(wasHit).toBe(true);
 })

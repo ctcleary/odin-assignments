@@ -7,11 +7,17 @@ import PANE from "./View.js";
 class Game {
     constructor(sizeXY = [10,10]) {
         this.size = sizeXY;
+        
+        this.bus = new MessageBus();
+        this.registerSubscribers();
 
         this.gameboards = {
             [PLAYER.ONE] : new Gameboard(sizeXY, PLAYER.ONE),
             [PLAYER.TWO] : new Gameboard(sizeXY, PLAYER.TWO),
         };
+
+        this.gameboards[PLAYER.ONE].setBus(this.bus);
+        this.gameboards[PLAYER.TWO].setBus(this.bus);
         
         this.players = {
             [PLAYER.ONE] : new Player(PLAYER.ONE, this.gameboards[PLAYER.ONE], this.gameboards[PLAYER.TWO]),
@@ -20,8 +26,6 @@ class Game {
 
         this.activePlayer = PLAYER.ONE;
         
-        this.bus = new MessageBus();
-        this.registerSubscribers();
     }
 
     switchActivePlayer() {
@@ -50,7 +54,6 @@ class Game {
         }
         if (attackedGB && !attackedGB.isAlreadyHit(data.xy)) {
             const wasShipHit = attackedGB.receiveHit(data.xy);
-
         }
     }
 }

@@ -73,15 +73,15 @@ it('Ship.isSunk() returns correct bool', () => {
 })
 
 it('Ship.isSunk() returns correct result', () => {
-    const shipUnsunk = new Ship(4, [0,0], true);
-    shipUnsunk.hit([0,0]);
-    shipUnsunk.hit([1,0]);
-    shipUnsunk.hit([2,0]);
+    const shipUnsunk = new Ship(4, [1,1], true);
+    shipUnsunk.hit([1,1]);
+    shipUnsunk.hit([2,1]);
+    shipUnsunk.hit([3,1]);
     expect(shipUnsunk.isSunk()).toBe(false);
 
-    const ship = new Ship(2, [0,0], true);
-    ship.hit([0,0]);
-    ship.hit([1,0]);
+    const ship = new Ship(2, [1,1], true);
+    ship.hit([1,1]);
+    ship.hit([2,1]);
     expect(ship.isSunk()).toBe(true);
 
     const ship2 = new Ship(4, [1,1], false);

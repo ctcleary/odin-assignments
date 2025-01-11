@@ -12,12 +12,19 @@ body {
     font-family: system-ui, sans-serif;
 }
 
+#wrapper {
+    text-align: center;
+}
+
 .gameboard {
+    position: relative;
     display: grid;
-    grid-template-rows: 2.5rem repeat(11, 2.5rem);
+    grid-template-rows: repeat(10, 2.5rem);
     width: 27.5rem;
+    overflow:visible;
 }
 .gameboard-container {
+    position: relative;
     display: inline-block;
 }
 .gameboard-container:first-child {
@@ -27,7 +34,23 @@ body {
 .gameboard-container .header {
     margin: 0;
     text-align: center;
+    margin-bottom: 1rem;
 }
+
+.screen {
+    display: inline-block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    user-select: none;
+    pointer-events: none;
+    width: 100%;
+    height: 100%;
+    background: black;
+    opacity: 0;
+    box-shadow: 0px 0px 9px black;
+}
+
 
 .y-row {
     display: grid;
