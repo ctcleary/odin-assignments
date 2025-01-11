@@ -11,15 +11,15 @@ it('Player constructor correctly takes playerID and two Gameboard objects', () =
     expect(player.oppGB).toEqual(oppGB);
 })
 
-it('Player.attack(xy) correctly calls Gameboard.receiveAttack(xy)', () => {
+it('Player.attack(xy) correctly calls Gameboard.receiveHit(xy)', () => {
     const ownGB = new Gameboard();
     const oppGB = new Gameboard();
     
-    const spy = jest.spyOn(oppGB, 'receiveAttack');
+    const spy = jest.spyOn(oppGB, 'receiveHit');
 
     const player = new Player(PLAYER.ONE, ownGB, oppGB);
-    player.attack([13, 6]);
+    player.attack([10, 6]);
 
     // Is this testing a side effect and therefore not great?
-    expect(spy).toHaveBeenCalledWith([13, 6]);
+    expect(spy).toHaveBeenCalledWith([10, 6]);
 })

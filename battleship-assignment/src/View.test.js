@@ -3,6 +3,7 @@
  */
 
 import View from "./View.js";
+import Gameboard from "./Gameboard.js";
 
 it('View.giveDiv(args)/giveDiveWithID(args) returns the correct div', () => {
     const v = new View();
@@ -25,22 +26,21 @@ it('View.giveDiv(args)/giveDiveWithID(args) returns the correct div', () => {
     expect(div2.dataset.hit).toBe('false');
 });
 
-it('View.makeGameboard() returns the correct dom arrangement', () => {
+it('View.makeGameboardDOM() returns the correct dom arrangement', () => {
     const v = new View();
+    const gameboard = new Gameboard();
+    const gb = v.makeGameboardDOM(gameboard);
 
-    const sizeXY = [20,20];
-    const gb = v.makeGameboard(sizeXY);
-
-    // Must account for NUMBER col / row;
-    // 20 yRows + number row
-    expect(gb.children.length).toBe(21);
+    // Must account for NUMBER col / row; +1
+    // and HEADER row +1
+    expect(gb.children.length).toBe(11);
     // Text random yRow children counts to check x-count + 1 for number column
-    expect(gb.children[3].children.length).toBe(21);
-    expect(gb.children[11].children.length).toBe(21);
-    expect(gb.children[18].children.length).toBe(21);
+    expect(gb.children[3].children.length).toBe(11);
+    expect(gb.children[6].children.length).toBe(11);
+    expect(gb.children[8].children.length).toBe(11);
 
     // Check for correct numbering row/col
-    expect(gb.children[0].children[4].textContent).toBe('4') // top x roy
-    expect(gb.children[0].children[12].textContent).toBe('12') 
+    expect(gb.children[0].children[4].textContent).toBe('4') // top x row
+    expect(gb.children[0].children[10].textContent).toBe('10') // top x row
     expect(gb.children[7].children[0].textContent).toBe('7') // left y col 
 })

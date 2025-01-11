@@ -1,22 +1,49 @@
-const PANES = {
+import { PLAYER } from "./Player.js";
+
+const PANE = {
     PREGAME : 'pregame',
 
     SCREEN : 'screen',
 
-    PLAYER_ONE_TURN : 'playerOneTurn',
-    PLAYER_TWO_TURN : 'playerTwoTurn',
+    PLAYER_ONE_TURN : 'playerOne-turn',
+    PLAYER_TWO_TURN : 'playerTwo-turn',
 
     POSTGAME : 'postgame',
 }
 
 class View {
-    constructor() {
-        this.pane = PANES.PREGAME;
+    constructor(messageBus) {
+        this.bus = messageBus;
+        this.pane = PANE.PREGAME;
         // this.render();
     }
 
-    render() {
-        return this.makeGameboard();
+    // Returns the top DOM Node.
+    render(game) {
+        const pOneGB = game.gameboards[PLAYER.ONE];
+        const pTwoGB = game.gameboards[PLAYER.TWO];
+
+        const result = this.giveDiv([ 'boards-container' ]);
+
+        const pOne = this.giveDivWithID('gameboard-' + pOneGB.player, ['gameboard-container'], { player: pOneGB.player });
+        const headerOne = document.createElement('h2');
+        headerOne.classList.add('header');
+        headerOne.innerHTML = 'YOUR BOARD';
+        pOne.appendChild(headerOne);
+
+        
+        const pTwo = this.giveDivWithID('gameboard-' + pTwoGB.player, ['gameboard-container'], { player: pTwoGB.player });
+        const headerTwo = document.createElement('h2');
+        headerTwo.classList.add('header');
+        headerTwo.innerHTML = 'OPPONENT BOARD';
+        pTwo.appendChild(headerTwo)
+
+        pOne.appendChild(this.makeGameboardDOM(pOneGB));
+        pTwo.appendChild(this.makeGameboardDOM(pTwoGB));
+
+        result.appendChild(pOne);
+        result.appendChild(pTwo);
+        return result;
     }
 
     renderPlayerBoard() {
@@ -27,8 +54,20 @@ class View {
 
     }
 
-    makeGameboard(sizeXY = [20,20]) {
+    doHit(evt) {
+        const div = evt.target;
+        const xy = [div.dataset.x, div.dataset.y];
+
+        console.log('publish hit', xy);
+        this.bus.publish('view-hit', { xy: xy, pane: this.pane, attackedPlayer: PLAYER.TWO });
+    }
+
+    makeGameboardDOM(gameboard) {
         const result = this.giveDiv(['gameboard']);
+        const sizeXY = gameboard.size;
+        const hits = gameboard.getHits();
+
+
 
         for (let i = 0; i <= sizeXY[1]; i++) {
             const yRow = this.giveDiv([ 'y-row' ], [ ['y', i ]]);
@@ -36,7 +75,6 @@ class View {
                 const xyDiv = this.giveDiv([ ], [ ['x', j ], ['y', i ] ]);
 
                 if (i === 0 && j === 0) { // Dead cell, top left
-                    // xyDiv.innerHTML = '/';
                     xyDiv.classList.add('dead-cell');
                 } else if (i === 0) { // First row of numbers
                     xyDiv.innerHTML = j;
@@ -44,16 +82,28 @@ class View {
                 } else if (j === 0) { // First column of numbers
                     xyDiv.innerHTML = i;
                     xyDiv.classList.add('number-cell');
-                } else {
+                } else { // Regular cell
                     xyDiv.classList.add('cell');
+
                     const span = document.createElement('span');
-                    span.classList.add('coords')
-                    span.innerHTML = `${j},${i}`
+
+                    const isHit = hits.find((hit) => {
+                        return hit.xy[0] === j && hit.xy[1] === i;
+                    });
+                    if (isHit) {
+                        if (isHit.shipHit) {
+                            xyDiv.classList.add('ship-hit');
+                        }
+                        xyDiv.classList.add('hit');
+                        span.classList.add('hit-marker');
+                        span.innerHTML = 'X';
+                    } else {
+                        span.classList.add('coords')
+                        span.innerHTML = `${j},${i}`
+                        xyDiv.addEventListener('click', (e) => { this.doHit(e); });
+                    }
                     xyDiv.appendChild(span);
                 }
-
-                // xyDiv.after(span);
-
                 yRow.appendChild(xyDiv);
             }
             result.appendChild(yRow);
@@ -91,7 +141,8 @@ class View {
         }
 
         
-        if (!div.dataset['x'] || (div.dataset['x'] !== 0 && div.dataset['y'] !== 0)) {
+        // if (!div.dataset['x'] || (div.dataset['x'] !== 0 && div.dataset['y'] !== 0)) {
+        if (div.dataset['x'] && div.dataset['y']) {
             div.dataset.hit = 'false';
         }
 
@@ -102,5 +153,7 @@ class View {
         return div;
     }
 }
+
+export { PANE as PANES };
 
 export default View;

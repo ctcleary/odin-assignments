@@ -9,7 +9,7 @@ class MessageBus{
         if (!this.events[eventName]) {
             this.events[eventName] = [];
         }
-        this.events[eventName].push({ id: id, cb: callback });
+        this.events[eventName].push( { id: id, cb: callback } );
         return id;
     }
 

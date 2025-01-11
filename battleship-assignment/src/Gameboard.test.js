@@ -6,8 +6,8 @@ it('Gameboard class exists', () => {
 
 it('Gameboard is set to the correct size', () => {
     const gb = new Gameboard();
-    expect(gb.size[0]).toBe(20);
-    expect(gb.size[1]).toBe(20);
+    expect(gb.size[0]).toBe(10);
+    expect(gb.size[1]).toBe(10);
 
     const gb2 = new Gameboard([30,50]);
     expect(gb2.size[0]).toBe(30);
@@ -29,11 +29,11 @@ it('Gameboard.areValidCoords() returns the correct boolean val', () => {
 it('Gameboard.receiveAttack() logs the attack correctly', () => {
     const gb = new Gameboard();
     
-    gb.receiveAttack([3,3]);
-    expect(gb.getHits()).toEqual([ [3,3] ]);
+    gb.receiveHit([3,3]);
+    expect(gb.getHits()).toEqual([ { xy: [3,3], shipHit: false } ]);
 
-    gb.receiveAttack([13,11]);
-    expect(gb.getHits()).toEqual([ [3,3], [13,11] ]);
+    gb.receiveHit([8,9]);
+    expect(gb.getHits()).toEqual([ { xy: [3,3], shipHit: false }, { xy: [8,9], shipHit: false } ]);
 })
 
 // it('Gameboard.receiveAttack() correctly emits CustomEvent', () => {
@@ -52,8 +52,8 @@ it('Gameboard.receiveAttack() logs the attack correctly', () => {
 it('Gameboard correctly assesses Gameboard.isAlreadyHit(xy)', () => {
     const gb = new Gameboard();
     
-    gb.receiveAttack([14,7]);
-    expect(gb.isAlreadyHit([14,7])).toBe(true);
+    gb.receiveHit([10,7]);
+    expect(gb.isAlreadyHit([10,7])).toBe(true);
 })
 
 it('Gameboard.registerShip() correctly stores the ship', () => {
@@ -61,7 +61,7 @@ it('Gameboard.registerShip() correctly stores the ship', () => {
     
     gb.registerShip(4, [4,4], true);
     expect(gb.getShips()[0]).not.toBeUndefined();
-    gb.registerShip(2, [12,8], false);
+    gb.registerShip(2, [10,8], false);
     expect(gb.getShips()[1]).not.toBeUndefined();
 })
 
@@ -73,12 +73,21 @@ it('Gameboard correctly calls Gameboard.lose() when all ships are destroyed', ()
     gb.registerShip(2, [3,3], false);
     gb.registerShip(3, [10,4], false);
 
-    gb.receiveAttack([3,3])
-    gb.receiveAttack([3,4]);
+    gb.receiveHit([3,3])
+    gb.receiveHit([3,4]);
 
-    gb.receiveAttack([10,4]);
-    gb.receiveAttack([10,5]);
-    gb.receiveAttack([10,6]);
+    gb.receiveHit([10,4]);
+    gb.receiveHit([10,5]);
+    gb.receiveHit([10,6]);
 
     expect(loseSpy).toHaveBeenCalled();
+})
+
+it('Gameboard.hit(xy) returns true if a ship is hit', () => {
+    const gb = new Gameboard();
+    gb.registerShip(3, [5,5], false);
+    let wasHit = gb.receiveHit([7,7]);
+    expect(wasHit).toBe(false);
+    wasHit = gb.receiveHit([5,5]);
+    expect(wasHit).toBe(true);
 })

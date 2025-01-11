@@ -4,7 +4,7 @@ import { PLAYER } from "./Game.js";
 it('Game correctly sets up initial conditions', () => {
     const g = new Game();
 
-    expect(g.size).toEqual([20,20]);
+    expect(g.size).toEqual([10,10]);
 
     expect(g.gameboards[PLAYER.ONE]).toStrictEqual(g.players[PLAYER.ONE].ownGB);
     expect(g.gameboards[PLAYER.TWO]).toStrictEqual(g.players[PLAYER.ONE].oppGB);

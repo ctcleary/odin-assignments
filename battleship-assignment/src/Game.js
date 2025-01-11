@@ -1,17 +1,12 @@
 import Gameboard from "./Gameboard.js";
 import MessageBus from "./MessageBus.js";
-import Player from "./Player.js";
-
-const PLAYER = {
-    ONE: 'playerOne',
-    TWO: 'playerTwo',
-};
+import Player, { PLAYER } from "./Player.js";
+import PANE from "./View.js";
 
 // Game is a "mediator"
 class Game {
-    constructor(sizeXY = [20,20]) {
+    constructor(sizeXY = [10,10]) {
         this.size = sizeXY;
-        this.bus = new MessageBus();
 
         this.gameboards = {
             [PLAYER.ONE] : new Gameboard(sizeXY, PLAYER.ONE),
@@ -24,11 +19,39 @@ class Game {
         };
 
         this.activePlayer = PLAYER.ONE;
+        
+        this.bus = new MessageBus();
+        this.registerSubscribers();
     }
 
     switchActivePlayer() {
         this.activePlayer = (this.activePlayer === PLAYER.ONE) ? PLAYER.TWO : PLAYER.ONE;
         return this.activePlayer;
+    }
+
+    registerSubscribers() {
+        this.bus.subscribe('view-hit', this.doHit);
+    }
+
+    doHit(data) {
+        console.log('Game doHit ', data)
+        let attackedGB;
+        switch(data.pane) {
+            case PANE.PLAYER_ONE_TURN:
+                attackedGB = this.gameboards[PLAYER.TWO];
+                break;
+            case PANE.PLAYER_TWO_TURN:
+                attackedGB = this.gameboards[PLAYER.ONE];
+                break;
+            case PANE.PREGAME:
+            case PANE.POSTGAME:
+            case PANE.SCREEN:
+                break;
+        }
+        if (attackedGB && !attackedGB.isAlreadyHit(data.xy)) {
+            const wasShipHit = attackedGB.receiveHit(data.xy);
+
+        }
     }
 }
 

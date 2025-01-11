@@ -1,11 +1,13 @@
 import Ship from "./Ship.js";
 
 class Gameboard {
-    constructor(size = [20,20], playerStr = null) {
+    constructor(size = [10,10], playerStr = null) {
         this.size = size;
         this.hits = [];
-        this.ships = [];
         this.player = playerStr;
+        
+        //TODO - Decide what to do about default ship sizes [4,3,3,2,2,2,1,1,1]
+        this.ships = [];
     }
 
     areValidCoords(xy) {
@@ -18,24 +20,26 @@ class Gameboard {
 
     isAlreadyHit(xy) {
         return !!this.getHits().find((hit) => {
-            return hit[0] === xy[0] && hit[1] === xy[1];
+            return hit.xy[0] === xy[0] && hit.xy[1] === xy[1];
         });
     }
 
-    receiveAttack(xy) {
+    receiveHit(xy) {
         if (!this.areValidCoords(xy))
             throw new Error('Invalid coords provided to Gameboard.receiveAttack()');
 
         if (this.isAlreadyHit(xy))
             throw new Error('Coords provided to Gameboard.receiveAttack(xy) were already hit!');
 
-
-        this.hits.push(xy);
-        // this.dispatchHitEv(xy);
-
+        let isShipHit = false;
         this.getShips().forEach((ship) => {
-            ship.hit(xy);
+            const didHit = ship.hit(xy);
+            if (didHit) {
+                isShipHit = true;
+            }
         });
+
+        this.hits.push({ xy: xy, shipHit: isShipHit });
 
         const allShipsSunk = this.getShips().every((ship) => { return ship.isSunk(); });
 
@@ -43,7 +47,7 @@ class Gameboard {
             this.lose();
         }
 
-        return this.hits.slice();
+        return isShipHit;
     }
 
     // dispatchHitEv(xy) {
