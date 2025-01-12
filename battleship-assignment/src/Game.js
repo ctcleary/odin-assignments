@@ -11,10 +11,7 @@ class Game {
         this.bus = new MessageBus();
         this.registerSubscribers();
 
-
         this.gameboards = this.setupGameboards(sizeXY, this.bus);
-
-        
         this.players = this.setupPlayers(this.gameboards);
 
         this.activePlayer = PLAYER.ONE;
@@ -72,7 +69,7 @@ class Game {
     }
 
     registerSubscribers() {
-        this.bus.subscribe('view-hit', this.doHit);
+        this.bus.subscribe('view-hit', (data) => { this.doHit(data) });
     }
 
     doHit(data) {
@@ -93,6 +90,8 @@ class Game {
         if (attackedGB && !attackedGB.isAlreadyHit(data.xy)) {
             const wasShipHit = attackedGB.receiveHit(data.xy);
         }
+
+        this.bus.publish('game-hit-done', { game: this });
     }
 }
 

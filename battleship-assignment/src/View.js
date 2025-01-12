@@ -15,32 +15,25 @@ class View {
     constructor(messageBus) {
         this.bus = messageBus;
         this.pane = PANE.PREGAME;
-        // this.render();
+        this.pane = PANE.PLAYER_ONE_TURN;
+        this.registerSubscribers();
     }
 
     // Returns the top DOM Node.
     render(game) {
-        const pTwoGB = game.gameboards[PLAYER.TWO];
-        
-        // game.switchActivePlayer();
-
         const result = this.giveDiv([ 'boards-container' ]);
 
         result.appendChild(this.renderPlayerBoard(game, PLAYER.ONE));
         result.appendChild(this.renderPlayerBoard(game, PLAYER.TWO));
-        
-        // const pOneBoard = result.querySelector('#gameboard-'+PLAYER.ONE);
-        // const pTwoBoard = result.querySelector('#gameboard-'+PLAYER.TWO);
-        // console.log(pOneBoard);
 
         const pOneShipLayer = result.querySelector(`#${PLAYER.ONE}-ship-layer`);
-        const pTwoShipLayer = result.querySelector(`#${PLAYER.TWO}-ship-layer`)
         this.renderShips(game, pOneShipLayer, PLAYER.ONE);
+        const pTwoShipLayer = result.querySelector(`#${PLAYER.TWO}-ship-layer`);
         this.renderShips(game, pTwoShipLayer, PLAYER.TWO);
 
         const pOneHitLayer = result.querySelector(`#${PLAYER.ONE}-hit-layer`);
-        const pTwoHitLayer = result.querySelector(`#${PLAYER.TWO}-hit-layer`);
         this.renderHits(game, pOneHitLayer, PLAYER.ONE);
+        const pTwoHitLayer = result.querySelector(`#${PLAYER.TWO}-hit-layer`);
         this.renderHits(game, pTwoHitLayer, PLAYER.TWO);
 
         return result;
@@ -116,6 +109,7 @@ class View {
 
     doHit(evt) {
         const div = evt.target;
+        console.log('doHit target', div);
         const xy = [div.dataset.x, div.dataset.y];
 
         console.log('publish hit', xy);
@@ -214,6 +208,10 @@ class View {
         }
 
         return div;
+    }
+
+    registerSubscribers() {
+        this.bus.subscribe('game-hit-done', (data) => { this.render(data.game); });
     }
 }
 

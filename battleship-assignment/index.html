@@ -18,6 +18,8 @@
         const render = () => {
             const game = new window.Game();
             const view = new window.View(game.bus);
+            window.gameGame = game;
+            window.gameView = view;
             const gameboard = game.gameboards['playerOne'];
 
             gameboard.receiveHit([5,5]);
@@ -30,9 +32,9 @@
             gameboard.receiveHit([9,9]);
             gameboard.receiveHit([3,1]);
 
-            this.gameboardContainer = document.getElementById('game-container');
-            this.gameboardContainer.innerHTML = '';
-            this.gameboardContainer.appendChild(view.render(game));
+            const gameboardContainer = document.getElementById('game-container');
+            gameboardContainer.innerHTML = '';
+            gameboardContainer.appendChild(view.render(game));
         }
     </script>
     <script src="main.js" type="module" onload="render()"></script>
