@@ -1,7 +1,7 @@
 import Gameboard from "./Gameboard.js";
 import MessageBus from "./MessageBus.js";
 import Player, { PLAYER } from "./Player.js";
-import PANE from "./View.js";
+import { PANE } from "./View.js";
 
 // Game is a "mediator"
 class Game {
@@ -88,6 +88,7 @@ class Game {
                 break;
         }
         if (attackedGB && !attackedGB.isAlreadyHit(data.xy)) {
+            console.log('attackedGB', attackedGB);
             const wasShipHit = attackedGB.receiveHit(data.xy);
         }
 

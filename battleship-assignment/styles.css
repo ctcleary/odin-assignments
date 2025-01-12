@@ -57,6 +57,18 @@ body {
     text-align: center;
 }
 
+.boards-container.playerOne-turn #gameboard-playerOne,
+.boards-container.playerTwo-turn #gameboard-playerTwo {
+    pointer-events: none;
+    user-select: none;
+}
+
+/* UNCOMMENT FOR HIDDEN BOARDS */
+/* .boards-container.playerOne-turn #gameboard-playerTwo .ship-layer,
+.boards-container.playerTwo-turn #gameboard-playerOne .ship-layer {
+    display: none;
+} */
+
 .screen,
 .ship-layer,
 .hit-layer {

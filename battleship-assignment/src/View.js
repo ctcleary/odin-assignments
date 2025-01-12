@@ -14,14 +14,16 @@ const PANE = {
 class View {
     constructor(messageBus) {
         this.bus = messageBus;
-        this.pane = PANE.PREGAME;
+        // this.pane = PANE.PREGAME;
         this.pane = PANE.PLAYER_ONE_TURN;
         this.registerSubscribers();
     }
 
     // Returns the top DOM Node.
     render(game) {
+        console.log('View.render(game)');
         const result = this.giveDiv([ 'boards-container' ]);
+        result.classList.add(game.activePlayer === PLAYER.ONE ? 'playerOne-turn' : 'playerTwo-turn');
 
         result.appendChild(this.renderPlayerBoard(game, PLAYER.ONE));
         result.appendChild(this.renderPlayerBoard(game, PLAYER.TWO));
@@ -43,6 +45,7 @@ class View {
         const playerGB = game.gameboards[player];
 
         const playerBoardContainer = this.giveDivWithID('gameboard-' + player, ['gameboard-container'], { player: player });
+
         const headerOne = document.createElement('h2');
         headerOne.classList.add('header');
         headerOne.innerHTML = game.activePlayer === player ? 'YOUR BOARD' : 'OPPONENT BOARD';
@@ -53,7 +56,7 @@ class View {
     }
 
     renderShips(game, parent, player) {
-        console.log('renderShips', player);
+        // console.log('renderShips', player);
         const gameboard = game.gameboards[player];
         const ships = gameboard.getShips().map((shipObj) => { return shipObj.ship; });
 
@@ -83,7 +86,7 @@ class View {
     }
 
     renderHits(game, parent, player) {
-        console.log('renderHits', player);
+        // console.log('renderHits', player);
         const gameboard = game.gameboards[player];
         const hits = gameboard.getHits();
 
@@ -112,7 +115,7 @@ class View {
         console.log('doHit target', div);
         const xy = [div.dataset.x, div.dataset.y];
 
-        console.log('publish hit', xy);
+        console.log('publish hit', xy, this.pane, PLAYER.TWO);
         this.bus.publish('view-hit', { xy: xy, pane: this.pane, attackedPlayer: PLAYER.TWO });
     }
 
@@ -215,6 +218,6 @@ class View {
     }
 }
 
-export { PANE as PANES };
+export { PANE };
 
 export default View;
