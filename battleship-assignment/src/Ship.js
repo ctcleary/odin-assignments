@@ -6,8 +6,7 @@ class Ship {
 
         // console.log('shipCoords', this.determineCoords(length, xy, isHori));
         this.shipCoords = this.determineCoords(length, xy, isHori);
-
-        this.representation = this.setRepresentation(length);
+        this.imgSrc = this.setImgSrc(length);
     }
 
     setBus(messageBus) {
@@ -54,6 +53,7 @@ class Ship {
     }
 
     setShipCoords(xy, isHori) {
+        this.isHori = isHori;
         this.shipCoords = this.determineCoords(this.length, xy, isHori);
     }
 
@@ -70,26 +70,27 @@ class Ship {
 
         return coords;
     }
+    
+    setImgSrc(length) {
+        let imgSrc;
 
-    setRepresentation(length) {
-        let representation = '';
-        switch(length) {
+        switch (length) {
             case 4:
-                representation = '<==]';
+                imgSrc = './assets/battleship-length4.png';
                 break;
             case 3:
-                representation = '<=]';
+                imgSrc = './assets/battleship-length3.png';
                 break;
             case 2:
-                representation = '<]';
+                imgSrc = './assets/battleship-length2.png';
                 break;
             case 1:
             default:
-                representation = '0';
+                imgSrc = './assets/battleship-length1.png';
                 break;
         }
 
-        return representation;
+        return imgSrc;
     }
 
     // setGameboard(gb) {

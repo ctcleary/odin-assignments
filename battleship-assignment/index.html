@@ -21,11 +21,14 @@
             const gameboard = game.gameboards['playerOne'];
 
             gameboard.receiveHit([5,5]);
+
             gameboard.receiveHit([4,5]);
-            // gameboard.registerShip(3, [7,7], true);
+            gameboard.receiveHit([4,6]);
+            
             gameboard.receiveHit([7,7]);
             gameboard.receiveHit([8,8]);
             gameboard.receiveHit([9,9]);
+            gameboard.receiveHit([3,1]);
 
             this.gameboardContainer = document.getElementById('game-container');
             this.gameboardContainer.innerHTML = '';

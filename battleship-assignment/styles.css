@@ -23,7 +23,8 @@ body {
     overflow: visible;
 }
 .gameboard,
-.ship-layer {
+.ship-layer,
+.hit-layer {
     display: grid;
     grid-template-rows: repeat(11, var(--cell-size));
     width: calc(11 * var(--cell-size));
@@ -33,6 +34,13 @@ body {
     grid-template-columns: repeat(11, var(--cell-size));
     justify-items: stretch;
     align-items: stretch;
+}
+.ship-layer,
+.hit-layer {
+    display: grid;
+
+    grid-template-rows: repeat(11, var(--cell-size));
+    grid-template-columns: repeat(11, var(--cell-size));
 }
 
 
@@ -45,12 +53,13 @@ body {
 }
 
 .gameboard-container .header {
-    margin: 0;
+    margin: 0 0 1.5rem 0;
     text-align: center;
 }
 
 .screen,
-.ship-layer {
+.ship-layer,
+.hit-layer {
     position: absolute;
     top: 0;
     left: 0;
@@ -67,12 +76,7 @@ body {
     box-shadow: 0px 0px 10px black;
 }
 
-.ship-layer {
-    display: grid;
 
-    grid-template-rows: repeat(11, var(--cell-size));
-    grid-template-columns: repeat(11, var(--cell-size));
-}
 
 
 .cell, .number-cell {
@@ -87,24 +91,38 @@ body {
     overflow: visible; /* For ship placement */
 }
 
-.cell.hit {
-    background: rgb(126 158 183);
+.dead-cell {
+    background: rgb(134, 175, 209);
+    border-radius: 50% 0 0 0;
 }
 
-.cell.hit .hit-marker,
-.cell.ship-hit .hit-marker {
-    padding: 0rem 0.4rem 0.1rem 0.4rem;
+.cell.hit {
+    background: rgb(152 178 199);
+}
+
+.hit-marker {
+    display: grid;
+    justify-content: center;
+    align-content: center;
+}
+
+.hit-marker .hit-x ,
+.hit-marker.ship-hit .hit-x  {
+    padding: 0rem 0.25rem 0rem 0.25rem;
+    font-size: 0.65rem;
+
     border-radius: 50%;
     font-weight: 100;
+    transform: rotate(55deg);
 }
 
-.cell.hit .hit-marker {
-    background: rgb(177, 177, 177);
+.hit-marker .hit-x {
+    background: rgb(171 149 149);
     border: thin solid #777;
     color: #777;
 }
 
-.cell.ship-hit .hit-marker {
+.hit-marker.ship-hit .hit-x {
     background: #cf1717;
     border: thin solid #bbb;
     color: #bbb;
@@ -143,32 +161,27 @@ body {
 } */
 
 .ship {
-    font-size: 2.5rem;
-
     font-family: monospace;
-    line-height: 2.1rem;
-    font-kerning: none;
-    padding-left: 0.25rem;
+    line-height: 3.35rem;
+    /* padding-left: 0.35rem; */
 }
 
 .ship.hori {
-    transform: scaleX(1.675);
+    transform: scaleX(1.3);
     transform-origin: center left;
 }
 
 .ship.vert {
-    writing-mode: vertical-lr;
-    padding-top: 0.25rem;
-
     transform-origin: top center;
-    transform: scaleY(1.675);
+    transform: rotate(90deg) scaleX(1.35) translate(1.15rem, -1.3rem);
 }
 
 .ship.length-one {
-    padding: 0.2rem 0 0 0;
+    padding: 0;
     transform: none;
 }
 
-.ship.sunk {
-    color: #ab6f6f;
+.ship.sunk img {
+    opacity: 0.6;
+    filter: hue-rotate(120deg);
 }

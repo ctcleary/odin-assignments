@@ -34,11 +34,14 @@ class View {
         // console.log(pOneBoard);
 
         const pOneShipLayer = result.querySelector(`#${PLAYER.ONE}-ship-layer`);
+        const pTwoShipLayer = result.querySelector(`#${PLAYER.TWO}-ship-layer`)
         this.renderShips(game, pOneShipLayer, PLAYER.ONE);
+        this.renderShips(game, pTwoShipLayer, PLAYER.TWO);
 
-        // const pTwoShipLayer = result.querySelector(`#${PLAYER.TWO}-ship-layer`)
-        // this.renderShips(game, pTwoShipLayer, PLAYER.TWO);
-
+        const pOneHitLayer = result.querySelector(`#${PLAYER.ONE}-hit-layer`);
+        const pTwoHitLayer = result.querySelector(`#${PLAYER.TWO}-hit-layer`);
+        this.renderHits(game, pOneHitLayer, PLAYER.ONE);
+        this.renderHits(game, pTwoHitLayer, PLAYER.TWO);
 
         return result;
     }
@@ -57,7 +60,7 @@ class View {
     }
 
     renderShips(game, parent, player) {
-        console.log(parent);
+        console.log('renderShips', player);
         const gameboard = game.gameboards[player];
         const ships = gameboard.getShips().map((shipObj) => { return shipObj.ship; });
 
@@ -71,15 +74,44 @@ class View {
                 classes.push('sunk');
             }
             const shipDiv = this.giveDiv(classes);
+            const imgEl = document.createElement('img');
 
             const origin = ship.getShipCoords()[0];
             let style = `grid-column: ${origin[0]+1}; grid-row: ${origin[1]+1};`;
 
             shipDiv.style = style;
-            shipDiv.innerText = ship.representation;
+            // shipDiv.innerText = ship.representation;
+            
+            imgEl.src = ship.imgSrc;
+            shipDiv.appendChild(imgEl);
 
             parent.appendChild(shipDiv);
         });
+    }
+
+    renderHits(game, parent, player) {
+        console.log('renderHits', player);
+        const gameboard = game.gameboards[player];
+        const hits = gameboard.getHits();
+
+        hits.forEach((hit) => {
+            const classes = ['hit-marker'];
+            if (hit.shipHit) {
+                classes.push('ship-hit');
+            }
+            const hitDiv = this.giveDiv(classes);
+            
+            const style = `grid-column: ${hit.xy[0]+1}; grid-row: ${hit.xy[1]+1};`;
+            hitDiv.style = style;
+
+            const xDiv = this.giveDiv(['hit-x']);
+            xDiv.innerText = 'X';
+
+            hitDiv.appendChild(xDiv);
+
+            parent.appendChild(hitDiv);
+        });
+
     }
 
     doHit(evt) {
@@ -111,26 +143,20 @@ class View {
                 } else { // Regular cell
                     xyDiv.classList.add('cell');
 
-                    const span = document.createElement('span');
 
                     const isHit = hits.find((hit) => {
                         return hit.xy[0] === j && hit.xy[1] === i;
                     });
                     
                     if (isHit) {
-                        if (isHit.shipHit) {
-                            console.log(isHit.shipHit);
-                            xyDiv.classList.add('ship-hit');
-                        }
                         xyDiv.classList.add('hit');
-                        span.classList.add('hit-marker');
-                        span.innerHTML = 'X';
                     } else {
+                        const span = document.createElement('span');
                         span.classList.add('coords')
                         span.innerHTML = `${j},${i}`
                         xyDiv.addEventListener('click', (e) => { this.doHit(e); });
+                        xyDiv.appendChild(span);
                     }
-                    xyDiv.appendChild(span);
                 }
                 yRow.appendChild(xyDiv);
             }
@@ -139,6 +165,9 @@ class View {
 
         const shipLayer = this.giveDivWithID(gameboard.player+'-ship-layer', [ 'ship-layer' ]);
         result.appendChild(shipLayer);
+        
+        const hitLayer = this.giveDivWithID(gameboard.player+'-hit-layer', ['hit-layer']);
+        result.appendChild(hitLayer);
 
         const screen = this.giveDiv([ 'screen' ]);
         result.appendChild(screen);

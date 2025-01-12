@@ -55,7 +55,8 @@ class Game {
             board.setShipCoords('3-2', [5,3], true);
         
             board.setShipCoords('2-1', [1,5], true);
-            board.setShipCoords('2-2', [4,5], true);
+            // board.setShipCoords('2-2', [4,5], true);
+            board.setShipCoords('2-2', [4,5], false); // for testing vert
             board.setShipCoords('2-3', [7,5], true);
         
             board.setShipCoords('1-1', [1,7], true);
