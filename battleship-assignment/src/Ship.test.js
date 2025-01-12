@@ -59,8 +59,9 @@ it('Ship.hit(xy) returns true if a hit lands on one of its coords', () => {
     const ship = new Ship(2, [1,1], false);
 
     expect(ship.hit([1,1])).toBe(true);
-    expect(ship.hit([12, 16])).toBe(false);
     expect(ship.hit([1,2])).toBe(true);
+    expect(ship.hit([10, 8])).toBe(false);
+    expect(ship.hit([4,3])).toBe(false);
 })
 
 it('Ship.isSunk() returns correct bool', () => {

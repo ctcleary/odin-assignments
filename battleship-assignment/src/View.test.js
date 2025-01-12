@@ -34,7 +34,8 @@ it('View.makeGameboardDOM() returns the correct dom arrangement', () => {
     // Must account for NUMBER col / row; +1
     // and HEADER row +1
     // and SCREEN div +1
-    expect(gb.children.length).toBe(12);
+    // AND shipLayer div +1
+    expect(gb.children.length).toBe(13);
     // Text random yRow children counts to check x-count + 1 for number column
     expect(gb.children[3].children.length).toBe(11);
     expect(gb.children[6].children.length).toBe(11);

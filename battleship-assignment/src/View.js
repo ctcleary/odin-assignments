@@ -20,47 +20,63 @@ class View {
 
     // Returns the top DOM Node.
     render(game) {
-        const pOneGB = game.gameboards[PLAYER.ONE];
         const pTwoGB = game.gameboards[PLAYER.TWO];
         
         // game.switchActivePlayer();
 
         const result = this.giveDiv([ 'boards-container' ]);
-        // const screenOne = this.giveDiv([ 'screen' ]);
-        // const screenTwo = this.giveDiv([ 'screen' ]);
 
-        const pOne = this.giveDivWithID('gameboard-' + pOneGB.player, ['gameboard-container'], { player: pOneGB.player });
-        const headerOne = document.createElement('h2');
-        headerOne.classList.add('header');
-        headerOne.innerHTML = game.activePlayer === PLAYER.ONE ? 'YOUR BOARD' : 'OPPONENT BOARD';
-        pOne.appendChild(headerOne);
+        result.appendChild(this.renderPlayerBoard(game, PLAYER.ONE));
+        result.appendChild(this.renderPlayerBoard(game, PLAYER.TWO));
+        
+        // const pOneBoard = result.querySelector('#gameboard-'+PLAYER.ONE);
+        // const pTwoBoard = result.querySelector('#gameboard-'+PLAYER.TWO);
+        // console.log(pOneBoard);
 
-        
-        const pTwo = this.giveDivWithID('gameboard-' + pTwoGB.player, ['gameboard-container'], { player: pTwoGB.player });
-        const headerTwo = document.createElement('h2');
-        headerTwo.classList.add('header');
-        headerTwo.innerHTML = game.activePlayer === PLAYER.TWO ? 'YOUR BOARD' : 'OPPONENT BOARD';
-        pTwo.appendChild(headerTwo);
-        
+        const pOneShipLayer = result.querySelector(`#${PLAYER.ONE}-ship-layer`);
+        this.renderShips(game, pOneShipLayer, PLAYER.ONE);
 
-        pOne.appendChild(this.makeGameboardDOM(pOneGB));
-        pTwo.appendChild(this.makeGameboardDOM(pTwoGB));
-        
-        // pOne.appendChild(screenOne);
-        // pTwo.appendChild(screenTwo);
+        // const pTwoShipLayer = result.querySelector(`#${PLAYER.TWO}-ship-layer`)
+        // this.renderShips(game, pTwoShipLayer, PLAYER.TWO);
 
-        result.appendChild(pOne);
-        result.appendChild(pTwo);
-        
+
         return result;
     }
 
-    renderPlayerBoard() {
+    renderPlayerBoard(game, player) {
+        const playerGB = game.gameboards[player];
 
+        const playerBoardContainer = this.giveDivWithID('gameboard-' + player, ['gameboard-container'], { player: player });
+        const headerOne = document.createElement('h2');
+        headerOne.classList.add('header');
+        headerOne.innerHTML = game.activePlayer === player ? 'YOUR BOARD' : 'OPPONENT BOARD';
+        playerBoardContainer.appendChild(headerOne);
+        playerBoardContainer.appendChild(this.makeGameboardDOM(playerGB));
+
+        return playerBoardContainer;
     }
 
-    renderOpponentBoard() {
+    renderShips(game, parent, player) {
+        console.log(parent);
+        const gameboard = game.gameboards[player];
+        const ships = gameboard.getShips().map((shipObj) => { return shipObj.ship; });
 
+        ships.forEach((ship) => {
+            const classes = ['ship'];
+            classes.push(ship.isHori ? 'hori' : 'vert');
+            if (ship.length === 1) {
+                classes.push('length-one')
+            }
+            const shipDiv = this.giveDiv(classes);
+
+            const origin = ship.getShipCoords()[0];
+            let style = `grid-column: ${origin[0]+1}; grid-row: ${origin[1]+1};`;
+
+            shipDiv.style = style;
+            shipDiv.innerText = ship.representation;
+
+            parent.appendChild(shipDiv);
+        });
     }
 
     doHit(evt) {
@@ -97,8 +113,10 @@ class View {
                     const isHit = hits.find((hit) => {
                         return hit.xy[0] === j && hit.xy[1] === i;
                     });
+                    
                     if (isHit) {
                         if (isHit.shipHit) {
+                            console.log(isHit.shipHit);
                             xyDiv.classList.add('ship-hit');
                         }
                         xyDiv.classList.add('hit');
@@ -116,9 +134,12 @@ class View {
             result.appendChild(yRow);
         }
 
+        const shipLayer = this.giveDivWithID(gameboard.player+'-ship-layer', [ 'ship-layer' ]);
+        result.appendChild(shipLayer);
+
         const screen = this.giveDiv([ 'screen' ]);
         result.appendChild(screen);
-        
+
         return result;
     }
 

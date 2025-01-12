@@ -1,5 +1,5 @@
 import Game from "./Game.js";
-import { PLAYER } from "./Game.js";
+import { PLAYER } from "./Player.js"; 
 
 it('Game correctly sets up initial conditions', () => {
     const g = new Game();

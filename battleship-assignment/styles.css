@@ -10,6 +10,8 @@ body {
     margin: 0;
     padding: 1rem;
     font-family: system-ui, sans-serif;
+
+    --cell-size: 2.5rem;
 }
 
 #wrapper {
@@ -18,11 +20,22 @@ body {
 
 .gameboard {
     position: relative;
-    display: grid;
-    grid-template-rows: repeat(10, 2.5rem);
-    width: 27.5rem;
-    overflow:visible;
+    overflow: visible;
 }
+.gameboard,
+.ship-layer {
+    display: grid;
+    grid-template-rows: repeat(11, var(--cell-size));
+    width: calc(11 * var(--cell-size));
+}
+.y-row {
+    display: grid;
+    grid-template-columns: repeat(11, var(--cell-size));
+    justify-items: stretch;
+    align-items: stretch;
+}
+
+
 .gameboard-container {
     position: relative;
     display: inline-block;
@@ -34,11 +47,10 @@ body {
 .gameboard-container .header {
     margin: 0;
     text-align: center;
-    margin-bottom: 1rem;
 }
 
-.screen {
-    display: inline-block;
+.screen,
+.ship-layer {
     position: absolute;
     top: 0;
     left: 0;
@@ -46,18 +58,23 @@ body {
     pointer-events: none;
     width: 100%;
     height: 100%;
+}
+
+.screen {
+    display: inline-block;
     background: black;
     opacity: 0;
-    box-shadow: 0px 0px 9px black;
+    box-shadow: 0px 0px 10px black;
 }
 
-
-.y-row {
+.ship-layer {
     display: grid;
-    grid-template-columns: repeat(11, 2.5rem);
-    justify-items: stretch;
-    align-items: stretch;
+
+    grid-template-rows: repeat(11, var(--cell-size));
+    grid-template-columns: repeat(11, var(--cell-size));
 }
+
+
 .cell, .number-cell {
     border: thin solid #ccc;
 }
@@ -124,3 +141,30 @@ body {
 
 /* .cell:hover:after {
 } */
+
+.ship {
+    font-size: 2.5rem;
+
+    font-family: monospace;
+    line-height: 2.1rem;
+    font-kerning: none;
+    padding-left: 0.25rem;
+}
+
+.ship.hori {
+    transform: scaleX(1.675);
+    transform-origin: center left;
+}
+
+.ship.vert {
+    writing-mode: vertical-lr;
+    padding-top: 0.25rem;
+
+    transform-origin: top center;
+    transform: scaleY(1.675);
+}
+
+.ship.length-one {
+    padding: 0.2rem 0 0 0;
+    transform: none;
+}

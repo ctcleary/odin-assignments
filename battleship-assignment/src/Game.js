@@ -11,21 +11,58 @@ class Game {
         this.bus = new MessageBus();
         this.registerSubscribers();
 
-        this.gameboards = {
-            [PLAYER.ONE] : new Gameboard(sizeXY, PLAYER.ONE),
-            [PLAYER.TWO] : new Gameboard(sizeXY, PLAYER.TWO),
-        };
 
-        this.gameboards[PLAYER.ONE].setBus(this.bus);
-        this.gameboards[PLAYER.TWO].setBus(this.bus);
+        this.gameboards = this.setupGameboards(sizeXY, this.bus);
+
         
-        this.players = {
-            [PLAYER.ONE] : new Player(PLAYER.ONE, this.gameboards[PLAYER.ONE], this.gameboards[PLAYER.TWO]),
-            [PLAYER.TWO] : new Player(PLAYER.TWO, this.gameboards[PLAYER.TWO], this.gameboards[PLAYER.ONE]),
-        };
+        this.players = this.setupPlayers(this.gameboards);
 
         this.activePlayer = PLAYER.ONE;
         
+    }
+
+    setupGameboards(sizeXY, messageBus) {
+        const gameboards = {
+            [PLAYER.ONE] : new Gameboard(sizeXY, PLAYER.ONE),
+            [PLAYER.TWO] : new Gameboard(sizeXY, PLAYER.TWO),
+        }
+        
+        gameboards[PLAYER.ONE].setBus(messageBus);
+        gameboards[PLAYER.TWO].setBus(messageBus);
+
+        this.setGameboardShipCoordsDefault(gameboards);
+
+        return gameboards;
+    }
+
+    setupPlayers(gameboards) {
+        const players = {
+            [PLAYER.ONE] : new Player(PLAYER.ONE, gameboards[PLAYER.ONE], gameboards[PLAYER.TWO]),
+            [PLAYER.TWO] : new Player(PLAYER.TWO, gameboards[PLAYER.TWO], gameboards[PLAYER.ONE]),
+        }
+
+        return players;
+    }
+
+    setGameboardShipCoordsDefault(gameboards) {
+        [
+            gameboards[PLAYER.ONE], 
+            gameboards[PLAYER.TWO]
+        ].forEach((board) => {
+            board.setShipCoords('4-1', [1,1], true);
+
+            board.setShipCoords('3-1', [1,3], true);
+            board.setShipCoords('3-2', [5,3], true);
+        
+            board.setShipCoords('2-1', [1,5], true);
+            board.setShipCoords('2-2', [4,5], true);
+            board.setShipCoords('2-3', [7,5], true);
+        
+            board.setShipCoords('1-1', [1,7], true);
+            board.setShipCoords('1-2', [3,7], true);
+            board.setShipCoords('1-3', [5,7], true);
+            board.setShipCoords('1-4', [7,7], true);
+        });
     }
 
     switchActivePlayer() {

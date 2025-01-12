@@ -84,14 +84,14 @@ it('Gameboard correctly calls Gameboard.lose() when all ships are destroyed', ()
     gb.setShipCoords('3-1', [1,3], true);
     gb.setShipCoords('3-2', [5,3], true);
 
-    gb.setShipCoords('2-1', [1,6], true);
-    gb.setShipCoords('2-2', [4,6], true);
-    gb.setShipCoords('2-3', [7,6], true);
+    gb.setShipCoords('2-1', [1,5], true);
+    gb.setShipCoords('2-2', [4,5], true);
+    gb.setShipCoords('2-3', [7,5], true);
 
-    gb.setShipCoords('1-1', [1,8], true);
-    gb.setShipCoords('1-2', [3,8], true);
-    gb.setShipCoords('1-3', [5,8], true);
-    gb.setShipCoords('1-4', [7,8], true);
+    gb.setShipCoords('1-1', [1,7], true);
+    gb.setShipCoords('1-2', [3,7], true);
+    gb.setShipCoords('1-3', [5,7], true);
+    gb.setShipCoords('1-4', [7,7], true);
 
     //4-1
     gb.receiveHit([1,1]);
@@ -107,21 +107,21 @@ it('Gameboard correctly calls Gameboard.lose() when all ships are destroyed', ()
     gb.receiveHit([6,3]);
     gb.receiveHit([7,3]);
     //2-1
-    gb.receiveHit([1,6]);
-    gb.receiveHit([2,6]);
+    gb.receiveHit([1,5]);
+    gb.receiveHit([2,5]);
     //2-2
-    gb.receiveHit([4,6]);
-    gb.receiveHit([5,6]);
-    gb.receiveHit([6,6]);
+    gb.receiveHit([4,5]);
+    gb.receiveHit([5,5]);
+    gb.receiveHit([6,5]);
     //2-3
-    gb.receiveHit([7,6]);
-    gb.receiveHit([8,6]);
+    gb.receiveHit([7,5]);
+    gb.receiveHit([8,5]);
 
     //1s
-    gb.receiveHit([1,8]);
-    gb.receiveHit([3,8]);
-    gb.receiveHit([5,8]);
-    gb.receiveHit([7,8]);
+    gb.receiveHit([1,7]);
+    gb.receiveHit([3,7]);
+    gb.receiveHit([5,7]);
+    gb.receiveHit([7,7]);
 
 
     expect(loseSpy).toHaveBeenCalled();

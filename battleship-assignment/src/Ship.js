@@ -2,6 +2,7 @@ class Ship {
     constructor(length = 1, xy = [-1,-1], isHori = true) {
         this.length = length;
         this.hits = [];
+        this.isHori = isHori;
 
         // console.log('shipCoords', this.determineCoords(length, xy, isHori));
         this.shipCoords = this.determineCoords(length, xy, isHori);
@@ -13,14 +14,10 @@ class Ship {
         this.bus = messageBus;
     }
 
-    // Returns true if xy hits or the ship is sunk.
+    // Returns xy hits or the ship is sunk.
     hit(xy) {
         if (!xy) {
             throw new Error('Ship.hit() was given invalid coordinates.');
-        }
-
-        if (this.getHitCt() >= this.length) {
-            return true;
         }
 
         if (this.areShipCoords(xy)) {
@@ -78,13 +75,13 @@ class Ship {
         let representation = '';
         switch(length) {
             case 4:
-                representation = '<==}';
+                representation = '<==]';
                 break;
             case 3:
-                representation = '<=}';
+                representation = '<=]';
                 break;
             case 2:
-                representation = '<}';
+                representation = '<]';
                 break;
             case 1:
             default:
