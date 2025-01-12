@@ -67,6 +67,9 @@ class View {
             if (ship.length === 1) {
                 classes.push('length-one')
             }
+            if (ship.isSunk()) {
+                classes.push('sunk');
+            }
             const shipDiv = this.giveDiv(classes);
 
             const origin = ship.getShipCoords()[0];
