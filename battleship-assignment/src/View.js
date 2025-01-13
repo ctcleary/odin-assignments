@@ -123,7 +123,12 @@ class View {
         const result = this.giveDiv(['gameboard']);
         const sizeXY = gameboard.size;
         const hits = gameboard.getHits();
-        console.log(gameboard.player + ' hits.l ::', hits.length);
+        
+        let wavesCoords = [];
+        for (let i = 1; i < 5+Math.round(Math.random()*10); i++) {
+            const xy = [1+Math.round(Math.random()*9), 1+Math.round(Math.random()*9)];
+            wavesCoords.push(xy);
+        }
 
         for (let i = 0; i <= sizeXY[1]; i++) {
             const yRow = this.giveDiv([ 'y-row' ], [ ['y', i ]]);
@@ -155,6 +160,17 @@ class View {
                         xyDiv.addEventListener('click', (e) => { this.doHit(e); });
                         xyDiv.appendChild(span);
                     }
+                }
+                if (wavesCoords.find((coords) => {
+                    return coords[0] === j && coords[1] === i;
+                })) {
+                    console.log('add wave to ', xyDiv.dataset.x, xyDiv.dataset.y);
+                    const wave = this.giveDiv(['wave']);
+                    const randLeft = Math.floor(Math.random()*10);
+                    const randTop = Math.floor(Math.random()*15);
+                    const style = `left: ${randLeft}px; top: ${randTop}px;`;
+                    wave.style = style;
+                    xyDiv.appendChild(wave);
                 }
                 yRow.appendChild(xyDiv);
             }

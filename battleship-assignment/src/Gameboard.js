@@ -1,5 +1,6 @@
 import Ship from "./Ship.js";
 import MessageBus from "./MessageBus.js";
+import { PLAYER } from "./Player.js";
 
 class Gameboard {
     constructor(size = [10,10], playerStr = null) {
@@ -32,7 +33,7 @@ class Gameboard {
     }
 
     setBus(messageBus) {
-        // this.bus = messageBus;
+        this.bus = messageBus;
         // this.getShips().forEach((shipObj) => {
         //     shipObj.ship.setBus(this.bus);
         // })
@@ -105,6 +106,7 @@ class Gameboard {
     }
 
     lose() {
+        this.bus.publish(PLAYER.TWO + '-lose');
         // const loseEv = new Event('lose');
         // this.dispatchEvent(loseEv);
     }

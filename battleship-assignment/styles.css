@@ -95,6 +95,8 @@ body {
     border: thin solid #ccc;
 }
 .cell {
+    position: relative;
+
     background: rgb(174, 200, 221);
     display: grid;
     justify-content: center;
@@ -198,4 +200,27 @@ body {
 .ship.sunk img {
     opacity: 0.6;
     filter: hue-rotate(120deg);
+}
+
+.wave {
+    position: absolute;
+    display: inline-block;
+    width: 30px;
+    height: 15px;
+    opacity: 0.5;
+    background: url('./assets/battleship-wave.png');
+    pointer-events: none;
+}
+
+.cell {
+    z-index: 1;
+}
+.wave {
+ z-index: 10;
+}
+.ship {
+    z-index: 20;
+}
+.hit-marker {
+    z-index: 30;
 }

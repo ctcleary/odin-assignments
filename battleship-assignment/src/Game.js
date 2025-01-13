@@ -49,7 +49,8 @@ class Game {
             board.setShipCoords('4-1', [1,1], true);
 
             board.setShipCoords('3-1', [1,3], true);
-            board.setShipCoords('3-2', [5,3], true);
+            // board.setShipCoords('3-2', [5,3], true);
+            board.setShipCoords('3-2', [5,3], false);
         
             board.setShipCoords('2-1', [1,5], true);
             // board.setShipCoords('2-2', [4,5], true);
@@ -70,6 +71,12 @@ class Game {
 
     registerSubscribers() {
         this.bus.subscribe('view-hit', (data) => { this.doHit(data) });
+        this.bus.subscribe(PLAYER.ONE+'-lose', () => {
+            console.log('PLAYER ONE LOSES');
+        });
+        this.bus.subscribe(PLAYER.TWO+'-lose', () => {
+            console.log('PLAYER TWO LOSES');
+        });
     }
 
     doHit(data) {
