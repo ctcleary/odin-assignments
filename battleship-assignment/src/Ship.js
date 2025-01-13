@@ -71,6 +71,10 @@ class Ship {
         return coords;
     }
     
+    getImgSrc() {
+        return this.imgSrc;
+    }
+
     setImgSrc(length) {
         let imgSrc;
 

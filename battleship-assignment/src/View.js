@@ -6,6 +6,9 @@ const PANE = {
 
     SCREEN : 'screen',
 
+    PLAYER_ONE_PLACEMENT : 'playerOne-placement',
+    PLAYER_TWO_PLACEMENT : 'playerTwo-placement',
+
     PLAYER_ONE_TURN : 'playerOne-turn',
     PLAYER_TWO_TURN : 'playerTwo-turn',
 
@@ -28,8 +31,15 @@ class View {
     //     this.registerSubscribers();
     // }
 
+    reRender(game) {
+        this.gameContainerEl.innerHTML = '';
+        this.gameContainerEl.appendChild(this.render(game));
+    }
+
     // Returns the top DOM Node.
     render(game) {
+        this.game = this.game || game;
+
         console.log('View.render(game)');
         const result = this.giveDiv([ 'boards-container' ]);
         result.classList.add(game.activePlayer === PLAYER.ONE ? 'playerOne-turn' : 'playerTwo-turn');
@@ -46,6 +56,15 @@ class View {
         this.renderHits(game, pOneHitLayer, PLAYER.ONE);
         const pTwoHitLayer = result.querySelector(`#${PLAYER.TWO}-hit-layer`);
         this.renderHits(game, pTwoHitLayer, PLAYER.TWO);
+
+        if (this.pane === PANE.PREGAME) {
+            result.appendChild(this.renderShipDock(game, PLAYER.ONE));
+            result.appendChild(this.renderShipDock(game, PLAYER.TWO));
+        } else if (this.pane === PANE.PLAYER_ONE_PLACEMENT) {
+            result.appendChild(this.renderShipDock(game, PLAYER.ONE));
+        } else if (this.pane === PANE.PLAYER_TWO_PLACEMENT) {
+            result.appendChild(this.renderShipDock(game, PLAYER.TWO));
+        }
 
         return result;
     }
@@ -195,6 +214,48 @@ class View {
         result.appendChild(screen);
 
         return result;
+    }
+
+    renderShipDock(game, player) {
+        const result = this.giveDivWithID(player+'-ship-dock', ['ship-dock'], { player: player });
+        const dockFrame = this.giveDiv(['ship-dock-frame']);
+        result.appendChild(dockFrame);
+
+        const header = document.createElement('h3');
+        header.classList.add('ship-dock-header');
+        header.innerText = 'Ship Dock';
+        dockFrame.appendChild(header);
+
+        const gb = game.gameboards[player];
+        const shipObjArr = gb.getShips();
+
+        let lastLength = 0;
+        shipObjArr.forEach((shipObj) => {
+            const id = shipObj.id;
+            const length = parseInt(id.charAt(0), 10);
+
+            if (lastLength > length) {
+                const br = document.createElement('br');
+                dockFrame.appendChild(br);
+            }
+            lastLength = length;
+
+            const imgSrc = shipObj.ship.getImgSrc();
+
+            const img = document.createElement('img');
+            img.id = player+'-ship-'+id;
+            img.src = imgSrc;
+            img.classList.add('dock-ship');
+        
+            dockFrame.appendChild(img);
+        })
+
+        return result;
+    }
+
+    switchPane(newPane) {
+        this.pane = newPane;
+        this.reRender(this.game);
     }
 
     giveDiv(classes, data) {
