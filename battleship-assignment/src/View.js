@@ -123,9 +123,10 @@ class View {
         const result = this.giveDiv(['gameboard']);
         const sizeXY = gameboard.size;
         const hits = gameboard.getHits();
+        const ships = gameboard.getShips().map((shipObj) => { return shipObj.ship; });
         
         let wavesCoords = [];
-        for (let i = 1; i < 5+Math.round(Math.random()*8); i++) {
+        for (let i = 1; i < 7+Math.round(Math.random()*8); i++) {
             const xy = [1+Math.round(Math.random()*9), 1+Math.round(Math.random()*9)];
             wavesCoords.push(xy);
         }
@@ -153,6 +154,14 @@ class View {
                     
                     if (isHit) {
                         xyDiv.classList.add('hit');
+                        const isSunk = ships.find((ship) => {
+                            const foundShipCoords = ship.getShipCoords().find((coords) => {
+                                return j === coords[0] && i === coords[1];
+                            });
+                            if (foundShipCoords && ship.isSunk()) {
+                                xyDiv.classList.add('sunk-hit');
+                            }
+                        })
                     } else {
                         const span = document.createElement('span');
                         span.classList.add('coords')
@@ -164,7 +173,8 @@ class View {
                 if (wavesCoords.find((coords) => {
                     return coords[0] === j && coords[1] === i;
                 })) {
-                    const wave = this.giveDiv(['wave']);
+                    const altNum = 1 + Math.round(Math.random()*2); // Between 1 and 3.
+                    const wave = this.giveDiv(['wave', 'alt-'+altNum]);
                     const randLeft = Math.floor(Math.random()*10);
                     const randTop = Math.floor(Math.random()*25);
                     wave.style = `left: ${randLeft}px; top: ${randTop}px;`;

@@ -63,6 +63,11 @@ body {
     user-select: none;
 }
 
+.boards-container.playerOne-turn #gameboard-playerTwo .ship-layer,
+.boards-container.playerTwo-turn #gameboard-playerOne .ship-layer {
+    display: none;
+}
+
 /* UNCOMMENT FOR HIDDEN BOARDS */
 /* .boards-container.playerOne-turn #gameboard-playerTwo .ship-layer,
 .boards-container.playerTwo-turn #gameboard-playerOne .ship-layer {
@@ -112,6 +117,20 @@ body {
 
 .cell.hit {
     background: rgb(152 178 199);
+}
+
+.cell.hit.sunk-hit {
+    background: rgb(171, 111, 111);
+}
+
+.cell.hit.sunk-hit:after {
+    content: 'X';
+    position: absolute;
+    color: red;
+    font-size: 3rem;
+    top: -0.9rem;
+    left: 0.3rem;
+    pointer-events: none;
 }
 
 .hit-marker {
@@ -208,9 +227,19 @@ body {
     width: 30px;
     height: 15px;
     opacity: 0.5;
-    background: url('./assets/battleship-wave.png');
     pointer-events: none;
 }
+
+.wave.alt-1 {
+    background: url('./assets/battleship-wave-alt1.png');
+}
+.wave.alt-2 {
+    background: url('./assets/battleship-wave-alt2.png');
+}
+.wave.alt-3 {
+    background: url('./assets/battleship-wave-alt3.png');
+}
+
 
 .cell {
     z-index: 1;
