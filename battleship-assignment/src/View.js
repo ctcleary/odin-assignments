@@ -1,4 +1,5 @@
 import { PLAYER } from "./Player.js";
+import MessageBus from "./MessageBus.js";
 
 const PANE = {
     PREGAME : 'pregame',
@@ -12,12 +13,20 @@ const PANE = {
 }
 
 class View {
-    constructor(messageBus) {
+    constructor(messageBus, gameContainerEl) {
         this.bus = messageBus;
+        this.gameContainerEl = gameContainerEl;
+
         // this.pane = PANE.PREGAME;
         this.pane = PANE.PLAYER_ONE_TURN;
+        
         this.registerSubscribers();
     }
+
+    // setBus(messageBus) {
+    //     this.bus = messageBus;
+    //     this.registerSubscribers();
+    // }
 
     // Returns the top DOM Node.
     render(game) {
@@ -110,19 +119,11 @@ class View {
 
     }
 
-    doHit(evt) {
-        const div = evt.target;
-        console.log('doHit target', div);
-        const xy = [div.dataset.x, div.dataset.y];
-
-        console.log('publish hit', xy, this.pane, PLAYER.TWO);
-        this.bus.publish('view-hit', { xy: xy, pane: this.pane, attackedPlayer: PLAYER.TWO });
-    }
-
     makeGameboardDOM(gameboard) {
         const result = this.giveDiv(['gameboard']);
         const sizeXY = gameboard.size;
         const hits = gameboard.getHits();
+        console.log(gameboard.player + ' hits.l ::', hits.length);
 
         for (let i = 0; i <= sizeXY[1]; i++) {
             const yRow = this.giveDiv([ 'y-row' ], [ ['y', i ]]);
@@ -175,6 +176,7 @@ class View {
     giveDiv(classes, data) {
         return this.#giveDiv('', classes, data);
     }
+
     giveDivWithID(id, classes, data) {
         return this.#giveDiv(id, classes, data);
     }
@@ -214,7 +216,20 @@ class View {
     }
 
     registerSubscribers() {
-        this.bus.subscribe('game-hit-done', (data) => { this.render(data.game); });
+        this.bus.subscribe('game-hit-done', (data) => { 
+            console.log('game-hit-done', data.game);
+            this.gameContainerEl.innerHTML = '';
+            this.gameContainerEl.appendChild(this.render(data.game)); 
+        });
+    }
+    
+    doHit(evt) {
+        const div = evt.target;
+        // console.log('doHit target', div);
+        const xy = [parseInt(div.dataset.x, 10), parseInt(div.dataset.y, 10)];
+
+        // console.log('publish hit', xy, this.pane, PLAYER.TWO);
+        this.bus.publish('view-hit', { xy: xy, pane: this.pane, attackedPlayer: PLAYER.TWO });
     }
 }
 

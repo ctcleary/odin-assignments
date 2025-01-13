@@ -64,14 +64,16 @@ class Gameboard {
         this.getShips().forEach((shipObj) => {
             const didHit = shipObj.ship.hit(xy);
             if (didHit) {
-                console.log('didHit '+ shipObj.id);
+                // console.log('didHit '+ shipObj.id);
                 isShipHit = true;
             }
         });
 
         // this.bus.publish(this.player + '-hit', { xy: xy });
 
+        // console.log('1 :: this.hits.length', this.hits.length);
         this.hits.push({ xy: xy, shipHit: isShipHit });
+        // console.log('2 :: this.hits.length', this.hits.length);
 
         const allShipsSunk = this.getShips().every((shipObj) => { return shipObj.ship.isSunk(); });
 

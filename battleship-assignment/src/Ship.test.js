@@ -93,19 +93,33 @@ it('Ship.isSunk() returns correct result', () => {
     expect(ship2.isSunk()).toBe(true);
 })
 
-it('Ship.setRepresentation(length) set correct representation', () => {
+it('Ship.setImgSrc(length) set correct src', () => {
     const s4 = new Ship(4);
-    expect(s4.representation.length).toBe(4);
+    expect(s4.imgSrc).toBe('./assets/battleship-length4.png');
 
     const s3 = new Ship(3);
-    expect(s3.representation.length).toBe(3);
+    expect(s3.imgSrc).toBe('./assets/battleship-length3.png');
 
     const s2 = new Ship(2);
-    expect(s2.representation.length).toBe(2);
+    expect(s2.imgSrc).toBe('./assets/battleship-length2.png');
 
     const s1 = new Ship(1);
-    expect(s1.representation.length).toBe(1);
+    expect(s1.imgSrc).toBe('./assets/battleship-length1.png');
 })
+
+// it('Ship.setRepresentation(length) set correct representation', () => {
+//     const s4 = new Ship(4);
+//     expect(s4.representation.length).toBe(4);
+
+//     const s3 = new Ship(3);
+//     expect(s3.representation.length).toBe(3);
+
+//     const s2 = new Ship(2);
+//     expect(s2.representation.length).toBe(2);
+
+//     const s1 = new Ship(1);
+//     expect(s1.representation.length).toBe(1);
+// })
 
 // it('Ship.hitListener(event) correctly reacts to "hit" CustomEvents', () => {
 //     const ship = new Ship(3, [1,1], false);

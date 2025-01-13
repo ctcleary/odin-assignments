@@ -4,9 +4,11 @@
 
 import View from "./View.js";
 import Gameboard from "./Gameboard.js";
+import MessageBus from "./MessageBus.js";
 
 it('View.giveDiv(args)/giveDiveWithID(args) returns the correct div', () => {
-    const v = new View();
+    const mb = new MessageBus();
+    const v = new View(mb);
 
     const div1 = v.giveDiv(['notAButton', 'justADiv'], [ ['x', 4], ['y', 12] ]);
     
@@ -27,15 +29,17 @@ it('View.giveDiv(args)/giveDiveWithID(args) returns the correct div', () => {
 });
 
 it('View.makeGameboardDOM() returns the correct dom arrangement', () => {
-    const v = new View();
+    const mb = new MessageBus();
+    const v = new View(mb);
     const gameboard = new Gameboard();
     const gb = v.makeGameboardDOM(gameboard);
 
-    // Must account for NUMBER col / row; +1
+    // Must account for NUMBER col / row: 10 +1
     // and HEADER row +1
     // and SCREEN div +1
     // AND shipLayer div +1
-    expect(gb.children.length).toBe(13);
+    // AND hitLayer div +1
+    expect(gb.children.length).toBe(14);
     // Text random yRow children counts to check x-count + 1 for number column
     expect(gb.children[3].children.length).toBe(11);
     expect(gb.children[6].children.length).toBe(11);

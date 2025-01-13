@@ -16,11 +16,15 @@
     </div>
     <script>
         const render = () => {
+            
+            const gameContainerEl = document.getElementById('game-container');
+
             const game = new window.Game();
-            const view = new window.View(game.bus);
+            const view = new window.View(game.bus, gameContainerEl);
             window.gameGame = game;
             window.gameView = view;
             const gameboard = game.gameboards['playerOne'];
+            const gameboardTwo = game.gameboards['playerTwo'];
 
             gameboard.receiveHit([5,5]);
 
@@ -32,9 +36,13 @@
             gameboard.receiveHit([9,9]);
             gameboard.receiveHit([3,1]);
 
-            const gameboardContainer = document.getElementById('game-container');
-            gameboardContainer.innerHTML = '';
-            gameboardContainer.appendChild(view.render(game));
+            gameboardTwo.receiveHit([3,2])
+            gameboardTwo.receiveHit([6,7])
+            gameboardTwo.receiveHit([9,9])
+
+            gameContainerEl.innerHTML = '';
+            gameContainerEl.appendChild(view.render(game));
+
         }
     </script>
     <script src="main.js" type="module" onload="render()"></script>
