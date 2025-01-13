@@ -125,7 +125,7 @@ class View {
         const hits = gameboard.getHits();
         
         let wavesCoords = [];
-        for (let i = 1; i < 5+Math.round(Math.random()*10); i++) {
+        for (let i = 1; i < 5+Math.round(Math.random()*8); i++) {
             const xy = [1+Math.round(Math.random()*9), 1+Math.round(Math.random()*9)];
             wavesCoords.push(xy);
         }
@@ -164,12 +164,10 @@ class View {
                 if (wavesCoords.find((coords) => {
                     return coords[0] === j && coords[1] === i;
                 })) {
-                    console.log('add wave to ', xyDiv.dataset.x, xyDiv.dataset.y);
                     const wave = this.giveDiv(['wave']);
                     const randLeft = Math.floor(Math.random()*10);
-                    const randTop = Math.floor(Math.random()*15);
-                    const style = `left: ${randLeft}px; top: ${randTop}px;`;
-                    wave.style = style;
+                    const randTop = Math.floor(Math.random()*25);
+                    wave.style = `left: ${randLeft}px; top: ${randTop}px;`;
                     xyDiv.appendChild(wave);
                 }
                 yRow.appendChild(xyDiv);
