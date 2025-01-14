@@ -1,10 +1,12 @@
 import Player from "./Player.js";
 import Gameboard from "./Gameboard.js";
+import Game from "./Game.js";
 import { PLAYER } from "./Game.js";
 
 it('Player constructor correctly takes playerID and two Gameboard objects', () => {
-    const ownGB = new Gameboard();
-    const oppGB = new Gameboard();
+    const game = new Game();
+    const ownGB = game.gameboards[PLAYER.ONE];
+    const oppGB = game.gameboards[PLAYER.TWO];
 
     const player = new Player(PLAYER.ONE, ownGB, oppGB);
     expect(player.ownGB).toEqual(ownGB);
@@ -12,8 +14,9 @@ it('Player constructor correctly takes playerID and two Gameboard objects', () =
 })
 
 it('Player.attack(xy) correctly calls Gameboard.receiveHit(xy)', () => {
-    const ownGB = new Gameboard();
-    const oppGB = new Gameboard();
+    const game = new Game();
+    const ownGB = game.gameboards[PLAYER.ONE];
+    const oppGB = game.gameboards[PLAYER.TWO];
     
     const spy = jest.spyOn(oppGB, 'receiveHit');
 

@@ -4,11 +4,13 @@
 
 import View from "./View.js";
 import Gameboard from "./Gameboard.js";
+import Game from "./Game.js";
 import MessageBus from "./MessageBus.js";
+import { PLAYER } from "./Player.js";
 
 it('View.giveDiv(args)/giveDiveWithID(args) returns the correct div', () => {
-    const mb = new MessageBus();
-    const v = new View(mb);
+    const g = new Game();
+    const v = new View(g);
 
     const div1 = v.giveDiv(['notAButton', 'justADiv'], [ ['x', 4], ['y', 12] ]);
     
@@ -29,9 +31,9 @@ it('View.giveDiv(args)/giveDiveWithID(args) returns the correct div', () => {
 });
 
 it('View.makeGameboardDOM() returns the correct dom arrangement', () => {
-    const mb = new MessageBus();
-    const v = new View(mb);
-    const gameboard = new Gameboard();
+    const g = new Game();
+    const v = new View(g);
+    const gameboard = g.gameboards[PLAYER.ONE];
     const gb = v.makeGameboardDOM(gameboard);
 
     // Must account for NUMBER col / row: 10 +1

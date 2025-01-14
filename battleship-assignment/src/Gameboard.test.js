@@ -1,33 +1,39 @@
-import Gameboard from "./Gameboard";
+import Gameboard from "./Gameboard.js";
+import Game from "./Game.js";
 
 it('Gameboard class exists', () => {
     expect(Gameboard).not.toBeUndefined();
 })
 
 it('Gameboard is set to the correct size', () => {
-    const gb = new Gameboard();
+    const game = new Game();
+    const gb = new Gameboard(game);
     expect(gb.size[0]).toBe(10);
     expect(gb.size[1]).toBe(10);
 
-    const gb2 = new Gameboard([30,50]);
+    const gameWSize = new Game([30,50])
+    const gb2 = new Gameboard(gameWSize);
     expect(gb2.size[0]).toBe(30);
     expect(gb2.size[1]).toBe(50);
 })
 
 it('Gameboard is set to the correct player string', () => {
-    const gb = new Gameboard([20,20], 'playerOne');
+    const game = new Game();
+    const gb = new Gameboard(game, 'playerOne');
     expect(gb.player).toBe('playerOne');
 })
 
 it('Gameboard.areValidCoords() returns the correct boolean val', () => {
-    const gb = new Gameboard([30,30]);
+    const game = new Game();
+    const gb = new Gameboard(game);
 
     expect(gb.areValidCoords([10,10])).toBe(true);
-    expect(gb.areValidCoords([31,20])).toBe(false);    
+    expect(gb.areValidCoords([11,11])).toBe(false);    
 })
 
 it('Gameboard.receiveAttack() logs the attack correctly', () => {
-    const gb = new Gameboard();
+    const game = new Game();
+    const gb = new Gameboard(game);
     
     gb.receiveHit([3,3]);
     expect(gb.getHits()).toEqual([ { xy: [3,3], shipHit: false } ]);
@@ -50,7 +56,8 @@ it('Gameboard.receiveAttack() logs the attack correctly', () => {
 // })
 
 it('Gameboard correctly assesses Gameboard.isAlreadyHit(xy)', () => {
-    const gb = new Gameboard();
+    const game = new Game();
+    const gb = new Gameboard(game);
     
     gb.receiveHit([10,7]);
     expect(gb.isAlreadyHit([10,7])).toBe(true);
@@ -66,7 +73,8 @@ it('Gameboard correctly assesses Gameboard.isAlreadyHit(xy)', () => {
 // })
 
 it('Gameboard.setShipCoords(args) correctly sets the ship coords', () => {
-    const gb = new Gameboard();
+    const game = new Game();
+    const gb = new Gameboard(game);
 
     const ship21 = gb.getShips().find((shipObj) => { return shipObj.id === '2-1' }).ship;
     expect(ship21.getShipCoords()).toEqual([ [-1,-1], [0, -1]])
@@ -75,7 +83,8 @@ it('Gameboard.setShipCoords(args) correctly sets the ship coords', () => {
 })
 
 it('Gameboard correctly calls Gameboard.lose() when all ships are destroyed', () => {
-    const gb = new Gameboard();
+    const game = new Game();
+    const gb = new Gameboard(game);
 
     const loseSpy = jest.spyOn(gb, 'lose');
 
@@ -128,7 +137,8 @@ it('Gameboard correctly calls Gameboard.lose() when all ships are destroyed', ()
 })
 
 it('Gameboard.hit(xy) returns true if a ship is hit', () => {
-    const gb = new Gameboard();
+    const game = new Game();
+    const gb = new Gameboard(game);
 
     gb.setShipCoords('4-1', [2,2], false);
 

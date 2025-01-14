@@ -1,5 +1,5 @@
 import { PLAYER } from "./Player.js";
-import MessageBus from "./MessageBus.js";
+import ViewShipPlacer from "./ViewShipPlacer.js";
 
 const PANE = {
     PREGAME : 'pregame',
@@ -16,54 +16,57 @@ const PANE = {
 }
 
 class View {
-    constructor(messageBus, gameContainerEl) {
-        this.bus = messageBus;
+    constructor(game, gameContainerEl) {
+        this.game = game;
+        this.bus = game.bus;
         this.gameContainerEl = gameContainerEl;
 
         // this.pane = PANE.PREGAME;
-        this.pane = PANE.PLAYER_ONE_TURN;
+        this.pane = PANE.PLAYER_ONE_PLACEMENT;
+        // this.pane = PANE.PLAYER_ONE_TURN;
+
+        this.shipPlacers = [];
         
         this.registerSubscribers();
     }
 
-    // setBus(messageBus) {
-    //     this.bus = messageBus;
-    //     this.registerSubscribers();
-    // }
-
-    reRender(game) {
+    reRender() {
         this.gameContainerEl.innerHTML = '';
-        this.gameContainerEl.appendChild(this.render(game));
+        this.gameContainerEl.appendChild(this.render());
     }
 
     // Returns the top DOM Node.
-    render(game) {
-        this.game = this.game || game;
-
+    render() {
         console.log('View.render(game)');
         const result = this.giveDiv([ 'boards-container' ]);
-        result.classList.add(game.activePlayer === PLAYER.ONE ? 'playerOne-turn' : 'playerTwo-turn');
+        // result.classList.add(this.game.activePlayer === PLAYER.ONE ? 'playerOne-turn' : 'playerTwo-turn');
+        result.classList.add('pane-'+this.pane);
 
-        result.appendChild(this.renderPlayerBoard(game, PLAYER.ONE));
-        result.appendChild(this.renderPlayerBoard(game, PLAYER.TWO));
+        const tempPane = document.createElement('h5');
+        tempPane.innerText = 'Debug - Current Pane: ' + this.pane;
+        tempPane.classList.add('temp-pane')
+        result.appendChild(tempPane);
+
+        result.appendChild(this.renderPlayerBoard(this.game, PLAYER.ONE));
+        result.appendChild(this.renderPlayerBoard(this.game, PLAYER.TWO));
 
         const pOneShipLayer = result.querySelector(`#${PLAYER.ONE}-ship-layer`);
-        this.renderShips(game, pOneShipLayer, PLAYER.ONE);
+        this.renderShips(this.game, pOneShipLayer, PLAYER.ONE);
         const pTwoShipLayer = result.querySelector(`#${PLAYER.TWO}-ship-layer`);
-        this.renderShips(game, pTwoShipLayer, PLAYER.TWO);
+        this.renderShips(this.game, pTwoShipLayer, PLAYER.TWO);
 
         const pOneHitLayer = result.querySelector(`#${PLAYER.ONE}-hit-layer`);
-        this.renderHits(game, pOneHitLayer, PLAYER.ONE);
+        this.renderHits(this.game, pOneHitLayer, PLAYER.ONE);
         const pTwoHitLayer = result.querySelector(`#${PLAYER.TWO}-hit-layer`);
-        this.renderHits(game, pTwoHitLayer, PLAYER.TWO);
+        this.renderHits(this.game, pTwoHitLayer, PLAYER.TWO);
 
         if (this.pane === PANE.PREGAME) {
-            result.appendChild(this.renderShipDock(game, PLAYER.ONE));
-            result.appendChild(this.renderShipDock(game, PLAYER.TWO));
+            result.appendChild(this.renderShipDock(this.game, PLAYER.ONE));
+            result.appendChild(this.renderShipDock(this.game, PLAYER.TWO));
         } else if (this.pane === PANE.PLAYER_ONE_PLACEMENT) {
-            result.appendChild(this.renderShipDock(game, PLAYER.ONE));
+            result.appendChild(this.renderShipDock(this.game, PLAYER.ONE));
         } else if (this.pane === PANE.PLAYER_TWO_PLACEMENT) {
-            result.appendChild(this.renderShipDock(game, PLAYER.TWO));
+            result.appendChild(this.renderShipDock(this.game, PLAYER.TWO));
         }
 
         return result;
@@ -86,30 +89,37 @@ class View {
     renderShips(game, parent, player) {
         // console.log('renderShips', player);
         const gameboard = game.gameboards[player];
-        const ships = gameboard.getShips().map((shipObj) => { return shipObj.ship; });
+        // const ships = gameboard.getShips().map((shipObj) => { return shipObj.ship; });
+        const shipObjs = gameboard.getShips();
 
-        ships.forEach((ship) => {
-            const classes = ['ship'];
-            classes.push(ship.isHori ? 'hori' : 'vert');
-            if (ship.length === 1) {
-                classes.push('length-one')
+        shipObjs.forEach((shipObj) => {
+            const ship = shipObj.ship;
+            const anchorCoords = ship.getShipCoords()[0];
+            // Do not place ships that have -1,-1 coords. these are unplaced.
+            if (anchorCoords[0] !== -1 && anchorCoords[1] !== -1) {
+                const classes = ['ship'];
+                classes.push(ship.isHori ? 'hori' : 'vert');
+                if (ship.length === 1) {
+                    classes.push('length-one')
+                }
+                if (ship.isSunk()) {
+                    classes.push('sunk');
+                }
+                const shipDiv = this.giveDiv(classes);
+                shipDiv.id = player+'-'+shipObj.id;
+                const imgEl = document.createElement('img');
+
+                const origin = ship.getShipCoords()[0];
+                let style = `grid-column: ${origin[0]+1}; grid-row: ${origin[1]+1};`;
+
+                shipDiv.style = style;
+                // shipDiv.innerText = ship.representation;
+                
+                imgEl.src = ship.imgSrc;
+                shipDiv.appendChild(imgEl);
+
+                parent.appendChild(shipDiv);
             }
-            if (ship.isSunk()) {
-                classes.push('sunk');
-            }
-            const shipDiv = this.giveDiv(classes);
-            const imgEl = document.createElement('img');
-
-            const origin = ship.getShipCoords()[0];
-            let style = `grid-column: ${origin[0]+1}; grid-row: ${origin[1]+1};`;
-
-            shipDiv.style = style;
-            // shipDiv.innerText = ship.representation;
-            
-            imgEl.src = ship.imgSrc;
-            shipDiv.appendChild(imgEl);
-
-            parent.appendChild(shipDiv);
         });
     }
 
@@ -185,7 +195,21 @@ class View {
                         const span = document.createElement('span');
                         span.classList.add('coords')
                         span.innerHTML = `${j},${i}`
-                        xyDiv.addEventListener('click', (e) => { this.doHit(e); });
+                        xyDiv.addEventListener('click', (e) => { 
+                            if (!!window.pickedUpShip) {
+                                // e.g. 'shipPlacer-playerOne-4-1'
+                                const parts = window.pickedUpShip.split('-');
+                                const ownGBClick = gameboard.player === parts[1];
+
+                                if (ownGBClick) {
+                                    console.log('own GB click w ship picked up');
+                                }
+
+                                console.log('registering picked up ship');
+                            } else if (this.pane === gameboard.player+'-turn') {
+                                this.doHit(e); 
+                            }
+                        });
                         xyDiv.appendChild(span);
                     }
                 }
@@ -226,6 +250,12 @@ class View {
         header.innerText = 'Ship Dock';
         dockFrame.appendChild(header);
 
+        const randoBtn = document.createElement('button');
+        randoBtn.type = 'button';
+        randoBtn.innerText = 'Randomize';
+        randoBtn.classList.add('rando-button');
+        dockFrame.appendChild(randoBtn);
+
         const gb = game.gameboards[player];
         const shipObjArr = gb.getShips();
 
@@ -244,11 +274,21 @@ class View {
 
             const img = document.createElement('img');
             img.id = player+'-ship-'+id;
+            // img.draggable = true;
             img.src = imgSrc;
             img.classList.add('dock-ship');
+            img.classList.add('ship');
+            img.classList.add('hori');
+
+            const shipPlacer = new ViewShipPlacer(game, img, shipObj, player);
+            this.shipPlacers.push(shipPlacer);
         
             dockFrame.appendChild(img);
-        })
+        });
+
+        const instructions = this.giveDiv(['instructions']);
+        instructions.innerText = 'Click to pick up | [Space] to flip | Click to place';
+        dockFrame.appendChild(instructions);
 
         return result;
     }

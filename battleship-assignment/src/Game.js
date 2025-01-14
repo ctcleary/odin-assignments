@@ -11,7 +11,7 @@ class Game {
         this.bus = new MessageBus();
         this.registerSubscribers();
 
-        this.gameboards = this.setupGameboards(sizeXY, this.bus);
+        this.gameboards = this.setupGameboards(this.bus);
         this.players = this.setupPlayers(this.gameboards);
 
         this.activePlayer = PLAYER.ONE;
@@ -20,14 +20,14 @@ class Game {
 
     setupGameboards(sizeXY, messageBus) {
         const gameboards = {
-            [PLAYER.ONE] : new Gameboard(sizeXY, PLAYER.ONE),
-            [PLAYER.TWO] : new Gameboard(sizeXY, PLAYER.TWO),
+            [PLAYER.ONE] : new Gameboard(this, PLAYER.ONE),
+            [PLAYER.TWO] : new Gameboard(this, PLAYER.TWO),
         }
         
         gameboards[PLAYER.ONE].setBus(messageBus);
         gameboards[PLAYER.TWO].setBus(messageBus);
 
-        this.setGameboardShipCoordsDefault(gameboards);
+        // this.setGameboardShipCoordsDefault(gameboards);
 
         return gameboards;
     }

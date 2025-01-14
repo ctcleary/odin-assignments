@@ -9,7 +9,23 @@
 <body>
     <div id="wrapper">
         <h1>The Odin Project - Battleship Game Assignment</h1>
-
+        <div id="debug-buttons">
+            Debug buttons
+            <button id="pane-pregame" onclick="window.gameView.switchPane('pregame')" type="button">
+                Pane: Pregame</button>
+            <button id="pane-screen" onclick="window.gameView.switchPane('screen')" type="button">
+                Pane: Screen</button>
+            <button id="pane-playerOne-placement" onclick="window.gameView.switchPane('playerOne-placement')" type="button">
+                Pane: pOne Placement</button>
+            <button id="pane-playerTwo-placement" onclick="window.gameView.switchPane('playerTwo-placement')" type="button">
+                Pane: pTwo Placement</button>
+            <button id="pane-playerOne-turn" onclick="window.gameView.switchPane('playerOne-turn')" type="button">
+                Pane: pOne Turn</button>
+            <button id="pane-playerTwo-turn" onclick="window.gameView.switchPane('playerTwo-turn')" type="button">
+                Pane: pTwo Turn</button>
+            <button id="pane-postgame" onclick="window.gameView.switchPane('postgame')" type="button">
+                Pane: Post Game</button>
+        </div>
         <div id="game-container">
 
         </div>
@@ -20,28 +36,28 @@
             const gameContainerEl = document.getElementById('game-container');
 
             const game = new window.Game();
-            const view = new window.View(game.bus, gameContainerEl);
+            const view = new window.View(game, gameContainerEl);
             window.gameGame = game;
             window.gameView = view;
             const gameboard = game.gameboards['playerOne'];
             const gameboardTwo = game.gameboards['playerTwo'];
 
-            gameboard.receiveHit([5,5]);
+            // gameboard.receiveHit([5,5]);
 
-            gameboard.receiveHit([4,5]);
-            gameboard.receiveHit([4,6]);
+            // gameboard.receiveHit([4,5]);
+            // gameboard.receiveHit([4,6]);
             
-            gameboard.receiveHit([7,7]);
-            gameboard.receiveHit([8,8]);
-            gameboard.receiveHit([9,9]);
-            gameboard.receiveHit([3,1]);
+            // gameboard.receiveHit([7,7]);
+            // gameboard.receiveHit([8,8]);
+            // gameboard.receiveHit([9,9]);
+            // gameboard.receiveHit([3,1]);
 
-            gameboardTwo.receiveHit([3,2])
-            gameboardTwo.receiveHit([6,7])
-            gameboardTwo.receiveHit([9,9])
+            // gameboardTwo.receiveHit([3,2])
+            // gameboardTwo.receiveHit([6,7])
+            // gameboardTwo.receiveHit([9,9])
 
             gameContainerEl.innerHTML = '';
-            gameContainerEl.appendChild(view.render(game));
+            gameContainerEl.appendChild(view.render());
 
         }
     </script>

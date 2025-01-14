@@ -3,27 +3,27 @@ import MessageBus from "./MessageBus.js";
 import { PLAYER } from "./Player.js";
 
 class Gameboard {
-    constructor(size = [10,10], playerStr = null) {
-        this.size = size;
+    constructor(game, playerStr = null) {
+        this.size = game.size;
         this.hits = [];
         this.player = playerStr;
 
         this.bus = new MessageBus();
 
         this.ships = [
-            { id: '4-1', ship: new Ship(4) },
+            { id: '4-1', player: this.player, ship: new Ship(4) },
 
-            { id: '3-1', ship: new Ship(3) },
-            { id: '3-2', ship: new Ship(3) },
+            { id: '3-1', player: this.player, ship: new Ship(3) },
+            { id: '3-2', player: this.player, ship: new Ship(3) },
 
-            { id: '2-1', ship: new Ship(2) },
-            { id: '2-2', ship: new Ship(2) },
-            { id: '2-3', ship: new Ship(2) },
+            { id: '2-1', player: this.player, ship: new Ship(2) },
+            { id: '2-2', player: this.player, ship: new Ship(2) },
+            { id: '2-3', player: this.player, ship: new Ship(2) },
 
-            { id: '1-1', ship: new Ship(1) },
-            { id: '1-2', ship: new Ship(1) },
-            { id: '1-3', ship: new Ship(1) },
-            { id: '1-4', ship: new Ship(1) },
+            { id: '1-1', player: this.player,  ship: new Ship(1) },
+            { id: '1-2', player: this.player, ship: new Ship(1) },
+            { id: '1-3', player: this.player, ship: new Ship(1) },
+            { id: '1-4', player: this.player, ship: new Ship(1) },
         ];
     }
 
@@ -60,7 +60,7 @@ class Gameboard {
         if (this.isAlreadyHit(xy))
             throw new Error('Coords provided to Gameboard.receiveAttack(xy) were already hit!');
 
-        console.log('Gameboard receiveHit', xy);
+        // console.log('Gameboard receiveHit', xy);
         let isShipHit = false;
         this.getShips().forEach((shipObj) => {
             const didHit = shipObj.ship.hit(xy);
