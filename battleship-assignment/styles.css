@@ -246,9 +246,9 @@ body {
     transform: rotate(90deg) translate(1.4rem, -1.3rem);
 }
 
-.ship.length-one {
+.ship.vert.length-one {
     padding: 0;
-    transform: none;
+    transform: rotate(90deg) translate(1.2rem, -1.3rem);
 }
 
 .ship.sunk img {
@@ -305,12 +305,18 @@ body {
 }
 
 
-.ship-dock .rando-button {
+.ship-dock .randomize-button {
     position: absolute;
-    top: 0.35rem;
+    top: 0.75rem;
     right: 0.35rem;
-
 }
+
+.ship-dock .reset-button {
+    position: absolute;
+    top: 0.75rem;
+    right: 6rem;
+}
+
 .ship-dock .ship-dock-frame {
     display: inline-block;
     width: calc(11 * var(--cell-size));
@@ -328,6 +334,7 @@ body {
 .instructions {
     text-transform: uppercase;
     font-weight: 700;
+    margin-top: 1rem;
     color: #9998a1;
 }
 

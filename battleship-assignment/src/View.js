@@ -250,11 +250,25 @@ class View {
         header.innerText = 'Ship Dock';
         dockFrame.appendChild(header);
 
-        const randoBtn = document.createElement('button');
-        randoBtn.type = 'button';
-        randoBtn.innerText = 'Randomize';
-        randoBtn.classList.add('rando-button');
-        dockFrame.appendChild(randoBtn);
+        const resetBtn = document.createElement('button');
+        resetBtn.type = 'button';
+        resetBtn.innerText = 'Reset'
+        resetBtn.classList.add('ship-dock-button');
+        resetBtn.classList.add('reset-button');
+        resetBtn.addEventListener('click', () => {
+            game.unplaceAllShips(player);
+        });
+        dockFrame.appendChild(resetBtn);
+
+        const randomizeBtn = document.createElement('button');
+        randomizeBtn.type = 'button';
+        randomizeBtn.innerText = 'Randomize';
+        randomizeBtn.classList.add('ship-dock-button');
+        randomizeBtn.classList.add('randomize-button');
+        randomizeBtn.addEventListener('click', () => {
+            game.randomizeAllShips(player);
+        });
+        dockFrame.appendChild(randomizeBtn);
 
         const gb = game.gameboards[player];
         const shipObjArr = gb.getShips();

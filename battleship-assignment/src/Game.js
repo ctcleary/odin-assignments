@@ -64,6 +64,18 @@ class Game {
         });
     }
 
+    unplaceAllShips(player) {
+        const gb = this.gameboards[player];
+        const ships = gb.getShips().map((shipObj) => { return shipObj.ship });
+        ships.forEach((ship) => {
+            ship.setShipCoords([-1,-1], true);
+        });
+        this.bus.publish('request-render');
+    }
+    randomizeAllShips(player) {
+        console.log('TODO Game.randomizeAllShips(player)')
+    }
+
     switchActivePlayer() {
         this.activePlayer = (this.activePlayer === PLAYER.ONE) ? PLAYER.TWO : PLAYER.ONE;
         return this.activePlayer;
