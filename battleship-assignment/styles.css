@@ -87,9 +87,16 @@ body {
     user-select: none;
 }
 
-/* hide opponent ships */
+/* hide opponent ships during turns */
 .boards-container.pane-playerOne-turn #gameboard-playerTwo .ship-layer,
-.boards-container.pane-playerTwo-turn #gameboard-playerOne .ship-layer {
+.boards-container.pane-playerTwo-turn #gameboard-playerOne .ship-layer,
+/* hide opponent ships during placement */
+.boards-container.pane-playerOne-placement #gameboard-playerTwo .ship-layer,
+.boards-container.pane-playerTwo-placement #gameboard-playerOne .ship-layer,
+/* hide both ship layers during screen */
+.boards-conatiner.pane-screen #gameboard-playerOne,
+.boards-conatiner.pane-screen #gameboard-playerTwo {
+
     display: none;
 }
 
