@@ -105,6 +105,12 @@ class Gameboard {
         return this.ships;
     }
 
+    getShipByID(shipID) {
+        return this.getShips().find((shipObj) => {
+            return shipObj.id === shipID;
+        });
+    }
+
     lose() {
         this.bus.publish(PLAYER.TWO + '-lose');
         // const loseEv = new Event('lose');

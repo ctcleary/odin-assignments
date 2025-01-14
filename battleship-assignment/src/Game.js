@@ -77,6 +77,25 @@ class Game {
         this.bus.subscribe(PLAYER.TWO+'-lose', () => {
             console.log('PLAYER TWO LOSES');
         });
+
+        // this.bus.publish('ship-placed', { shipId: shipObj.id, shipPlayer: shipObj.player, xy: xy, isHori: isHori});
+        this.bus.subscribe('ship-placed', (data) => {
+            this.shipPlacedHandler(data);
+        });
+    }
+
+    shipPlacedHandler(data) {
+        console.log('game heard ship-placed');
+        const player = data.player;
+        const shipId = data.shipId;
+
+        const xy = data.xy;
+        const isHori = data.isHori;
+
+        const shipObj = this.gameboards[player].getShipByID(shipId);
+        shipObj.ship.setShipCoords(xy, isHori);
+        
+        this.bus.publish('request-render');
     }
 
     doHit(data) {

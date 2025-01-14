@@ -4,6 +4,7 @@ class ViewShipPlacer {
     constructor(game, shipEl, shipObj, player) {
         this.id = 'shipPlacer-'+player+'-'+shipObj.id; // e.g. 'shipPlacer-playerOne-4-1'
         this.game = game;
+        this.occupiedCoords = this.findOccupiedCoords(game, player);
         this.bus = game.bus;
         this.player = player;
         this.shipEl = shipEl;
@@ -11,14 +12,16 @@ class ViewShipPlacer {
 
         this.mousePos = [null, null];
 
-        this.attachEventHandlers(shipEl, shipObj, player);
+        const existingCoords = shipObj.ship.getShipCoords();
+        if (existingCoords[0][0] === -1 && existingCoords[0][1] === -1) {
+            this.attachEventHandlers(shipEl, shipObj, player);
+        } else {
+            shipEl.classList.add('hidden');
+        }
     }
 
     attachEventHandlers(shipEl, shipObj, player) {
         shipEl.dataset.pickedUp = false;
-
-        let mouseMoveHandler;
-        let endClickHandler;
 
         shipEl.addEventListener('click', (evt) => {
             if (!!window.pickedUpShip) {
@@ -44,7 +47,7 @@ class ViewShipPlacer {
             }
             const endClickHandlerWrapper = (evt) => {
                 evt.stopPropagation();
-                this.endClickHandler(evt, shipEl, shipObj);
+                this.endClickHandler(evt, this.game, shipEl, shipObj);
                 console.log('removeEventListeners');
                 window.removeEventListener('mousemove', mouseMoveHandlerWrapper);
                 window.removeEventListener('keydown', spaceDownHandlerWrapper);
@@ -74,7 +77,7 @@ class ViewShipPlacer {
         }
     }
 
-    endClickHandler(evt, shipEl, shipObj) {
+    endClickHandler(evt, game, shipEl, shipObj) {
         console.log('endclick target', evt.target);
         const targetEl = evt.target;
         if (targetEl.classList.contains('cell')) {
@@ -85,13 +88,19 @@ class ViewShipPlacer {
             const length = parseInt(shipObj.id.charAt(0), 10);
             const player = shipObj.player;
             const isHori = shipEl.classList.contains('hori');
-            const isValidPlacement = (isHori && (xy[0]+length) <= 10) || (!isHori && (xy[1]+length) <= 10);
-            console.log('isValidPlacement', isValidPlacement);
+            let isValidPlacement = (isHori && (xy[0]+(length-1)) <= 10) || (!isHori && (xy[1]+(length-1)) <= 10);
+            const anyCoordsOccupied = this.areAnyCoordsOccupied(shipObj.ship, xy, length, isHori);
+            console.log('anyCoordsOccupied', anyCoordsOccupied);
+            isValidPlacement = isValidPlacement && !anyCoordsOccupied;
 
             if (isValidPlacement) {
-                this.bus.publish('ship-placed', { shipId: shipObj.id, shipPlayer: shipObj.player, xy: xy});
+                console.log('publish ship-placed');
+                this.bus.publish('ship-placed', { shipId: shipObj.id, player: shipObj.player, xy: xy, isHori: isHori });
                 // TODO add subscription via Game for .. Gameboard? I think?
                 shipEl.classList.add('hidden');
+            } else {
+                shipEl.classList.remove('vert');
+                shipEl.classList.add('hori');
             }
         } else {
             // evt.stopPropagation();
@@ -105,6 +114,8 @@ class ViewShipPlacer {
     }
 
     spaceDownHandler(evt, shipEl) {
+        evt.preventDefault();
+
         if (shipEl.classList.contains('hori')) {
             shipEl.classList.remove('hori');
             shipEl.classList.add('vert');
@@ -120,6 +131,37 @@ class ViewShipPlacer {
             shipEl.style.left = (this.mousePos[0]-20)+'px'; // -20 to put nose of ship at mouse point
             shipEl.style.top = (this.mousePos[1]-10)+'px'; // -10 to put nose of ship at mouse point
         }
+    }
+
+    findOccupiedCoords(game, player) {
+        console.log('findOccupiedCoords');
+        const ships = game.gameboards[player].getShips().map((shipObj) => { return shipObj.ship });
+        let occupiedCoords = [];
+
+        for (let i = 0; i < ships.length; i++) {
+            const ship = ships[i];
+            const shipCoordsArr = ship.getShipCoords();
+            if (shipCoordsArr[0][0] === -1) {
+                continue;
+            }
+            occupiedCoords = occupiedCoords.concat(shipCoordsArr);
+        }
+
+        return occupiedCoords;
+    }
+
+    areAnyCoordsOccupied(ship, xy, length, isHori) {
+        console.log('this.occupiedCoords', this.occupiedCoords);
+        const determinedCoordsArr = ship.determineCoords(xy, length, isHori);
+
+        const isOccupied = this.occupiedCoords.find((occCoords) => {
+            const occupied = determinedCoordsArr.find((shipCoords) => {
+                return shipCoords[0] === occCoords[0] && shipCoords[1] === occCoords[1];
+            });
+            return occupied;
+        })
+
+        return isOccupied;
     }
 }
 

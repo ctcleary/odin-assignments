@@ -4,8 +4,8 @@ class Ship {
         this.hits = [];
         this.isHori = isHori;
 
-        // console.log('shipCoords', this.determineCoords(length, xy, isHori));
-        this.shipCoords = this.determineCoords(length, xy, isHori);
+        // console.log('shipCoords', this.determineCoords(xy, length, isHori));
+        this.shipCoords = this.determineCoords(xy, length, isHori);
         this.imgSrc = this.setImgSrc(length);
     }
 
@@ -54,11 +54,11 @@ class Ship {
 
     setShipCoords(xy, isHori) {
         this.isHori = isHori;
-        this.shipCoords = this.determineCoords(this.length, xy, isHori);
+        this.shipCoords = this.determineCoords(xy, this.length, isHori);
     }
 
     // x,y is always the START node of the array
-    determineCoords(length, xy, isHori) {
+    determineCoords(xy, length, isHori) {
         const coords = [];
 
         for (let i = 0; i < length; i++) {

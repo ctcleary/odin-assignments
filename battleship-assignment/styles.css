@@ -300,9 +300,6 @@ body {
 .ship-dock .ship {
     margin: 0 1rem 0 1rem;
 }
-#playerOne-ship-dock {
-    /* margin-right: 4rem; */
-}
 #playerTwo-ship-dock {
     grid-column: 2;
 }

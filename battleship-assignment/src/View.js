@@ -346,6 +346,11 @@ class View {
             this.gameContainerEl.innerHTML = '';
             this.gameContainerEl.appendChild(this.render(data.game)); 
         });
+        
+        this.bus.subscribe('request-render', () => {
+            console.log('reRender');
+            this.reRender();
+        });
     }
     
     doHit(evt) {
