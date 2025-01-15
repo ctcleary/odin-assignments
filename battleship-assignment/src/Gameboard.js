@@ -179,6 +179,47 @@ class Gameboard {
     findOccupiedCoordsPadded() {
         return this.findOccupiedCoords(true);
     }
+
+    unplaceAllShips() {
+        const ships = this.getShips().map((shipObj) => { return shipObj.ship });
+        ships.forEach((ship) => {
+            ship.setShipCoords([-1,-1], true);
+        });
+    }
+
+    findConflictingCoords(occupiedArr, shipCoordsArr) {
+        // I wonder if theres a better way to do this?
+        return occupiedArr.find((occ) => {
+            return shipCoordsArr.find((shipCoord) => {
+                return shipCoord[0] === occ[0] && shipCoord[1] === occ[1];
+            })
+        })
+    }
+
+    randomizeAllShips() {
+        const ships = this.getShips().map((shipObj) => { return shipObj.ship });
+        ships.forEach((ship) => {
+            const occArr = this.findOccupiedCoordsPadded();
+            let foundValidCoords;
+            let isHori;
+            while (!foundValidCoords) {
+                const x = 1 + Math.round(Math.random()*9);
+                const y = 1 + Math.round(Math.random()*9);
+                isHori = Math.random() > 0.5 ? true : false;
+                const detCoords = ship.determineCoords([x,y], ship.getLength(), isHori);
+
+                const valid = detCoords.every((xy) => {
+                    return this.areValidCoords(xy)
+                });
+
+                if (valid && !this.findConflictingCoords(occArr, detCoords)) {
+                    foundValidCoords = detCoords;
+                }
+            }
+            console.log(isHori);
+            ship.setShipCoords(foundValidCoords[0], isHori);
+        });
+    }
 }
 
 export default Gameboard;

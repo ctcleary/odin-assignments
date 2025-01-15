@@ -48,6 +48,10 @@ class Ship {
         return this.hits.length >= this.length;
     }
 
+    getLength() {
+        return this.length;
+    }
+
     getShipCoords() {
         return this.shipCoords;
     }

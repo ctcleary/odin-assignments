@@ -67,21 +67,28 @@ class Game {
 
     unplaceAllShips(player) {
         const gb = this.gameboards[player];
-        const ships = gb.getShips().map((shipObj) => { return shipObj.ship });
-        ships.forEach((ship) => {
-            ship.setShipCoords([-1,-1], true);
-        });
+        gb.unplaceAllShips();
         this.bus.publish('request-render');
     }
 
     randomizeAllShips(player) {
         const gb = this.gameboards[player];
-        this.unplaceAllShips(player);
+        gb.unplaceAllShips();
         gb.randomizeAllShips();
+        this.bus.publish('placement-complete');
+        this.bus.publish('request-render');
     }
 
-    switchActivePlayer() {
-        this.activePlayer = (this.activePlayer === PLAYER.ONE) ? PLAYER.TWO : PLAYER.ONE;
+    unsetActivePlayer() {
+        this.activePlayer = null;
+    }
+    
+    switchActivePlayer(player = null) {
+        if (player) {
+            this.activePlayer = player;
+        } else {
+            this.activePlayer = (this.activePlayer === PLAYER.ONE) ? PLAYER.TWO : PLAYER.ONE;
+        }
         return this.activePlayer;
     }
 

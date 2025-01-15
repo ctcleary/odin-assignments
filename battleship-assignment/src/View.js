@@ -82,7 +82,11 @@ class View {
 
         const headerOne = document.createElement('h2');
         headerOne.classList.add('header');
-        headerOne.innerHTML = game.activePlayer === player ? 'YOUR BOARD' : 'OPPONENT BOARD';
+        if (this.game.activePlayer) {
+            headerOne.innerHTML = game.activePlayer === player ? 'Your Board' : 'Opponent Board';
+        } else {
+            headerOne.innerHTML = player === PLAYER.ONE ? "Player One Board" : "Player Two Board"
+        }
         playerBoardContainer.appendChild(headerOne);
         playerBoardContainer.appendChild(this.makeGameboardDOM(playerGB));
 
@@ -261,6 +265,8 @@ class View {
         resetBtn.classList.add('reset-button');
         resetBtn.addEventListener('click', () => {
             game.unplaceAllShips(player);
+            const placementPane = player === PLAYER.ONE ? PANE.PLAYER_ONE_PLACEMENT : PANE.PLAYER_TWO_PLACEMENT;
+            this.switchPane(placementPane);
         });
         dockFrame.appendChild(resetBtn);
 
@@ -332,7 +338,18 @@ class View {
     }
 
     switchPane(newPane) {
+        const oldPane = this.pane;
+        const playerOnePanes = [PANE.PLAYER_ONE_PLACEMENT, PANE.PLAYER_ONE_PLACEMENT_COMPLETE, PANE.PLAYER_ONE_TURN];
+        const playerTwoPanes = [PANE.PLAYER_TWO_PLACEMENT, PANE.PLAYER_TWO_PLACEMENT_COMPLETE, PANE.PLAYER_TWO_TURN];
+        const noPlayerPanes = [PANE.PREGAME, PANE.POSTGAME];
         this.pane = newPane;
+        if (playerOnePanes.find((pane) => { return newPane === pane; })) {
+            this.game.switchActivePlayer(PLAYER.ONE);
+        } else if (playerTwoPanes.find((pane) => { return newPane === pane; })) {
+            this.game.switchActivePlayer(PLAYER.TWO);
+        } else {
+            this.game.unsetActivePlayer();
+        }
         this.reRender(this.game);
     }
 
