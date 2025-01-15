@@ -1,7 +1,6 @@
 import Gameboard from "./Gameboard.js";
 import MessageBus from "./MessageBus.js";
 import Player, { PLAYER } from "./Player.js";
-// import { PHASE } from "./View.js";
 
 const PHASE = {
     PREGAME : 'pregame',
@@ -42,33 +41,66 @@ class Game {
         this.loser = null;
     }
 
-    changePhase(phase) {
-        switch(data.phase) {
-            case PREGAME:
+    changePhase(newPhase, doPublish) {
+        console.log(newPhase);
+        this.phase = newPhase;
+        switch(newPhase) {
+            case PHASE.PREGAME :
+            case PHASE.SCREEN :
+            case PHASE.POSTGAME :
+                this.unsetActivePlayer();
                 break;
-            case PHASE.PLAYER_ONE_PLACEMENT:
+
+            case PHASE.PLAYER_ONE_PLACEMENT :
+            case PHASE.PLAYER_ONE_PLACEMENT_COMPLETE :
+            case PHASE.PLAYER_ONE_INTRO_SCREEN :
+            case PHASE.PLAYER_ONE_TURN :
+                this.switchActivePlayer(PLAYER.ONE);
                 break;
-            case PHASE.PLAYER_ONE_PLACEMENT_COMPLETE:
-                break;
-            case PHASE.PLAYER_TWO_PLACEMENT:
-                break;
-            case PHASE.PLAYER_TWO_PLACEMENT_COMPLETE:
-                break;
-            case PHASE.PLAYER_ONE_INTRO_SCREEN:
-                break;
-            case PHASE.PLAYER_ONE_TURN:
-                break;
-            case PHASE.PLAYER_TWO_INTRO_SCREEN:
-                break;
-            case PHASE.PLAYER_TWO_TURN:
-                break;
-            case SCREEN :
-                break;
-            case POSTGAME :
+
+            case PHASE.PLAYER_TWO_PLACEMENT :
+            case PHASE.PLAYER_TWO_PLACEMENT_COMPLETE :
+            case PHASE.PLAYER_TWO_INTRO_SCREEN :
+            case PHASE.PLAYER_TWO_TURN :
+                this.switchActivePlayer(PLAYER.TWO);
                 break;
             default:
                 break;
         }
+
+        // switch(newPhase) {
+        //     case PHASE.PREGAME :
+        //         break;
+        //     case PHASE.SCREEN :
+        //         break;
+        //     case PHASE.POSTGAME :
+        //         break;
+
+        //     case PHASE.PLAYER_ONE_PLACEMENT :
+        //         break;
+        //     case PHASE.PLAYER_ONE_PLACEMENT_COMPLETE :
+        //         break;
+        //     case PHASE.PLAYER_ONE_INTRO_SCREEN :
+        //         break;
+        //     case PHASE.PLAYER_ONE_TURN :
+        //         break;
+
+        //     case PHASE.PLAYER_TWO_PLACEMENT :
+        //         break;
+        //     case PHASE.PLAYER_TWO_PLACEMENT_COMPLETE :
+        //         break;
+        //     case PHASE.PLAYER_TWO_INTRO_SCREEN :
+        //         break;
+        //     case PHASE.PLAYER_TWO_TURN :
+        //         break;
+        //     default:
+        //         break;
+        // }
+
+        if (doPublish) {
+            this.bus.publish('game-phase-change', { phase: newPhase })
+        }
+        this.bus.publish('request-render');
     }
 
     setupGameboards(sizeXY, messageBus) {
@@ -127,8 +159,9 @@ class Game {
         const gb = this.gameboards[player];
         gb.unplaceAllShips();
         gb.randomizeAllShips();
-        this.bus.publish('placement-complete');
-        this.bus.publish('request-render');
+
+        const newPhase = player === PLAYER.ONE ? PHASE.PLAYER_ONE_PLACEMENT_COMPLETE : PHASE.PLAYER_TWO_PLACEMENT_COMPLETE;
+        this.changePhase(newPhase, true);
     }
 
     unsetActivePlayer() {
@@ -145,12 +178,23 @@ class Game {
     }
 
     registerSubscribers() {
-        this.bus.subscribe('view-hit', (data) => { this.doHit(data) });
+        this.bus.subscribe('view-hit', (data) => { 
+            this.doHit(data) 
+        });
+
+        this.bus.subscribe('view-phase-change', (data) => {
+            this.changePhase(data.phase);
+        });
+
         this.bus.subscribe(PLAYER.ONE+'-lose', () => {
             console.log('PLAYER ONE LOSES');
+            this.loser = PLAYER.ONE;
+            this.changePhase(PHASE.POSTGAME, true);
         });
         this.bus.subscribe(PLAYER.TWO+'-lose', () => {
             console.log('PLAYER TWO LOSES');
+            this.loser = PLAYER.TWO;
+            this.changePhase(PHASE.POSTGAME, true);
         });
 
         // this.bus.publish('ship-placed', { shipId: shipObj.id, shipPlayer: shipObj.player, xy: xy, isHori: isHori});
@@ -164,6 +208,8 @@ class Game {
         this.bus.subscribe(PLAYER.TWO+'-lose', () => {
             this.setLoser(PLAYER.TWO);
         });
+
+
     }
 
     setLoser(player) {
@@ -192,13 +238,16 @@ class Game {
 
     doHit(data) {
         let attackedGB;
+        let nextPhase;
         switch(data.phase) {
             case PHASE.PLAYER_ONE_TURN:
                 attackedGB = this.gameboards[PLAYER.TWO];
+                nextPhase = PHASE.PLAYER_TWO_INTRO_SCREEN;
                 console.log('Game doHit => ', PLAYER.TWO);
                 break;
             case PHASE.PLAYER_TWO_TURN:
                 attackedGB = this.gameboards[PLAYER.ONE];
+                nextPhase = PHASE.PLAYER_ONE_INTRO_SCREEN;
                 console.log('Game doHit => ', PLAYER.ONE);
                 break;
             default:
@@ -211,7 +260,8 @@ class Game {
             if (attackedGB.allShipsSunk()) {
                 this.bus.publish(attackedGB.player+'-lose');
             } else {
-                this.bus.publish('game-hit-done', { game: this });
+                // If nobody lost:
+                this.changePhase(nextPhase, true);
             }
         }
 

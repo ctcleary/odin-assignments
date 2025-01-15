@@ -230,6 +230,17 @@ class View {
         const screen = this.giveDiv([ 'screen' ]);
         result.appendChild(screen);
 
+        // For "intro-screen" phases
+        const goBtn = document.createElement('button');
+        goBtn.classList.add('go-button');
+        const playerStr = gameboard.player === PLAYER.ONE ? 'Player One' : 'Player Two'
+        goBtn.innerText = `Waiting for ${playerStr}... Click to play!`;
+        goBtn.addEventListener('click', (evt) => {
+            const newPhase = gameboard.player === PLAYER.ONE ? PHASE.PLAYER_ONE_TURN : PHASE.PLAYER_TWO_TURN;
+            this.changePhase(newPhase, true);
+        });
+        screen.appendChild(goBtn);
+
         return result;
     }
 
@@ -251,7 +262,7 @@ class View {
         resetBtn.addEventListener('click', () => {
             game.unplaceAllShips(player);
             const placementPane = player === PLAYER.ONE ? PHASE.PLAYER_ONE_PLACEMENT : PHASE.PLAYER_TWO_PLACEMENT;
-            this.switchPhase(placementPane);
+            this.changePhase(placementPane, true);
         });
         dockFrame.appendChild(resetBtn);
 
@@ -311,9 +322,9 @@ class View {
             finishButton.innerText = 'Finalize Placement';
             finishButton.addEventListener('click', (evt) => {
                 if (this.phase === PHASE.PLAYER_ONE_PLACEMENT_COMPLETE) {
-                    this.switchPhase(PHASE.PLAYER_TWO_PLACEMENT);
+                    this.changePhase(PHASE.PLAYER_TWO_PLACEMENT, true);
                 } else if (this.phase === PHASE.PLAYER_TWO_PLACEMENT_COMPLETE) {
-                    this.switchPhase(PHASE.SCREEN);
+                    this.changePhase(PHASE.PLAYER_ONE_INTRO_SCREEN, true);
                 }
             });
             dockFrame.appendChild(finishButton);
@@ -322,20 +333,13 @@ class View {
         return result;
     }
 
-    switchPhase(newPhase) {
-        // const oldPane = this.phase;
-        const playerOnePhase = [PHASE.PLAYER_ONE_PLACEMENT, PHASE.PLAYER_ONE_PLACEMENT_COMPLETE, PHASE.PLAYER_ONE_TURN];
-        const playerTwoPhases = [PHASE.PLAYER_TWO_PLACEMENT, PHASE.PLAYER_TWO_PLACEMENT_COMPLETE, PHASE.PLAYER_TWO_TURN];
-        const noPlayerPanes = [PHASE.PREGAME, PHASE.POSTGAME];
+    changePhase(newPhase, doPublish) {
         this.phase = newPhase;
-        if (playerOnePhase.find((phase) => { return newPhase === phase; })) {
-            this.game.switchActivePlayer(PLAYER.ONE);
-        } else if (playerTwoPhases.find((phase) => { return newPhase === phase; })) {
-            this.game.switchActivePlayer(PLAYER.TWO);
-        } else {
-            this.game.unsetActivePlayer();
-        }
         this.reRender(this.game);
+        
+        if (doPublish) {
+            this.bus.publish('view-phase-change', { phase: newPhase })
+        }
     }
 
     giveDiv(classes, data) {
@@ -366,9 +370,7 @@ class View {
                 div.dataset[dataPair[0]] = dataPair[1];
             }
         }
-
         
-        // if (!div.dataset['x'] || (div.dataset['x'] !== 0 && div.dataset['y'] !== 0)) {
         if (div.dataset['x'] && div.dataset['y']) {
             div.dataset.hit = 'false';
         }
@@ -381,12 +383,15 @@ class View {
     }
 
     registerSubscribers() {
-        this.bus.subscribe('game-hit-done', (data) => { 
-            console.log('game-hit-done', data.game);
-            this.gameContainerEl.innerHTML = '';
-            this.gameContainerEl.appendChild(this.render(data.game)); 
+        // this.bus.subscribe('game-hit-done', (data) => { 
+        //     console.log('game-hit-done', data.game);
+        //     this.gameContainerEl.innerHTML = '';
+        //     this.gameContainerEl.appendChild(this.render(data.game)); 
+        // });
+
+        this.bus.subscribe('game-phase-change', (data) => {
+            this.changePhase(data.phase);
         });
-        
         this.bus.subscribe('request-render', () => {
             console.log('reRender');
             this.reRender();
@@ -396,13 +401,16 @@ class View {
             console.log('heard bus placement-complete');
             if (this.phase === PHASE.PLAYER_ONE_PLACEMENT) {
                 console.log('setting to phase placement-complete')
-                this.switchPhase(PHASE.PLAYER_ONE_PLACEMENT_COMPLETE);
-
+                const newPhase = PHASE.PLAYER_ONE_PLACEMENT_COMPLETE;
+                this.changePhase(newPhase, true);
             } else if (this.phase === PHASE.PLAYER_TWO_PLACEMENT) {
                 console.log('setting to phase placement-complete')
-                this.switchPhase(PHASE.PLAYER_TWO_PLACEMENT_COMPLETE);
+                const newPhase = PHASE.PLAYER_TWO_PLACEMENT_COMPLETE;
+                this.changePhase(newPhase, true);
             }
         });
+
+
     }
     
     doHit(evt) {
