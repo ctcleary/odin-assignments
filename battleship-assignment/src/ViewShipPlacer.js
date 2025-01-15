@@ -101,12 +101,18 @@ class ViewShipPlacer {
             } else {
                 shipEl.classList.remove('vert');
                 shipEl.classList.add('hori');
+                shipEl.classList.add('red-flash');
             }
         } else {
             // evt.stopPropagation();
             shipEl.classList.remove('vert');
             shipEl.classList.add('hori');
+            shipEl.classList.add('red-flash');
         }
+
+        setTimeout(() => {
+            shipEl.classList.remove('red-flash');
+        }, 1600)
 
         shipEl.classList.remove('picked-up');
         shipEl.dataset.pickedUp = false;

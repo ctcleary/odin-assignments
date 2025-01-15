@@ -4,13 +4,16 @@ import ViewShipPlacer from "./ViewShipPlacer.js";
 const PANE = {
     PREGAME : 'pregame',
 
+    PLAYER_ONE_PLACEMENT : PLAYER.ONE+'-placement',
+    PLAYER_ONE_PLACEMENT_COMPLETE : PLAYER.ONE+'-placement-complete',
+
+    PLAYER_TWO_PLACEMENT : PLAYER.TWO+'-placement',
+    PLAYER_TWO_PLACEMENT_COMPLETE : PLAYER.TWO+'-placement-complete',
+
+    PLAYER_ONE_TURN : PLAYER.ONE+'-turn',
+    PLAYER_TWO_TURN : PLAYER.TWO+'-turn',
+    
     SCREEN : 'screen',
-
-    PLAYER_ONE_PLACEMENT : 'playerOne-placement',
-    PLAYER_TWO_PLACEMENT : 'playerTwo-placement',
-
-    PLAYER_ONE_TURN : 'playerOne-turn',
-    PLAYER_TWO_TURN : 'playerTwo-turn',
 
     POSTGAME : 'postgame',
 }
@@ -21,8 +24,8 @@ class View {
         this.bus = game.bus;
         this.gameContainerEl = gameContainerEl;
 
-        // this.pane = PANE.PREGAME;
-        this.pane = PANE.PLAYER_ONE_PLACEMENT;
+        this.pane = PANE.PREGAME;
+        // this.pane = PANE.PLAYER_ONE_PLACEMENT;
         // this.pane = PANE.PLAYER_ONE_TURN;
 
         this.shipPlacers = [];
@@ -63,9 +66,9 @@ class View {
         if (this.pane === PANE.PREGAME) {
             result.appendChild(this.renderShipDock(this.game, PLAYER.ONE));
             result.appendChild(this.renderShipDock(this.game, PLAYER.TWO));
-        } else if (this.pane === PANE.PLAYER_ONE_PLACEMENT) {
+        } else if (this.pane === PANE.PLAYER_ONE_PLACEMENT || this.pane === PANE.PLAYER_ONE_PLACEMENT_COMPLETE) {
             result.appendChild(this.renderShipDock(this.game, PLAYER.ONE));
-        } else if (this.pane === PANE.PLAYER_TWO_PLACEMENT) {
+        } else if (this.pane === PANE.PLAYER_TWO_PLACEMENT || this.pane === PANE.PLAYER_TWO_PLACEMENT_COMPLETE) {
             result.appendChild(this.renderShipDock(this.game, PLAYER.TWO));
         }
 
@@ -206,7 +209,8 @@ class View {
                                 }
 
                                 console.log('registering picked up ship');
-                            } else if (this.pane === gameboard.player+'-turn') {
+                            } else {
+                                console.log('doHit');
                                 this.doHit(e); 
                             }
                         });
@@ -273,36 +277,56 @@ class View {
         const gb = game.gameboards[player];
         const shipObjArr = gb.getShips();
 
-        let lastLength = 0;
-        shipObjArr.forEach((shipObj) => {
-            const id = shipObj.id;
-            const length = parseInt(id.charAt(0), 10);
+        const isCurrPlayerPlacement = (player === PLAYER.ONE && this.pane === PANE.PLAYER_ONE_PLACEMENT) ||
+            (player === PLAYER.TWO && this.pane === PANE.PLAYER_TWO_PLACEMENT);
+        const isPregame = this.pane === PANE.PREGAME;
 
-            if (lastLength > length) {
-                const br = document.createElement('br');
-                dockFrame.appendChild(br);
-            }
-            lastLength = length;
+        if (isCurrPlayerPlacement || isPregame) {
+            let lastLength = 0;
+            shipObjArr.forEach((shipObj) => {
+                const id = shipObj.id;
+                const length = parseInt(id.charAt(0), 10);
 
-            const imgSrc = shipObj.ship.getImgSrc();
+                if (lastLength > length) {
+                    const br = document.createElement('br');
+                    dockFrame.appendChild(br);
+                }
+                lastLength = length;
 
-            const img = document.createElement('img');
-            img.id = player+'-ship-'+id;
-            // img.draggable = true;
-            img.src = imgSrc;
-            img.classList.add('dock-ship');
-            img.classList.add('ship');
-            img.classList.add('hori');
+                const imgSrc = shipObj.ship.getImgSrc();
 
-            const shipPlacer = new ViewShipPlacer(game, img, shipObj, player);
-            this.shipPlacers.push(shipPlacer);
-        
-            dockFrame.appendChild(img);
-        });
+                const img = document.createElement('img');
+                img.id = player+'-ship-'+id;
+                // img.draggable = true;
+                img.src = imgSrc;
+                img.classList.add('dock-ship');
+                img.classList.add('ship');
+                img.classList.add('hori');
 
-        const instructions = this.giveDiv(['instructions']);
-        instructions.innerText = 'Click to pick up | [Space] to flip | Click to place';
-        dockFrame.appendChild(instructions);
+                const shipPlacer = new ViewShipPlacer(game, img, shipObj, player);
+                this.shipPlacers.push(shipPlacer);
+            
+                dockFrame.appendChild(img);
+            });
+
+            const instructions = this.giveDiv(['instructions']);
+            instructions.innerText = 'Click to pick up | [Space] to flip | Click to place';
+            dockFrame.appendChild(instructions);
+        } else { // pane === [player] PLACEMENT COMPLETE
+            const finishButton = document.createElement('button');
+            finishButton.type = 'button';
+            finishButton.classList.add('finish-button');
+            finishButton.classList.add('ship-dock-button');
+            finishButton.innerText = 'Finalize Placement';
+            finishButton.addEventListener('click', (evt) => {
+                if (this.pane === PANE.PLAYER_ONE_PLACEMENT_COMPLETE) {
+                    this.switchPane(PANE.PLAYER_TWO_PLACEMENT);
+                } else if (this.pane === PANE.PLAYER_TWO_PLACEMENT_COMPLETE) {
+                    this.switchPane(PANE.SCREEN);
+                }
+            });
+            dockFrame.appendChild(finishButton);
+        }
 
         return result;
     }
@@ -364,6 +388,18 @@ class View {
         this.bus.subscribe('request-render', () => {
             console.log('reRender');
             this.reRender();
+        });
+
+        this.bus.subscribe('placement-complete', () => {
+            console.log('heard bus placement-complete');
+            if (this.pane === PANE.PLAYER_ONE_PLACEMENT) {
+                console.log('setting to pane placement-complete')
+                this.switchPane(PANE.PLAYER_ONE_PLACEMENT_COMPLETE);
+
+            } else if (this.pane === PANE.PLAYER_TWO_PLACEMENT) {
+                console.log('setting to pane placement-complete')
+                this.switchPane(PANE.PLAYER_TWO_PLACEMENT_COMPLETE);
+            }
         });
     }
     

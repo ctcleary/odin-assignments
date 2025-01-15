@@ -76,7 +76,7 @@ class Gameboard {
         this.hits.push({ xy: xy, shipHit: isShipHit });
         // console.log('2 :: this.hits.length', this.hits.length);
 
-        const allShipsSunk = this.getShips().every((shipObj) => { return shipObj.ship.isSunk(); });
+        const allShipsSunk = this.allShipsSunk();
 
         if (allShipsSunk) {
             this.lose();
@@ -84,6 +84,8 @@ class Gameboard {
 
         return isShipHit;
     }
+
+    
 
     // dispatchHitEv(xy) {
     //     const hitEv = new CustomEvent('hit', { detail: { xy: xy } });
@@ -112,13 +114,21 @@ class Gameboard {
     }
 
     lose() {
-        this.bus.publish(PLAYER.TWO + '-lose');
+        this.bus.publish(this.player+'-lose');
         // const loseEv = new Event('lose');
         // this.dispatchEvent(loseEv);
     }
 
     getPlayer() {
         return this.player;
+    }
+
+    allShipsSunk() {
+        return this.getShips().every((shipObj) => { return shipObj.ship.isSunk(); })
+    }
+
+    allShipsPlaced() {
+        return this.getShips().every((shipObj) => { return shipObj.ship.getShipCoords()[0][0] !== -1; })
     }
 }
 

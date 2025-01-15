@@ -15,7 +15,8 @@ class Game {
         this.players = this.setupPlayers(this.gameboards);
 
         this.activePlayer = PLAYER.ONE;
-        
+
+        this.loser = null;
     }
 
     setupGameboards(sizeXY, messageBus) {
@@ -94,6 +95,18 @@ class Game {
         this.bus.subscribe('ship-placed', (data) => {
             this.shipPlacedHandler(data);
         });
+
+        this.bus.subscribe(PLAYER.ONE+'-lose', () => {
+            this.setLoser(PLAYER.ONE);
+        });
+        this.bus.subscribe(PLAYER.TWO+'-lose', () => {
+            this.setLoser(PLAYER.TWO);
+        });
+    }
+
+    setLoser(player) {
+        this.loser = player;
+        this.bus.publish('request-render');
     }
 
     shipPlacedHandler(data) {
@@ -106,7 +119,12 @@ class Game {
 
         const shipObj = this.gameboards[player].getShipByID(shipId);
         shipObj.ship.setShipCoords(xy, isHori);
+
+        const allShipsPlaced = this.gameboards[player].allShipsPlaced();
         
+        if (allShipsPlaced) {
+            this.bus.publish('placement-complete');
+        }
         this.bus.publish('request-render');
     }
 
@@ -127,10 +145,11 @@ class Game {
         }
         if (attackedGB && !attackedGB.isAlreadyHit(data.xy)) {
             console.log('attackedGB', attackedGB);
-            const wasShipHit = attackedGB.receiveHit(data.xy);
+            attackedGB.receiveHit(data.xy);
+            this.bus.publish('game-hit-done', { game: this });
         }
 
-        this.bus.publish('game-hit-done', { game: this });
+        // this.bus.publish('game-hit-done', { game: this });
     }
 }
 

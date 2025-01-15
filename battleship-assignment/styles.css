@@ -311,6 +311,20 @@ body {
     grid-column: 2;
 }
 
+.pane-pregame .ship-dock {
+    cursor: not-allowed;
+}
+.pane-pregame .ship-dock .ship,
+.pane-pregame .ship-dock .ship-dock-button {
+    pointer-events: none;
+}
+
+.ship-dock-button {
+    cursor: pointer;
+}
+.ship-dock-button:hover {
+    background: #ddd;
+}
 
 .ship-dock .randomize-button {
     position: absolute;
@@ -363,4 +377,32 @@ body {
 .ship.picked-up.vert {
     transform: rotate(90deg);
     transform-origin: center left;
+}
+
+.ship.red-flash {
+    animation: red-flash 1.5s ease-out forwards;
+}
+
+@keyframes red-flash {
+    0%,
+    40%,
+    80% {
+        filter: blur(2px) drop-shadow(0px 0px 10px rgba(255,0,0,1));
+    }
+
+    20%,
+    60%,
+    99% {
+        filter: blur(0px) drop-shadow(0 0 0 rgba(255,0,0,0));
+    }
+    100% {
+        filter: none;
+    }
+    
+}
+
+.ship-dock .finish-button {
+    padding: 1.5rem;
+    font-size: 1.25rem;
+    border-radius: 10px 0 0 0;
 }
