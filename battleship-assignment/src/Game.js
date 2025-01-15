@@ -73,8 +73,11 @@ class Game {
         });
         this.bus.publish('request-render');
     }
+
     randomizeAllShips(player) {
-        console.log('TODO Game.randomizeAllShips(player)')
+        const gb = this.gameboards[player];
+        this.unplaceAllShips(player);
+        gb.randomizeAllShips();
     }
 
     switchActivePlayer() {

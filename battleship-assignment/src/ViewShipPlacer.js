@@ -4,9 +4,12 @@ class ViewShipPlacer {
     constructor(game, shipEl, shipObj, player) {
         this.id = 'shipPlacer-'+player+'-'+shipObj.id; // e.g. 'shipPlacer-playerOne-4-1'
         this.game = game;
-        this.occupiedCoords = this.findOccupiedCoords(game, player);
         this.bus = game.bus;
         this.player = player;
+
+        // this.occupiedCoords = this.findOccupiedCoords(game, player);
+        this.occupiedCoords = this.game.gameboards[player].findOccupiedCoords();
+
         this.shipEl = shipEl;
         this.shipObj = shipObj;
 
@@ -137,23 +140,6 @@ class ViewShipPlacer {
             shipEl.style.left = (this.mousePos[0]-20)+'px'; // -20 to put nose of ship at mouse point
             shipEl.style.top = (this.mousePos[1]-10)+'px'; // -10 to put nose of ship at mouse point
         }
-    }
-
-    findOccupiedCoords(game, player) {
-        console.log('findOccupiedCoords');
-        const ships = game.gameboards[player].getShips().map((shipObj) => { return shipObj.ship });
-        let occupiedCoords = [];
-
-        for (let i = 0; i < ships.length; i++) {
-            const ship = ships[i];
-            const shipCoordsArr = ship.getShipCoords();
-            if (shipCoordsArr[0][0] === -1) {
-                continue;
-            }
-            occupiedCoords = occupiedCoords.concat(shipCoordsArr);
-        }
-
-        return occupiedCoords;
     }
 
     areAnyCoordsOccupied(ship, xy, length, isHori) {

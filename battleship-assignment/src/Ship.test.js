@@ -16,10 +16,10 @@ it('ship has correct length', () => {
 it('Ship.determineCoords(...) returns the correct array of xy 2-element arrays', () => {
     const ship = new Ship();
     
-    const coords1 = ship.determineCoords(3, [2,4], true);
+    const coords1 = ship.determineCoords([2,4], 3, true);
     expect(coords1).toEqual([ [2,4], [3,4], [4,4] ]);
     
-    const coords2 = ship.determineCoords(5, [12,15], false);
+    const coords2 = ship.determineCoords([12,15], 5, false);
     expect(coords2).toEqual([ [12,15], [12,16], [12,17], [12,18], [12,19] ]);
 })
 

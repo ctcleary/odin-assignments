@@ -312,7 +312,7 @@ class View {
             const instructions = this.giveDiv(['instructions']);
             instructions.innerText = 'Click to pick up | [Space] to flip | Click to place';
             dockFrame.appendChild(instructions);
-        } else { // pane === [player] PLACEMENT COMPLETE
+        } else { // pane === [player] PLACEMENT COMPLETE?
             const finishButton = document.createElement('button');
             finishButton.type = 'button';
             finishButton.classList.add('finish-button');

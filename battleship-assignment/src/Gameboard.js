@@ -130,6 +130,55 @@ class Gameboard {
     allShipsPlaced() {
         return this.getShips().every((shipObj) => { return shipObj.ship.getShipCoords()[0][0] !== -1; })
     }
+
+    findOccupiedCoords(doPad = false) {
+        // console.log('findOccupiedCoords');
+        const ships = this.getShips().map((shipObj) => { return shipObj.ship });
+        let occupiedCoords = [];
+
+        for (let i = 0; i < ships.length; i++) {
+            const ship = ships[i];
+            const shipCoordsArr = ship.getShipCoords();
+            if (shipCoordsArr[0][0] === -1) {
+                continue;
+            }
+
+            if (doPad) {
+                const paddedShipCoordsArr = shipCoordsArr.slice();
+                const arrLen = shipCoordsArr.length;
+                const lastIndex = arrLen-1;
+                if (ship.isHori) {
+                    paddedShipCoordsArr.push( [ shipCoordsArr[0][0] - 1, shipCoordsArr[0][1] ] ) // fore padding
+                    paddedShipCoordsArr.push( [ shipCoordsArr[lastIndex][0] + 1, shipCoordsArr[lastIndex][1] ] ) // aft padding
+                    
+                    for (let j = 0; j < shipCoordsArr.length; j++) { // For each hori coord
+                        const origCoords = shipCoordsArr[j];
+                        paddedShipCoordsArr.push([ origCoords[0], origCoords[1] + 1]); // y+1
+                        paddedShipCoordsArr.push([ origCoords[0], origCoords[1] - 1]); // y-1
+                    }
+
+                } else {
+                    paddedShipCoordsArr.push( [ shipCoordsArr[0][0], shipCoordsArr[0][1] - 1 ] ) // fore padding
+                    paddedShipCoordsArr.push( [ shipCoordsArr[lastIndex][0], shipCoordsArr[lastIndex][1] + 1 ] ) // aft padding
+                    
+                    for (let j = 0; j < shipCoordsArr.length; j++) {
+                        const origCoords = shipCoordsArr[j];
+                        paddedShipCoordsArr.push([ origCoords[0] + 1, origCoords[1]]); // x+1
+                        paddedShipCoordsArr.push([ origCoords[0] - 1, origCoords[1]]); // x-1
+                    }
+                }
+                occupiedCoords = occupiedCoords.concat(paddedShipCoordsArr);
+            } else {
+                occupiedCoords = occupiedCoords.concat(shipCoordsArr);
+            }
+        }
+
+        return occupiedCoords;
+    }
+
+    findOccupiedCoordsPadded() {
+        return this.findOccupiedCoords(true);
+    }
 }
 
 export default Gameboard;

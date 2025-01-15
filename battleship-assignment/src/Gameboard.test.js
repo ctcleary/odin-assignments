@@ -147,3 +147,40 @@ it('Gameboard.hit(xy) returns true if a ship is hit', () => {
     wasHit = gb.receiveHit([2,2]);
     expect(wasHit).toBe(true);
 })
+
+it('Gameboard.findOccupiedCoords() returns correct array', () => {
+    const game = new Game();
+    const gb = new Gameboard(game);
+
+    gb.setShipCoords('4-1', [2,2], true);
+
+    expect(gb.findOccupiedCoords()).toEqual([ [2,2], [3,2], [4,2], [5,2] ]);
+})
+
+it('Gameboard.findPaddedOccupiedCoords() return correct array', () => {
+    const game = new Game();
+    const gb = new Gameboard(game);
+
+    gb.setShipCoords('4-1', [2,2], true)
+    const occupiedCoordsPadded = gb.findOccupiedCoordsPadded();
+
+    expect(occupiedCoordsPadded).toEqual([
+        [ 2, 2 ], [ 3, 2 ], [ 4, 2 ], [ 5, 2 ], // Original coords
+        [ 1, 2 ], [ 6, 2 ], // fore padding // aft padding
+        [ 2, 3 ], [ 2, 1 ], // orig-y + 1 // orig-y - 1
+        [ 3, 3 ], [ 3, 1 ], // orig-y + 1 // orig-y - 1
+        [ 4, 3 ], [ 4, 1 ], // orig-y + 1 // orig-y - 1
+        [ 5, 3 ], [ 5, 1 ]  // orig-y + 1 // orig-y - 1
+    ]);
+    
+    const gb2 = new Gameboard(game);
+    gb2.setShipCoords('2-1', [5,5], false);
+    const occupiedCoordsPadded2 = gb2.findOccupiedCoordsPadded();
+
+    expect(occupiedCoordsPadded2).toEqual([
+        [5,5], [5,6], // Original coords
+        [5,4], [5,7], // fore padding // aft padding
+        [6,5], [4,5], // orig-x + 1 // orig-x - 1
+        [6,6], [4,6]  // orig-x + 1 // orig-x - 1
+    ]);
+})

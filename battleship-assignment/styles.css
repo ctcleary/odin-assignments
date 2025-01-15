@@ -93,9 +93,12 @@ body {
 /* hide opponent ships during placement */
 .boards-container.pane-playerOne-placement #gameboard-playerTwo .ship-layer,
 .boards-container.pane-playerTwo-placement #gameboard-playerOne .ship-layer,
+/* hide opponent ships during placement complete. */
+.boards-container.pane-playerOne-placement-complete #gameboard-playerTwo .ship-layer,
+.boards-container.pane-playerTwo-placement-complete #gameboard-playerOne .ship-layer,
 /* hide both ship layers during screen */
-.boards-conatiner.pane-screen #gameboard-playerOne,
-.boards-conatiner.pane-screen #gameboard-playerTwo {
+.boards-container.pane-screen #gameboard-playerOne .ship-layer,
+.boards-container.pane-screen #gameboard-playerTwo .ship-layer {
 
     display: none;
 }
@@ -103,6 +106,16 @@ body {
 .boards-container.pane-screen .screen {
     opacity: 1;
     z-index: 100;
+    animation: screen-in 0.5s linear forwards;
+}
+@keyframes screen-in {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
 }
 
 
