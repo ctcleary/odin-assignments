@@ -10,7 +10,10 @@ const PANE = {
     PLAYER_TWO_PLACEMENT : PLAYER.TWO+'-placement',
     PLAYER_TWO_PLACEMENT_COMPLETE : PLAYER.TWO+'-placement-complete',
 
+    PLAYER_ONE_INTRO_SCREEN : PLAYER.ONE+'-intro-screen',
     PLAYER_ONE_TURN : PLAYER.ONE+'-turn',
+
+    PLAYER_TWO_INTRO_SCREEN : PLAYER.TWO+'-intro-screen',
     PLAYER_TWO_TURN : PLAYER.TWO+'-turn',
     
     SCREEN : 'screen',

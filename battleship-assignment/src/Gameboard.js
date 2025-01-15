@@ -114,9 +114,9 @@ class Gameboard {
     }
 
     lose() {
-        this.bus.publish(this.player+'-lose');
-        // const loseEv = new Event('lose');
-        // this.dispatchEvent(loseEv);
+        console.log(this.player + ' has LOST');
+
+        // this.bus.publish(this.player+'-lose');
     }
 
     getPlayer() {

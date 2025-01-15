@@ -82,7 +82,7 @@ class Game {
     unsetActivePlayer() {
         this.activePlayer = null;
     }
-    
+
     switchActivePlayer(player = null) {
         if (player) {
             this.activePlayer = player;
@@ -156,7 +156,11 @@ class Game {
         if (attackedGB && !attackedGB.isAlreadyHit(data.xy)) {
             console.log('attackedGB', attackedGB);
             attackedGB.receiveHit(data.xy);
-            this.bus.publish('game-hit-done', { game: this });
+            if (attackedGB.allShipsSunk()) {
+                this.bus.publish(attackedGB.player+'-lose');
+            } else {
+                this.bus.publish('game-hit-done', { game: this });
+            }
         }
 
         // this.bus.publish('game-hit-done', { game: this });

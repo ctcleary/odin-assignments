@@ -104,9 +104,9 @@ body {
 }
 
 .boards-container.pane-screen .screen {
-    opacity: 1;
+    opacity: 0;
     z-index: 100;
-    animation: screen-in 0.5s linear forwards;
+    animation: 1.5s screen-in 0.5s linear forwards;
 }
 @keyframes screen-in {
     0% {
