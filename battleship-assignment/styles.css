@@ -58,8 +58,9 @@ body {
     text-align: center;
 }
 
-.temp-pane {
+.temp-phase {
     margin: 0;
+    font-size:1.5rem;
 }
 
 .boards-container {
@@ -81,29 +82,35 @@ body {
     grid-row: 2;
 }
 
-.boards-container.pane-playerOne-turn #gameboard-playerOne,
-.boards-container.pane-playerTwo-turn #gameboard-playerTwo {
+.boards-container.phase-playerOne-turn #gameboard-playerOne,
+.boards-container.phase-playerTwo-turn #gameboard-playerTwo {
     pointer-events: none;
     user-select: none;
 }
 
 /* hide opponent ships during turns */
-.boards-container.pane-playerOne-turn #gameboard-playerTwo .ship-layer,
-.boards-container.pane-playerTwo-turn #gameboard-playerOne .ship-layer,
+.boards-container.phase-playerOne-turn #gameboard-playerTwo .ship-layer,
+.boards-container.phase-playerTwo-turn #gameboard-playerOne .ship-layer,
 /* hide opponent ships during placement */
-.boards-container.pane-playerOne-placement #gameboard-playerTwo .ship-layer,
-.boards-container.pane-playerTwo-placement #gameboard-playerOne .ship-layer,
+.boards-container.phase-playerOne-placement #gameboard-playerTwo .ship-layer,
+.boards-container.phase-playerTwo-placement #gameboard-playerOne .ship-layer,
 /* hide opponent ships during placement complete. */
-.boards-container.pane-playerOne-placement-complete #gameboard-playerTwo .ship-layer,
-.boards-container.pane-playerTwo-placement-complete #gameboard-playerOne .ship-layer,
+.boards-container.phase-playerOne-placement-complete #gameboard-playerTwo .ship-layer,
+.boards-container.phase-playerTwo-placement-complete #gameboard-playerOne .ship-layer,
 /* hide both ship layers during screen */
-.boards-container.pane-screen #gameboard-playerOne .ship-layer,
-.boards-container.pane-screen #gameboard-playerTwo .ship-layer {
+.boards-container.phase-screen #gameboard-playerOne .ship-layer,
+.boards-container.phase-screen #gameboard-playerTwo .ship-layer {
 
     display: none;
 }
 
-.boards-container.pane-screen .screen {
+/* .boards-container.phase-pregame #gameboard-playerOne,
+.boards-container.phase-pregame #gameboard-playerTwo, */
+.boards-container.phase-pregame .ship-dock {
+    opacity: 0.5;
+}
+
+.boards-container.phase-screen .screen {
     opacity: 0;
     z-index: 100;
     animation: 1.5s screen-in 0.5s linear forwards;
@@ -201,6 +208,11 @@ body {
     transform: rotate(55deg);
 }
 
+/* .hit-marker.ship-hit {
+    animation: red-flash 0.5s linear forwards;
+} */
+
+
 .hit-marker .hit-x {
     background: rgb(171 149 149);
     border: thin solid #777;
@@ -228,6 +240,10 @@ body {
 }
 .cell:hover .wave {
     display: none;
+}
+
+.cell:active {
+    background: rgb(177, 188, 202);
 }
 
 .cell.hit:hover {
@@ -324,11 +340,11 @@ body {
     grid-column: 2;
 }
 
-.pane-pregame .ship-dock {
+.phase-pregame .ship-dock {
     cursor: not-allowed;
 }
-.pane-pregame .ship-dock .ship,
-.pane-pregame .ship-dock .ship-dock-button {
+.phase-pregame .ship-dock .ship,
+.phase-pregame .ship-dock .ship-dock-button {
     pointer-events: none;
 }
 

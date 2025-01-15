@@ -1,25 +1,7 @@
 import { PLAYER } from "./Player.js";
 import ViewShipPlacer from "./ViewShipPlacer.js";
+import { PHASE } from "./Game.js";
 
-const PANE = {
-    PREGAME : 'pregame',
-
-    PLAYER_ONE_PLACEMENT : PLAYER.ONE+'-placement',
-    PLAYER_ONE_PLACEMENT_COMPLETE : PLAYER.ONE+'-placement-complete',
-
-    PLAYER_TWO_PLACEMENT : PLAYER.TWO+'-placement',
-    PLAYER_TWO_PLACEMENT_COMPLETE : PLAYER.TWO+'-placement-complete',
-
-    PLAYER_ONE_INTRO_SCREEN : PLAYER.ONE+'-intro-screen',
-    PLAYER_ONE_TURN : PLAYER.ONE+'-turn',
-
-    PLAYER_TWO_INTRO_SCREEN : PLAYER.TWO+'-intro-screen',
-    PLAYER_TWO_TURN : PLAYER.TWO+'-turn',
-    
-    SCREEN : 'screen',
-
-    POSTGAME : 'postgame',
-}
 
 class View {
     constructor(game, gameContainerEl) {
@@ -27,7 +9,7 @@ class View {
         this.bus = game.bus;
         this.gameContainerEl = gameContainerEl;
 
-        this.pane = PANE.PREGAME;
+        this.phase = PHASE.PREGAME;
         // this.pane = PANE.PLAYER_ONE_PLACEMENT;
         // this.pane = PANE.PLAYER_ONE_TURN;
 
@@ -46,12 +28,12 @@ class View {
         console.log('View.render(game)');
         const result = this.giveDiv([ 'boards-container' ]);
         // result.classList.add(this.game.activePlayer === PLAYER.ONE ? 'playerOne-turn' : 'playerTwo-turn');
-        result.classList.add('pane-'+this.pane);
+        result.classList.add('phase-'+this.phase);
 
-        const tempPane = document.createElement('h5');
-        tempPane.innerText = 'Debug - Current Pane: ' + this.pane;
-        tempPane.classList.add('temp-pane')
-        result.appendChild(tempPane);
+        const tempPhase = document.createElement('h5');
+        tempPhase.innerText = 'DEBUG - CURRENT PHASE: "' + this.phase + '"';
+        tempPhase.classList.add('temp-phase')
+        result.appendChild(tempPhase);
 
         result.appendChild(this.renderPlayerBoard(this.game, PLAYER.ONE));
         result.appendChild(this.renderPlayerBoard(this.game, PLAYER.TWO));
@@ -66,12 +48,12 @@ class View {
         const pTwoHitLayer = result.querySelector(`#${PLAYER.TWO}-hit-layer`);
         this.renderHits(this.game, pTwoHitLayer, PLAYER.TWO);
 
-        if (this.pane === PANE.PREGAME) {
+        if (this.phase === PHASE.PREGAME) {
             result.appendChild(this.renderShipDock(this.game, PLAYER.ONE));
             result.appendChild(this.renderShipDock(this.game, PLAYER.TWO));
-        } else if (this.pane === PANE.PLAYER_ONE_PLACEMENT || this.pane === PANE.PLAYER_ONE_PLACEMENT_COMPLETE) {
+        } else if (this.phase === PHASE.PLAYER_ONE_PLACEMENT || this.phase === PHASE.PLAYER_ONE_PLACEMENT_COMPLETE) {
             result.appendChild(this.renderShipDock(this.game, PLAYER.ONE));
-        } else if (this.pane === PANE.PLAYER_TWO_PLACEMENT || this.pane === PANE.PLAYER_TWO_PLACEMENT_COMPLETE) {
+        } else if (this.phase === PHASE.PLAYER_TWO_PLACEMENT || this.phase === PHASE.PLAYER_TWO_PLACEMENT_COMPLETE) {
             result.appendChild(this.renderShipDock(this.game, PLAYER.TWO));
         }
 
@@ -268,8 +250,8 @@ class View {
         resetBtn.classList.add('reset-button');
         resetBtn.addEventListener('click', () => {
             game.unplaceAllShips(player);
-            const placementPane = player === PLAYER.ONE ? PANE.PLAYER_ONE_PLACEMENT : PANE.PLAYER_TWO_PLACEMENT;
-            this.switchPane(placementPane);
+            const placementPane = player === PLAYER.ONE ? PHASE.PLAYER_ONE_PLACEMENT : PHASE.PLAYER_TWO_PLACEMENT;
+            this.switchPhase(placementPane);
         });
         dockFrame.appendChild(resetBtn);
 
@@ -286,9 +268,9 @@ class View {
         const gb = game.gameboards[player];
         const shipObjArr = gb.getShips();
 
-        const isCurrPlayerPlacement = (player === PLAYER.ONE && this.pane === PANE.PLAYER_ONE_PLACEMENT) ||
-            (player === PLAYER.TWO && this.pane === PANE.PLAYER_TWO_PLACEMENT);
-        const isPregame = this.pane === PANE.PREGAME;
+        const isCurrPlayerPlacement = (player === PLAYER.ONE && this.phase === PHASE.PLAYER_ONE_PLACEMENT) ||
+            (player === PLAYER.TWO && this.phase === PHASE.PLAYER_TWO_PLACEMENT);
+        const isPregame = this.phase === PHASE.PREGAME;
 
         if (isCurrPlayerPlacement || isPregame) {
             let lastLength = 0;
@@ -328,10 +310,10 @@ class View {
             finishButton.classList.add('ship-dock-button');
             finishButton.innerText = 'Finalize Placement';
             finishButton.addEventListener('click', (evt) => {
-                if (this.pane === PANE.PLAYER_ONE_PLACEMENT_COMPLETE) {
-                    this.switchPane(PANE.PLAYER_TWO_PLACEMENT);
-                } else if (this.pane === PANE.PLAYER_TWO_PLACEMENT_COMPLETE) {
-                    this.switchPane(PANE.SCREEN);
+                if (this.phase === PHASE.PLAYER_ONE_PLACEMENT_COMPLETE) {
+                    this.switchPhase(PHASE.PLAYER_TWO_PLACEMENT);
+                } else if (this.phase === PHASE.PLAYER_TWO_PLACEMENT_COMPLETE) {
+                    this.switchPhase(PHASE.SCREEN);
                 }
             });
             dockFrame.appendChild(finishButton);
@@ -340,15 +322,15 @@ class View {
         return result;
     }
 
-    switchPane(newPane) {
-        const oldPane = this.pane;
-        const playerOnePanes = [PANE.PLAYER_ONE_PLACEMENT, PANE.PLAYER_ONE_PLACEMENT_COMPLETE, PANE.PLAYER_ONE_TURN];
-        const playerTwoPanes = [PANE.PLAYER_TWO_PLACEMENT, PANE.PLAYER_TWO_PLACEMENT_COMPLETE, PANE.PLAYER_TWO_TURN];
-        const noPlayerPanes = [PANE.PREGAME, PANE.POSTGAME];
-        this.pane = newPane;
-        if (playerOnePanes.find((pane) => { return newPane === pane; })) {
+    switchPhase(newPhase) {
+        // const oldPane = this.phase;
+        const playerOnePhase = [PHASE.PLAYER_ONE_PLACEMENT, PHASE.PLAYER_ONE_PLACEMENT_COMPLETE, PHASE.PLAYER_ONE_TURN];
+        const playerTwoPhases = [PHASE.PLAYER_TWO_PLACEMENT, PHASE.PLAYER_TWO_PLACEMENT_COMPLETE, PHASE.PLAYER_TWO_TURN];
+        const noPlayerPanes = [PHASE.PREGAME, PHASE.POSTGAME];
+        this.phase = newPhase;
+        if (playerOnePhase.find((phase) => { return newPhase === phase; })) {
             this.game.switchActivePlayer(PLAYER.ONE);
-        } else if (playerTwoPanes.find((pane) => { return newPane === pane; })) {
+        } else if (playerTwoPhases.find((phase) => { return newPhase === phase; })) {
             this.game.switchActivePlayer(PLAYER.TWO);
         } else {
             this.game.unsetActivePlayer();
@@ -412,13 +394,13 @@ class View {
 
         this.bus.subscribe('placement-complete', () => {
             console.log('heard bus placement-complete');
-            if (this.pane === PANE.PLAYER_ONE_PLACEMENT) {
-                console.log('setting to pane placement-complete')
-                this.switchPane(PANE.PLAYER_ONE_PLACEMENT_COMPLETE);
+            if (this.phase === PHASE.PLAYER_ONE_PLACEMENT) {
+                console.log('setting to phase placement-complete')
+                this.switchPhase(PHASE.PLAYER_ONE_PLACEMENT_COMPLETE);
 
-            } else if (this.pane === PANE.PLAYER_TWO_PLACEMENT) {
-                console.log('setting to pane placement-complete')
-                this.switchPane(PANE.PLAYER_TWO_PLACEMENT_COMPLETE);
+            } else if (this.phase === PHASE.PLAYER_TWO_PLACEMENT) {
+                console.log('setting to phase placement-complete')
+                this.switchPhase(PHASE.PLAYER_TWO_PLACEMENT_COMPLETE);
             }
         });
     }
@@ -428,11 +410,11 @@ class View {
         // console.log('doHit target', div);
         const xy = [parseInt(div.dataset.x, 10), parseInt(div.dataset.y, 10)];
 
-        // console.log('publish hit', xy, this.pane, PLAYER.TWO);
-        this.bus.publish('view-hit', { xy: xy, pane: this.pane, attackedPlayer: PLAYER.TWO });
+        // console.log('publish hit', xy, this.phase, PLAYER.TWO);
+        this.bus.publish('view-hit', { xy: xy, phase: this.phase, attackedPlayer: PLAYER.TWO });
     }
 }
 
-export { PANE };
+export { PHASE };
 
 export default View;

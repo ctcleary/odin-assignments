@@ -1,7 +1,27 @@
 import Gameboard from "./Gameboard.js";
 import MessageBus from "./MessageBus.js";
 import Player, { PLAYER } from "./Player.js";
-import { PANE } from "./View.js";
+// import { PHASE } from "./View.js";
+
+const PHASE = {
+    PREGAME : 'pregame',
+
+    PLAYER_ONE_PLACEMENT : PLAYER.ONE+'-placement',
+    PLAYER_ONE_PLACEMENT_COMPLETE : PLAYER.ONE+'-placement-complete',
+
+    PLAYER_TWO_PLACEMENT : PLAYER.TWO+'-placement',
+    PLAYER_TWO_PLACEMENT_COMPLETE : PLAYER.TWO+'-placement-complete',
+
+    PLAYER_ONE_INTRO_SCREEN : PLAYER.ONE+'-intro-screen',
+    PLAYER_ONE_TURN : PLAYER.ONE+'-turn',
+
+    PLAYER_TWO_INTRO_SCREEN : PLAYER.TWO+'-intro-screen',
+    PLAYER_TWO_TURN : PLAYER.TWO+'-turn',
+    
+    SCREEN : 'screen',
+
+    POSTGAME : 'postgame',
+}
 
 // Game is a "mediator"
 class Game {
@@ -13,10 +33,42 @@ class Game {
 
         this.gameboards = this.setupGameboards(this.bus);
         this.players = this.setupPlayers(this.gameboards);
+        
+        // Start here, naturally.
+        this.phase = PHASE.PREGAME;
 
         this.activePlayer = PLAYER.ONE;
 
         this.loser = null;
+    }
+
+    changePhase(phase) {
+        switch(data.phase) {
+            case PREGAME:
+                break;
+            case PHASE.PLAYER_ONE_PLACEMENT:
+                break;
+            case PHASE.PLAYER_ONE_PLACEMENT_COMPLETE:
+                break;
+            case PHASE.PLAYER_TWO_PLACEMENT:
+                break;
+            case PHASE.PLAYER_TWO_PLACEMENT_COMPLETE:
+                break;
+            case PHASE.PLAYER_ONE_INTRO_SCREEN:
+                break;
+            case PHASE.PLAYER_ONE_TURN:
+                break;
+            case PHASE.PLAYER_TWO_INTRO_SCREEN:
+                break;
+            case PHASE.PLAYER_TWO_TURN:
+                break;
+            case SCREEN :
+                break;
+            case POSTGAME :
+                break;
+            default:
+                break;
+        }
     }
 
     setupGameboards(sizeXY, messageBus) {
@@ -139,18 +191,18 @@ class Game {
     }
 
     doHit(data) {
-        console.log('Game doHit ', data)
         let attackedGB;
-        switch(data.pane) {
-            case PANE.PLAYER_ONE_TURN:
+        switch(data.phase) {
+            case PHASE.PLAYER_ONE_TURN:
                 attackedGB = this.gameboards[PLAYER.TWO];
+                console.log('Game doHit => ', PLAYER.TWO);
                 break;
-            case PANE.PLAYER_TWO_TURN:
+            case PHASE.PLAYER_TWO_TURN:
                 attackedGB = this.gameboards[PLAYER.ONE];
+                console.log('Game doHit => ', PLAYER.ONE);
                 break;
-            case PANE.PREGAME:
-            case PANE.POSTGAME:
-            case PANE.SCREEN:
+            default:
+                return;
                 break;
         }
         if (attackedGB && !attackedGB.isAlreadyHit(data.xy)) {
@@ -168,6 +220,7 @@ class Game {
 }
 
 export { PLAYER }
+export { PHASE }
 
 export default Game;
 
