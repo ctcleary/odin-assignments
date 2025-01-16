@@ -312,12 +312,17 @@ class View {
         const gameboard = game.gameboards[player];
         const hits = gameboard.getHits();
 
+        const prevHitCoords = game.gameboards[player].getPreviousHitCoords();
         hits.forEach((hit) => {
             const classes = ['hit-marker'];
             if (hit.shipHit) {
                 classes.push('ship-hit');
             }
-            const hitDiv = this.giveDiv(classes);
+            // Add a shine to the most recent hit.
+            if (hit.xy[0] === prevHitCoords[0] && hit.xy[1] === prevHitCoords[1]) {
+                classes.push('shine');
+            }
+            const hitDiv = this.giveDiv(classes);            
             
             const style = `grid-column: ${hit.xy[0]+1}; grid-row: ${hit.xy[1]+1};`;
             hitDiv.style = style;

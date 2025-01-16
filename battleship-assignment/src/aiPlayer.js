@@ -8,7 +8,7 @@ const DIRECTION = {
 const directionMod = [
     [0,-1], //north
     [1,0],  //east
-    [0,-1], //south
+    [0,1], //south
     [-1,0], //west
 ];
 
@@ -52,16 +52,16 @@ class AIPlayer {
             //     continue; // Just start again if we've already checked this direction.
             //     // I'm sure there's a more performant way to do this, but this seems fine for this application..
             // }
-            const newDirValue = uncheckedDirs[newDirIdx]; // Get value before removing it from array.
 
-            console.log('checkedDirs before splice', uncheckedDirs);
-            console.log('newDirIdx', newDirIdx);
-            console.log('newDirValue', newDirValue);
+            const newDirValue = uncheckedDirs[newDirIdx]; // Get value before removing it from array.
+            if (typeof newDirValue === 'undefined') {
+                throw new Error('Failed to find an open space!');
+            }
+
             uncheckedDirs.splice(newDirIdx, 1); // Remove the item from array.
-            console.log('checkedDirs after splice', uncheckedDirs);
 
             const mod = directionMod[newDirValue];
-            console.log('mod',mod);
+            // console.log('mod',mod);
 
             const newCoords = this.addDirection(shipHit.xy, mod);
             if (this.isValidCoords(newCoords) && !this.isAlreadyHit(newCoords, humanHits)) {
@@ -164,9 +164,9 @@ class AIPlayer {
         const findMatch = humanHits.find((hit) => {
             return hit.xy[0] === xy[0] && hit.xy[1] === xy[1];
         });
-        if (!!findMatch) {
-            console.log('alreadyhit', xy);
-        }
+        // if (!!findMatch) {
+        //     console.log('alreadyhit', xy);
+        // }
         return !!findMatch;
     }
 

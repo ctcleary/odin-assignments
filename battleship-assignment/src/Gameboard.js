@@ -8,6 +8,8 @@ class Gameboard {
         this.hits = [];
         this.player = playerStr;
 
+        this.previousHitCoords = null;
+
         this.bus = new MessageBus();
 
         this.ships = [
@@ -75,6 +77,7 @@ class Gameboard {
         });
 
         this.hits.push({ xy: xy, shipHit: isShipHit });
+        this.previousHitCoords = xy;
         if (isShipSunk) {
             this.updateHitsWithSunkStatus(sunkShip);
         }
@@ -86,6 +89,10 @@ class Gameboard {
         }
 
         return isShipHit;
+    }
+
+    getPreviousHitCoords() {
+        return this.previousHitCoords;
     }
 
     getPlayerStr(player) {
@@ -223,7 +230,7 @@ class Gameboard {
                     foundValidCoords = detCoords;
                 }
             }
-            console.log(isHori);
+            // console.log('randomizeAllShips :: isHori' isHori);
             ship.setShipCoords(foundValidCoords[0], isHori);
         });
     }

@@ -28,3 +28,11 @@ it('AIPlayer isAlreadyHit returns correctly', () => {
     expect(ai.isAlreadyHit([7,5], hits)).toBe(false);
 });
 
+it('AIPlayer.determineShipHitAttempt() returns the correct coordinates', () => {
+    const ai = new AIPlayer();
+    const hits = [ { xy: [7,3], shipHit: true }, { xy: [6,3] }, { xy: [7,2] }, { xy: [8,3] } ];
+
+    expect(ai.determineShipHitAttempt(hits, hits[0])).toEqual([7,4]);
+
+})
+
