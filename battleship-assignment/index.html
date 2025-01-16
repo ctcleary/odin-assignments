@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Odin Project - Battleship Game Assignment</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="wrapper">
+        <h1>The Odin Project - Battleship Game Assignment</h1>
+        <div id="debug">
+            <div id="debug-buttons">
+                Debug buttons
+                <button id="pane-pregame" onclick="window.gameView.changePhase('pregame')" type="button">
+                    Phase: Pregame</button>
+                <button id="pane-screen" onclick="window.gameView.changePhase('screen')" type="button">
+                    Phase: Screen</button>
+                    <br/>
+                <button id="pane-playerOne-placement" onclick="window.gameView.changePhase('playerOne-placement')" type="button">
+                    Phase: pOne Placement</button>
+                <button id="pane-playerOne-placement-complete" onclick="window.gameView.changePhase('playerOne-placement-complete')" type="button">
+                    Phase: pOne Placement COMPLETE</button>
+                    <br/>
+                <button id="pane-playerTwo-placement" onclick="window.gameView.changePhase('playerTwo-placement')" type="button">
+                    Phase: pTwo Placement</button>
+                <button id="pane-playerTwo-placement-complete" onclick="window.gameView.changePhase('playerTwo-placement-complete')" type="button">
+                    Phase: pTwo Placement COMPLETE</button>
+                    <br/>
+                <button id="pane-playerOne-turn-intro-screen" onclick="window.gameView.changePhase('playerOne-intro-screen')" type="button">
+                    Phase: pOne Turn INTRO</button>
+                <button id="pane-playerOne-turn" onclick="window.gameView.changePhase('playerOne-turn')" type="button">
+                    Phase: pOne Turn</button>
+                <br/>    
+                <button id="pane-playerTwo-turn-turn-intro-screen" onclick="window.gameView.changePhase('playerTwo-intro-screen')" type="button">
+                    Phase: pTwo Turn INTRO</button>
+                <button id="pane-playerTwo-turn" onclick="window.gameView.changePhase('playerTwo-turn')" type="button">
+                    Phase: pTwo Turn</button>
+                <br/>
+                <button id="pane-postgame" onclick="window.gameView.changePhase('postgame')" type="button">
+                    Phase: Post Game</button>
+            </div>
+            <div id="debug-current-phase">
+                
+            </div>
+        </div>
+        <div id="game-container">
+
+        </div>
+    </div>
+
+    <script>
+        const render = () => {
+            
+            const gameContainerEl = document.getElementById('game-container');
+
+            const game = new window.Game();
+            const view = new window.View(game, gameContainerEl);
+            window.gameGame = game;
+            window.gameView = view;
+            const gameboard = game.gameboards['playerOne'];
+            const gameboardTwo = game.gameboards['playerTwo'];
+
+            // gameboard.receiveHit([5,5]);
+
+            // gameboard.receiveHit([4,5]);
+            // gameboard.receiveHit([4,6]);
+            
+            // gameboard.receiveHit([7,7]);
+            // gameboard.receiveHit([8,8]);
+            // gameboard.receiveHit([9,9]);
+            // gameboard.receiveHit([3,1]);
+
+            // gameboardTwo.receiveHit([3,2])
+            // gameboardTwo.receiveHit([6,7])
+            // gameboardTwo.receiveHit([9,9])
+
+            gameContainerEl.innerHTML = '';
+            gameContainerEl.appendChild(view.render());
+
+        }
+    </script>
+    <script src="main.js" type="module" onload="render()"></script>
+    
+</body>
+</html>
