@@ -21,7 +21,7 @@ class View {
 
     reRender() {
         this.gameContainerEl.innerHTML = '';
-        console.log(this.renderFunc);
+        // console.log(this.renderFunc);
         this.gameContainerEl.appendChild(this.renderFunc());
     }
 

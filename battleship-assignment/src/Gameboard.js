@@ -70,7 +70,6 @@ class Gameboard {
                 // console.log('didHit '+ shipObj.id);
                 isShipHit = true;
                 isShipSunk = shipObj.ship.isSunk();
-                console.log('isShipSunk', isShipSunk);
                 sunkShip = isShipSunk ? shipObj.ship : null;
             }
         });

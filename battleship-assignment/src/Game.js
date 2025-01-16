@@ -1,4 +1,4 @@
-import aiPlayer from "./AIPlayer.js";
+import AIPlayer, { aiPlayer } from "./AIPlayer.js";
 import Gameboard from "./Gameboard.js";
 import MessageBus from "./MessageBus.js";
 import Player, { PLAYER, AI_PLAYER } from "./Player.js";
