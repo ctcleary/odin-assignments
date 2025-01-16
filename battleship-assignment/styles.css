@@ -14,12 +14,25 @@ body {
     --cell-size: 2.5rem;
 }
 
+#debug {
+    display: none;
+}
+
 .hidden {
     display: none;
 }
 
 #wrapper {
     text-align: center;
+}
+
+#wrapper>h1 {
+    margin: 0;
+    background: #eee;
+    border-bottom: thin solid #ccc;
+    padding-top: 1.5rem;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
 }
 
 

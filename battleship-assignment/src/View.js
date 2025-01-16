@@ -101,7 +101,7 @@ class View {
                 headerText = 'Please Turn Screen to Player One!'
                 break;
             case PHASE.PLAYER_ONE_TURN :
-                headerText = 'Player One\'s Turn';
+                headerText = 'Player One\'s Turn! Attack!';
                 break;
 
             case PHASE.PLAYER_TWO_PLACEMENT :
@@ -114,7 +114,7 @@ class View {
                 headerText = 'Please Turn Screen to Player Two!'
                 break;
             case PHASE.PLAYER_TWO_TURN :
-                headerText = 'Please Two\'s Turn!';
+                headerText = 'Player Two\'s Turn! Attack!';
                 break;
             default:
                 break;
