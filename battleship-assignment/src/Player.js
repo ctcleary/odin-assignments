@@ -3,6 +3,11 @@ const PLAYER = {
     TWO: 'playerTwo',
 };
 
+const AI_PLAYER = {
+    HUMAN: 'human',
+    AI: 'ai',
+}
+
 class Player {
     constructor(playerStr, ownGameboard, oppGameboard) {
         this.player = playerStr;
@@ -16,5 +21,5 @@ class Player {
     }
 }
 
-export { PLAYER };
+export { PLAYER, AI_PLAYER };
 export default Player;

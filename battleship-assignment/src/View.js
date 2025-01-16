@@ -1,11 +1,14 @@
-import { PLAYER } from "./Player.js";
+import { AI_PLAYER, PLAYER } from "./Player.js";
 import ViewShipPlacer from "./ViewShipPlacer.js";
-import { PHASE } from "./Game.js";
+import { AI_PHASE, GAME_TYPE, PHASE } from "./Game.js";
 
 
 class View {
     constructor(game, gameContainerEl) {
         this.game = game;
+
+        this.renderFunc = this.game.gameType === GAME_TYPE.PLAYERS ? this.render : this.renderAI;
+
         this.bus = game.bus;
         this.gameContainerEl = gameContainerEl;
 
@@ -18,7 +21,8 @@ class View {
 
     reRender() {
         this.gameContainerEl.innerHTML = '';
-        this.gameContainerEl.appendChild(this.render());
+        console.log(this.renderFunc);
+        this.gameContainerEl.appendChild(this.renderFunc());
     }
 
     // Returns the top DOM Node.
@@ -62,9 +66,63 @@ class View {
             result.appendChild(this.renderShipDock(this.game, PLAYER.TWO));
         }
 
-        const heroContainer = this.giveDivWithID('hero-container');
-        this.appendHeroContent(heroContainer, this.phase, this.game.loser);
-        result.appendChild(heroContainer);
+        
+        if (this.phase === PHASE.PREGAME || this.phase === PHASE.POSTGAME || this.phase === AI_PHASE.POSTGAME) {
+            const heroContainer = this.giveDivWithID('hero-container');
+            this.appendHeroContent(heroContainer, this.phase, this.game.loser);
+            result.appendChild(heroContainer);
+        }
+
+        return result;
+    }
+
+    renderAI() {
+        console.log('View.renderAI(game)');
+        const result = this.giveDiv([ 'boards-container' ]);
+        // result.classList.add(this.game.activePlayer === PLAYER.ONE ? 'playerOne-turn' : 'playerTwo-turn');
+        result.classList.add('phase-'+this.phase);
+
+        const debugPhaseText = document.getElementById('debug-current-phase');
+        if (debugPhaseText) {
+            debugPhaseText.innerText = 'DEBUG - CURRENT PHASE: "' + this.phase + '"';
+        }
+
+        // const tempPhase = document.createElement('h5');
+        // tempPhase.innerText = 'DEBUG - CURRENT PHASE: "' + this.phase + '"';
+        // tempPhase.classList.add('temp-phase')
+        // result.appendChild(tempPhase);
+
+        result.appendChild(this.renderPhaseHeader(this.phase));
+
+        result.appendChild(this.renderPlayerBoard(this.game, AI_PLAYER.HUMAN));
+        result.appendChild(this.renderPlayerBoard(this.game, AI_PLAYER.AI));
+
+        const humanShipLayer = result.querySelector(`#${AI_PLAYER.HUMAN}-ship-layer`);
+        this.renderShips(this.game, humanShipLayer, AI_PLAYER.HUMAN);
+
+        const aiShipLayer = result.querySelector(`#${AI_PLAYER.AI}-ship-layer`);
+        this.renderShips(this.game, aiShipLayer, AI_PLAYER.AI);
+
+        const humanHitLayer = result.querySelector(`#${AI_PLAYER.HUMAN}-hit-layer`);
+        this.renderHits(this.game, humanHitLayer, AI_PLAYER.HUMAN);
+
+        const aiHitLayer = result.querySelector(`#${AI_PLAYER.AI}-hit-layer`);
+        this.renderHits(this.game, aiHitLayer, AI_PLAYER.AI);
+
+
+        if (this.phase === AI_PHASE.PREGAME) {
+            result.appendChild(this.renderShipDock(this.game, AI_PLAYER.HUMAN));
+            result.appendChild(this.renderShipDock(this.game, AI_PLAYER.AI));
+        } else if (this.phase === AI_PHASE.HUMAN_PLACEMENT || this.phase === AI_PHASE.HUMAN_PLACEMENT_COMPLETE) {
+            result.appendChild(this.renderShipDock(this.game, AI_PLAYER.HUMAN));
+        }
+
+        if (this.phase === AI_PHASE.PREGAME || this.phase === AI_PHASE.POSTGAME ||
+                this.phase === AI_PHASE.AI_PLACEMENT || this.phase === AI_PHASE.AI_TURN) {
+            const heroContainer = this.giveDivWithID('hero-container');
+            this.appendHeroContent(heroContainer, this.phase, this.game.loser);
+            result.appendChild(heroContainer);
+        }
 
         return result;
     }
@@ -76,31 +134,37 @@ class View {
         header.classList.add('phase-header');
         const haveLoser = this.game.loser;
         let winner;
-        if (haveLoser) {
-            winner = (haveLoser && haveLoser === PLAYER.ONE) ? 'Player Two' : 'Player One';
+        if (haveLoser) { 
+            if (this.gameType === GAME_TYPE.PLAYERS) {
+                winner = haveLoser === PLAYER.ONE ? 'Player Two' : 'Player One';
+            } else if (this.gameType === GAME_TYPE.AI) {
+                winner = haveLoser === PLAYER.AI ? 'Player One' : 'The Computer';
+            }
         }
         let headerText;
         switch(phase) {
             case PHASE.PREGAME :
+            case AI_PHASE.PREGAME :
                 headerText = 'Let\'s Play Battleship!';
                 break;
-            case PHASE.SCREEN :
-                headerText = '';
-                break;
             case PHASE.POSTGAME :
+            case AI_PHASE.POSTGAME :
                 headerText = `Congratulations to ${winner}!`;
                 break;
 
             case PHASE.PLAYER_ONE_PLACEMENT :
+            case AI_PHASE.HUMAN_PLACEMENT :
                 headerText = 'Player One, Place Your Ships!'
                 break;
             case PHASE.PLAYER_ONE_PLACEMENT_COMPLETE :
+            case AI_PHASE.HUMAN_PLACEMENT_COMPLETE :
                 headerText = 'Player One, Confirm Your Placement!'
                 break;
             case PHASE.PLAYER_ONE_INTRO_SCREEN :
                 headerText = 'Please Turn Screen to Player One!'
                 break;
             case PHASE.PLAYER_ONE_TURN :
+            case AI_PHASE.HUMAN_TURN :
                 headerText = 'Player One\'s Turn! Attack!';
                 break;
 
@@ -116,7 +180,17 @@ class View {
             case PHASE.PLAYER_TWO_TURN :
                 headerText = 'Player Two\'s Turn! Attack!';
                 break;
+        
+            case AI_PHASE.AI_PLACEMENT :
+                headerText = 'Computer is Placing Ships!'
+                break;
+            case AI_PHASE.AI_TURN:
+                headerText = 'Computer\'s Turn!';
+                break;
+
             default:
+                headerText = 'Error: Header text not found.';
+                throw new Error('Error: Header text not found');
                 break;
         }
         header.innerText = headerText;
@@ -137,21 +211,41 @@ class View {
                 button = document.createElement('button');
                 button.classList.add('pregame-start-button');
                 button.classList.add('start-button');
-                button.innerText = 'Ready to play?';
+                button.classList.add('hero-content');
+                button.innerText = 'Player vs. Player';
                 button.addEventListener('click', () => {
-                    this.bus.publish('start-game');
+                    this.bus.publish('start-game', { gameType: GAME_TYPE.PLAYERS });
                 })
                 parent.appendChild(button);
+                parent.appendChild(document.createElement('br'));
+                const aiButton = document.createElement('button');
+                aiButton.classList.add('pregame-start-button');
+                aiButton.classList.add('start-button');
+                aiButton.classList.add('hero-content');
+                aiButton.innerText = 'Player vs. AI';
+                aiButton.addEventListener('click', () => {
+                    this.bus.publish('start-game', { gameType: GAME_TYPE.AI });
+                })
+                parent.appendChild(aiButton);
                 break;
             case PHASE.POSTGAME:
                 button = document.createElement('button');
                 button.classList.add('postgame-start-button');
                 button.classList.add('start-button');
+                button.classList.add('hero-content');
                 button.innerText = 'Want to play again?';
                 button.addEventListener('click', () => {
                     this.bus.publish('restart-game');
                 })
                 parent.appendChild(button);
+                break;
+            case AI_PHASE.AI_PLACEMENT:
+            case AI_PHASE.AI_TURN:
+                const thinker = this.giveDivWithID('thinker', ['hero-content']);
+                const dots = document.createElement('img');
+                dots.src = './assets/thinker-dots.gif';
+                thinker.appendChild(dots);
+                parent.appendChild(thinker);
                 break;
             default:
                 break;
@@ -382,7 +476,8 @@ class View {
         const shipObjArr = gb.getShips();
 
         const isCurrPlayerPlacement = (player === PLAYER.ONE && this.phase === PHASE.PLAYER_ONE_PLACEMENT) ||
-            (player === PLAYER.TWO && this.phase === PHASE.PLAYER_TWO_PLACEMENT);
+            (player === PLAYER.TWO && this.phase === PHASE.PLAYER_TWO_PLACEMENT) ||
+            (player === AI_PLAYER.HUMAN && this.phase === AI_PHASE.HUMAN_PLACEMENT);
         const isPregame = this.phase === PHASE.PREGAME;
 
         if (isCurrPlayerPlacement || isPregame) {
@@ -427,6 +522,8 @@ class View {
                     this.changePhase(PHASE.PLAYER_TWO_PLACEMENT, true);
                 } else if (this.phase === PHASE.PLAYER_TWO_PLACEMENT_COMPLETE) {
                     this.changePhase(PHASE.PLAYER_ONE_INTRO_SCREEN, true);
+                } else if (this.phase === AI_PHASE.HUMAN_PLACEMENT_COMPLETE) {
+                    this.changePhase(AI_PHASE.AI_PLACEMENT, true);
                 }
             });
             dockFrame.appendChild(finishButton);
@@ -490,6 +587,13 @@ class View {
         //     this.gameContainerEl.innerHTML = '';
         //     this.gameContainerEl.appendChild(this.render(data.game)); 
         // });
+        this.bus.subscribe('change-game-type', (data) => {
+            if (data.gameType === GAME_TYPE.PLAYERS) {
+                this.renderFunc = this.render;
+            } else {
+                this.renderFunc = this.renderAI;
+            }
+        })
 
         this.bus.subscribe('game-phase-change', (data) => {
             this.changePhase(data.phase);
@@ -508,6 +612,9 @@ class View {
             } else if (this.phase === PHASE.PLAYER_TWO_PLACEMENT) {
                 console.log('setting to phase placement-complete')
                 const newPhase = PHASE.PLAYER_TWO_PLACEMENT_COMPLETE;
+                this.changePhase(newPhase, true);
+            } else if (this.phase === AI_PHASE.HUMAN_PLACEMENT) {
+                const newPhase = AI_PHASE.HUMAN_PLACEMENT_COMPLETE;
                 this.changePhase(newPhase, true);
             }
         });

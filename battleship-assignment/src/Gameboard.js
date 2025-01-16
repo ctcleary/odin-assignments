@@ -62,19 +62,23 @@ class Gameboard {
 
         // console.log('Gameboard receiveHit', xy);
         let isShipHit = false;
+        let isShipSunk = false;
+        let sunkShip = null;
         this.getShips().forEach((shipObj) => {
             const didHit = shipObj.ship.hit(xy);
             if (didHit) {
                 // console.log('didHit '+ shipObj.id);
                 isShipHit = true;
+                isShipSunk = shipObj.ship.isSunk();
+                console.log('isShipSunk', isShipSunk);
+                sunkShip = isShipSunk ? shipObj.ship : null;
             }
         });
 
-        // this.bus.publish(this.player + '-hit', { xy: xy });
-
-        // console.log('1 :: this.hits.length', this.hits.length);
         this.hits.push({ xy: xy, shipHit: isShipHit });
-        // console.log('2 :: this.hits.length', this.hits.length);
+        if (isShipSunk) {
+            this.updateHitsWithSunkStatus(sunkShip);
+        }
 
         const allShipsSunk = this.allShipsSunk();
 
@@ -223,6 +227,23 @@ class Gameboard {
             console.log(isHori);
             ship.setShipCoords(foundValidCoords[0], isHori);
         });
+    }
+
+    updateHitsWithSunkStatus(sunkShip) {
+        const sunkCoords = sunkShip.getShipCoords();
+
+        // console.log('sunkCoords', sunkCoords);
+        sunkCoords.forEach((coord) => {
+            for (let i = 0; i < this.hits.length; i++) {
+                const hit = this.hits[i];
+                if (hit.xy[0] === coord[0] && hit.xy[1] === coord[1]) { 
+                    // console.log('before update:',this.hits[i]);
+                    this.hits[i] = { xy: hit.xy, shipHit: true, isSunk: true };
+                    // console.log('after update:', this.hits[i]);
+                    break;
+                }
+            }
+        })
     }
 }
 
