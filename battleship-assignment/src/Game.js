@@ -36,7 +36,7 @@ class Game {
         // Start here, naturally.
         this.phase = PHASE.PREGAME;
 
-        this.activePlayer = PLAYER.ONE;
+        this.activePlayer = null;
 
         this.loser = null;
     }
@@ -72,9 +72,9 @@ class Game {
         //     case PHASE.PREGAME :
         //         break;
         //     case PHASE.SCREEN :
-        //         break;
-        //     case PHASE.POSTGAME :
-        //         break;
+                // break;
+            // case PHASE.POSTGAME :
+            //     break;
 
         //     case PHASE.PLAYER_ONE_PLACEMENT :
         //         break;
@@ -164,6 +164,16 @@ class Game {
         this.changePhase(newPhase, true);
     }
 
+    getPlayerStr(player) {
+        if (player === PLAYER.ONE) {
+            return 'Player One';
+        } else if (player === PLAYER.TWO) {
+            return 'Player Two';
+        } else {
+            return null;
+        }
+    }
+
     unsetActivePlayer() {
         this.activePlayer = null;
     }
@@ -178,6 +188,15 @@ class Game {
     }
 
     registerSubscribers() {
+        this.bus.subscribe('start-game', () => {
+            this.changePhase(PHASE.PLAYER_ONE_PLACEMENT, true);
+        });
+
+        this.bus.subscribe('restart-game', () => {
+            this.resetGameboards();
+            this.changePhase(PHASE.PLAYER_ONE_PLACEMENT, true);
+        });
+
         this.bus.subscribe('view-hit', (data) => { 
             this.doHit(data) 
         });
@@ -208,8 +227,10 @@ class Game {
         this.bus.subscribe(PLAYER.TWO+'-lose', () => {
             this.setLoser(PLAYER.TWO);
         });
+    }
 
-
+    resetGameboards() {
+        this.gameboards = this.setupGameboards();
     }
 
     setLoser(player) {

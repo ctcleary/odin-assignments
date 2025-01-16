@@ -26,12 +26,12 @@
             <button id="pane-playerTwo-placement-complete" onclick="window.gameView.changePhase('playerTwo-placement-complete')" type="button">
                 Phase: pTwo Placement COMPLETE</button>
                 <br/>
-            <button id="pane-playerOne-turn-intro-screen" onclick="window.gameView.changePhase('playerOne-turn-intro-screen')" type="button">
+            <button id="pane-playerOne-turn-intro-screen" onclick="window.gameView.changePhase('playerOne-intro-screen')" type="button">
                 Phase: pOne Turn INTRO</button>
             <button id="pane-playerOne-turn" onclick="window.gameView.changePhase('playerOne-turn')" type="button">
                 Phase: pOne Turn</button>
             <br/>    
-            <button id="pane-playerTwo-turn-turn-intro-screen" onclick="window.gameView.changePhase('playerTwo-turn-intro-screen')" type="button">
+            <button id="pane-playerTwo-turn-turn-intro-screen" onclick="window.gameView.changePhase('playerTwo-intro-screen')" type="button">
                 Phase: pTwo Turn INTRO</button>
             <button id="pane-playerTwo-turn" onclick="window.gameView.changePhase('playerTwo-turn')" type="button">
                 Phase: pTwo Turn</button>
@@ -39,10 +39,14 @@
             <button id="pane-postgame" onclick="window.gameView.changePhase('postgame')" type="button">
                 Phase: Post Game</button>
         </div>
+        <div id="debug-current-phase">
+            
+        </div>
         <div id="game-container">
 
         </div>
     </div>
+
     <script>
         const render = () => {
             

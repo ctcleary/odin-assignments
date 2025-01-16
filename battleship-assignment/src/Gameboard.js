@@ -85,6 +85,10 @@ class Gameboard {
         return isShipHit;
     }
 
+    getPlayerStr(player) {
+        return player === PLAYER.ONE ? 'Player One' : 'Player Two';
+    }
+
     
 
     // dispatchHitEv(xy) {

@@ -22,6 +22,8 @@ body {
     text-align: center;
 }
 
+
+
 .gameboard {
     position: relative;
     overflow: visible;
@@ -58,12 +60,15 @@ body {
     text-align: center;
 }
 
+
 .temp-phase {
     margin: 0;
     font-size:1.5rem;
 }
 
 .boards-container {
+    position: relative;
+
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1rem 1fr 1fr;
@@ -98,20 +103,27 @@ body {
 /* hide opponent ships during placement complete. */
 .boards-container.phase-playerOne-placement-complete #gameboard-playerTwo .ship-layer,
 .boards-container.phase-playerTwo-placement-complete #gameboard-playerOne .ship-layer,
+
 /* hide both ship layers during screen */
+.boards-container.phase-playerOne-intro-screen #gameboard-playerOne .ship-layer,
+.boards-container.phase-playerTwo-intro-screen #gameboard-playerTwo .ship-layer,
 
-.boards-container.phase-playerOne-intro-screen  .ship-layer,
-.boards-container.phase-playerTwo-intro-screen  .ship-layer,
+.boards-container.screen-in-done  .ship-layer,
+.boards-container.screen-in-done  .ship-layer,
 
-.boards-container.phase-screen #gameboard-playerOne .ship-layer,
-.boards-container.phase-screen #gameboard-playerTwo .ship-layer {
-
+.phase-screen .ship-layer {
     display: none;
 }
 
 /* .boards-container.phase-pregame #gameboard-playerOne,
 .boards-container.phase-pregame #gameboard-playerTwo, */
-.boards-container.phase-pregame .ship-dock {
+.phase-pregame .ship-dock {
+    opacity: 0.5;
+}
+
+.phase-pregame .gameboard-container,
+.phase-postgame .gameboard-container,
+.phase-pregame .ship-dock {
     opacity: 0.5;
 }
 
@@ -140,7 +152,7 @@ body {
 .boards-container.phase-screen .screen {
     opacity: 0;
     z-index: 100;
-    animation: 0.5s screen-in 0.5s linear forwards;
+    animation: 0.5s screen-in 0.25s linear forwards;
 }
 @keyframes screen-in {
     0% {
@@ -153,13 +165,6 @@ body {
 }
 
 
-
-/* UNCOMMENT FOR HIDDEN BOARDS */
-/* .boards-container.playerOne-turn #gameboard-playerTwo .ship-layer,
-.boards-container.playerTwo-turn #gameboard-playerOne .ship-layer {
-    display: none;
-} */
-
 .screen,
 .ship-layer,
 .hit-layer {
@@ -171,11 +176,26 @@ body {
     height: 100%;
 }
 
+#phase-container {
+    font-size: 1.5rem;
+    grid-column: 1 / 3;
+    grid-row: 1 / 2;
+}
+#phase-container .phase-header {
+    margin: 0;
+}
+
 .phase-playerOne-turn #gameboard-playerTwo .screen,
 .phase-playerTwo-turn #gameboard-playerOne .screen,
+.screen,
 .ship-layer,
 .hit-layer {
     pointer-events: none;
+}
+
+.phase-playerOne-intro-screen #gameboard-playerOne .screen,
+.phase-playerTwo-intro-screen #gameboard-playerTwo .screen {
+    pointer-events: all;
 }
 
 .screen {
@@ -198,9 +218,50 @@ body {
     cursor: pointer;
 }
 
+#hero-container {
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    /* background: rgba(125, 125, 125, 0.5); */
+    grid-row: 2 / 3;
+    grid-column: 1 / 3;
+    position: absolute;
+    left: 0;
+    top: 30%;
+    height: 100%;
+    width: 100%;
+    z-index: 1000;
+
+    pointer-events: none;
+    display: none;
+}
+
+.phase-pregame #hero-container,
+.phase-postgame #hero-container {
+    pointer-events: all;
+    display: inline-block;
+}
+
+.start-button {
+    padding: 3rem;
+    font-size: 2rem;
+    cursor: pointer;
+    border: thin solid #777;
+    border-radius: 12px 0 0 0;
+    user-select: none;
+    background-color: rgb(57, 163, 245);
+    filter: drop-shadow(0 0 15px rgba(64,64,64,1))
+}
+.start-button:hover {
+    background-color: rgb(94, 185, 255);
+}
+.start-button:active {
+    background-color: rgb(49, 143, 216);
+}
 
 
 
+/* CELL GRID */
 .cell, .number-cell {
     border: thin solid #ccc;
 }

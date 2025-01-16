@@ -9,9 +9,7 @@ class View {
         this.bus = game.bus;
         this.gameContainerEl = gameContainerEl;
 
-        this.phase = PHASE.PREGAME;
-        // this.pane = PANE.PLAYER_ONE_PLACEMENT;
-        // this.pane = PANE.PLAYER_ONE_TURN;
+        this.phase = game.phase;
 
         this.shipPlacers = [];
         
@@ -30,10 +28,17 @@ class View {
         // result.classList.add(this.game.activePlayer === PLAYER.ONE ? 'playerOne-turn' : 'playerTwo-turn');
         result.classList.add('phase-'+this.phase);
 
-        const tempPhase = document.createElement('h5');
-        tempPhase.innerText = 'DEBUG - CURRENT PHASE: "' + this.phase + '"';
-        tempPhase.classList.add('temp-phase')
-        result.appendChild(tempPhase);
+        const debugPhaseText = document.getElementById('debug-current-phase');
+        if (debugPhaseText) {
+            debugPhaseText.innerText = 'DEBUG - CURRENT PHASE: "' + this.phase + '"';
+        }
+
+        // const tempPhase = document.createElement('h5');
+        // tempPhase.innerText = 'DEBUG - CURRENT PHASE: "' + this.phase + '"';
+        // tempPhase.classList.add('temp-phase')
+        // result.appendChild(tempPhase);
+
+        result.appendChild(this.renderPhaseHeader(this.phase));
 
         result.appendChild(this.renderPlayerBoard(this.game, PLAYER.ONE));
         result.appendChild(this.renderPlayerBoard(this.game, PLAYER.TWO));
@@ -57,7 +62,100 @@ class View {
             result.appendChild(this.renderShipDock(this.game, PLAYER.TWO));
         }
 
+        const heroContainer = this.giveDivWithID('hero-container');
+        this.appendHeroContent(heroContainer, this.phase, this.game.loser);
+        result.appendChild(heroContainer);
+
         return result;
+    }
+
+    renderPhaseHeader(phase) {
+        const result = this.giveDivWithID('phase-container');
+
+        const header = document.createElement('h2');
+        header.classList.add('phase-header');
+        const haveLoser = this.game.loser;
+        let winner;
+        if (haveLoser) {
+            winner = (haveLoser && haveLoser === PLAYER.ONE) ? 'Player Two' : 'Player One';
+        }
+        let headerText;
+        switch(phase) {
+            case PHASE.PREGAME :
+                headerText = 'Let\'s Play Battleship!';
+                break;
+            case PHASE.SCREEN :
+                headerText = '';
+                break;
+            case PHASE.POSTGAME :
+                headerText = `Congratulations to ${winner}!`;
+                break;
+
+            case PHASE.PLAYER_ONE_PLACEMENT :
+                headerText = 'Player One, Place Your Ships!'
+                break;
+            case PHASE.PLAYER_ONE_PLACEMENT_COMPLETE :
+                headerText = 'Player One, Confirm Your Placement!'
+                break;
+            case PHASE.PLAYER_ONE_INTRO_SCREEN :
+                headerText = 'Please Turn Screen to Player One!'
+                break;
+            case PHASE.PLAYER_ONE_TURN :
+                headerText = 'Player One\'s Turn';
+                break;
+
+            case PHASE.PLAYER_TWO_PLACEMENT :
+                headerText = 'Player Two, Place Your Ships!'
+                break;
+            case PHASE.PLAYER_TWO_PLACEMENT_COMPLETE :
+                headerText = 'Player Two, Confirm Your Placement!'
+                break;
+            case PHASE.PLAYER_TWO_INTRO_SCREEN :
+                headerText = 'Please Turn Screen to Player Two!'
+                break;
+            case PHASE.PLAYER_TWO_TURN :
+                headerText = 'Please Two\'s Turn!';
+                break;
+            default:
+                break;
+        }
+        header.innerText = headerText;
+
+        result.appendChild(header);
+
+        // // const hero = this.giveDivWithID('hero-container');
+        // const heroContent = this.giveDivWithID('hero-content');
+        // result.appendChild(heroContent);
+
+        return result;
+    }
+
+    appendHeroContent(parent, phase, loser) {
+        let button;
+        switch(phase) {
+            case PHASE.PREGAME:
+                button = document.createElement('button');
+                button.classList.add('pregame-start-button');
+                button.classList.add('start-button');
+                button.innerText = 'Ready to play?';
+                button.addEventListener('click', () => {
+                    this.bus.publish('start-game');
+                })
+                parent.appendChild(button);
+                break;
+            case PHASE.POSTGAME:
+                button = document.createElement('button');
+                button.classList.add('postgame-start-button');
+                button.classList.add('start-button');
+                button.innerText = 'Want to play again?';
+                button.addEventListener('click', () => {
+                    this.bus.publish('restart-game');
+                })
+                parent.appendChild(button);
+                break;
+            default:
+                break;
+        }
     }
 
     renderPlayerBoard(game, player) {
@@ -228,13 +326,17 @@ class View {
         result.appendChild(hitLayer);
 
         const screen = this.giveDiv([ 'screen' ]);
+        screen.addEventListener('animationend', () => {
+            const boardsEl = document.querySelector('.boards-container');
+            boardsEl.classList.add('screen-in-done');
+        });
         result.appendChild(screen);
 
         // For "intro-screen" phases
         const goBtn = document.createElement('button');
         goBtn.classList.add('go-button');
-        const playerStr = gameboard.player === PLAYER.ONE ? 'Player One' : 'Player Two'
-        goBtn.innerText = `Waiting for ${playerStr}... Click to play!`;
+        const playerStr = gameboard.getPlayerStr(gameboard.player);
+        goBtn.innerText = `${playerStr}... Click to play!`;
         goBtn.addEventListener('click', (evt) => {
             const newPhase = gameboard.player === PLAYER.ONE ? PHASE.PLAYER_ONE_TURN : PHASE.PLAYER_TWO_TURN;
             this.changePhase(newPhase, true);
