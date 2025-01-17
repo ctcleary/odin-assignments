@@ -147,6 +147,10 @@ body {
     opacity: 0.6;
 }
 
+.phase-postgame .gameboard-container {
+    pointer-events: none;
+}
+
 .loser-playerOne #gameboard-playerOne .cell,
 .loser-playerTwo #gameboard-playerTwo .cell,
 .loser-human #gameboard-human .cell,

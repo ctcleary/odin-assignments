@@ -34,7 +34,7 @@ class View {
         if (this.game.loser) {
             result.classList.add('loser-'+this.game.loser);
         }
-        
+
         const debugPhaseText = document.getElementById('debug-current-phase');
         if (debugPhaseText) {
             debugPhaseText.innerText = 'DEBUG - CURRENT PHASE: "' + this.phase + '"';
@@ -281,11 +281,24 @@ class View {
 
         const headerOne = document.createElement('h2');
         headerOne.classList.add('header');
-        if (this.game.activePlayer) {
-            headerOne.innerHTML = game.activePlayer === player ? 'Your Board' : 'Opponent Board';
-        } else {
-            headerOne.innerHTML = player === PLAYER.ONE ? "Player One Board" : "Player Two Board"
+        let headerText;
+
+        switch (player) {
+            case PLAYER.ONE:
+            case AI_PLAYER.HUMAN:
+                headerText = 'Player One';
+                break;
+            case PLAYER.TWO:
+                headerText = 'Player Two';
+                break;
+            case AI_PLAYER.AI:
+                headerText = 'The Computer';
+                break;
+            defaut:
+                break;    
         }
+        headerOne.innerText = headerText;
+
         playerBoardContainer.appendChild(headerOne);
         playerBoardContainer.appendChild(this.makeGameboardDOM(playerGB));
 
