@@ -70,7 +70,7 @@ const GAME_TYPE = {
     PLAYERS : 'players',
 };
 
-const AI_TIMEOUT = 1000;
+const AI_TIMEOUT = 500;
 
 // Game is a "mediator"
 class Game {
@@ -97,7 +97,7 @@ class Game {
     }
 
     changePhase(newPhase, doPublish) {
-        console.log(newPhase);
+        console.log('game.changePhase, doPublish ::',newPhase, doPublish);
         this.phase = newPhase;
         switch(newPhase) {
             case PHASE.PREGAME :
@@ -132,26 +132,17 @@ class Game {
             case AI_PHASE.AI_TURN:
                 setTimeout(() => {
                     this.aiAttack(); 
-                }, AI_TIMEOUT);
+                }, AI_TIMEOUT-100);
                 this.timeoutAITurn();
                 break;
             default:
                 break;
         }
 
-
-
         if (doPublish) {
             this.bus.publish('game-phase-change', { phase: newPhase })
         }
-        this.bus.publish('request-render');
-    }
 
-    changePhaseAI(newPhase, doPublish) {
-        this.phase = newPhase;
-        if (doPublish) {
-            this.bus.publish('game-phase-change', { phase: newPhase })
-        }
         this.bus.publish('request-render');
     }
 
@@ -319,7 +310,7 @@ class Game {
             this.changePhase(AI_PHASE.POSTGAME, true);
         });
         this.bus.subscribe(AI_PLAYER.AI+'-lose', () => {
-            console.log('PLAYER TWO LOSES');
+            console.log('AI LOSES');
             this.setLoser(AI_PLAYER.AI);
             this.changePhase(AI_PHASE.POSTGAME, true);
         });
@@ -370,29 +361,29 @@ class Game {
             case PHASE.PLAYER_ONE_TURN:
                 attackedGB = this.gameboards[PLAYER.TWO];
                 nextPhase = PHASE.PLAYER_TWO_INTRO_SCREEN;
-                console.log('Game doHit => ', PLAYER.TWO);
+                // console.log('Game doHit => ', PLAYER.TWO);
                 break;
             case PHASE.PLAYER_TWO_TURN:
                 attackedGB = this.gameboards[PLAYER.ONE];
                 nextPhase = PHASE.PLAYER_ONE_INTRO_SCREEN;
-                console.log('Game doHit => ', PLAYER.ONE);
+                // console.log('Game doHit => ', PLAYER.ONE);
                 break;
             case AI_PHASE.HUMAN_TURN:
                 attackedGB = this.gameboards[AI_PLAYER.AI];
                 nextPhase = AI_PHASE.AI_TURN;
-                console.log('Game dohit => '+ AI_PLAYER.AI)
+                // console.log('Game dohit => '+ AI_PLAYER.AI)
                 break;
             case AI_PHASE.AI_TURN:
                 attackedGB = this.gameboards[AI_PLAYER.HUMAN];
                 nextPhase = AI_PHASE.HUMAN_TURN;
-                console.log('Game dohit => '+ AI_PLAYER.HUMAN)
+                // console.log('Game dohit => '+ AI_PLAYER.HUMAN)
                 break;
             default:
                 return;
                 break;
         }
         if (attackedGB && !attackedGB.isAlreadyHit(xy)) {
-            console.log('attackedGB', attackedGB);
+            // console.log('attackedGB', attackedGB);
             attackedGB.receiveHit(xy);
             if (attackedGB.allShipsSunk()) {
                 this.bus.publish(attackedGB.player+'-lose');
@@ -401,8 +392,6 @@ class Game {
                 this.changePhase(nextPhase, true);
             }
         }
-
-        // this.bus.publish('game-hit-done', { game: this });
     }
 
     aiAttack() {

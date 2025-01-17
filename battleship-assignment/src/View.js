@@ -77,7 +77,7 @@ class View {
     }
 
     renderAI() {
-        console.log('View.renderAI(game)');
+        console.log('View.renderAI(game) :: phase ', this.phase);
         const result = this.giveDiv([ 'boards-container' ]);
         // result.classList.add(this.game.activePlayer === PLAYER.ONE ? 'playerOne-turn' : 'playerTwo-turn');
         result.classList.add('phase-'+this.phase);
@@ -132,13 +132,13 @@ class View {
 
         const header = document.createElement('h2');
         header.classList.add('phase-header');
-        const haveLoser = this.game.loser;
+        const loser = this.game.loser;
         let winner;
-        if (haveLoser) { 
+        if (!!loser) { 
             if (this.gameType === GAME_TYPE.PLAYERS) {
-                winner = haveLoser === PLAYER.ONE ? 'Player Two' : 'Player One';
+                winner = (loser === PLAYER.ONE) ? 'Player Two' : 'Player One';
             } else if (this.gameType === GAME_TYPE.AI) {
-                winner = haveLoser === PLAYER.AI ? 'Player One' : 'The Computer';
+                winner = (loser === PLAYER.AI) ? 'Player One' : 'The Computer';
             }
         }
         let headerText;
@@ -537,9 +537,11 @@ class View {
         return result;
     }
 
-    changePhase(newPhase, doPublish) {
+    changePhase(newPhase, doPublish = false, doReRender = true) {
         this.phase = newPhase;
-        this.reRender(this.game);
+        if (doReRender) {
+            this.reRender(this.game);
+        }
         
         if (doPublish) {
             this.bus.publish('view-phase-change', { phase: newPhase })
@@ -601,7 +603,7 @@ class View {
         })
 
         this.bus.subscribe('game-phase-change', (data) => {
-            this.changePhase(data.phase);
+            this.changePhase(data.phase, false, false);
         });
         this.bus.subscribe('request-render', () => {
             console.log('reRender');
