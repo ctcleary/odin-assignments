@@ -134,11 +134,22 @@ class View {
         header.classList.add('phase-header');
         const loser = this.game.loser;
         let winner;
-        if (!!loser) { 
-            if (this.gameType === GAME_TYPE.PLAYERS) {
-                winner = (loser === PLAYER.ONE) ? 'Player Two' : 'Player One';
-            } else if (this.gameType === GAME_TYPE.AI) {
-                winner = (loser === PLAYER.AI) ? 'Player One' : 'The Computer';
+        if (!!loser) {
+            switch(loser) {
+                case PLAYER.ONE:
+                    winner = 'Player Two';
+                    break;
+                case PLAYER.TWO:
+                    winner = 'Player One';
+                    break;
+                case AI_PLAYER.AI:
+                    winner = 'Player One';
+                    break;
+                case AI_PLAYER.HUMAN:
+                    winner = 'The Computer';
+                    break;
+                default:
+                    break;
             }
         }
         let headerText;
@@ -462,8 +473,19 @@ class View {
         resetBtn.classList.add('reset-button');
         resetBtn.addEventListener('click', () => {
             game.unplaceAllShips(player);
-            const placementPane = player === PLAYER.ONE ? PHASE.PLAYER_ONE_PLACEMENT : PHASE.PLAYER_TWO_PLACEMENT;
-            this.changePhase(placementPane, true);
+            let placementPhase;
+            switch(player) {
+                case PLAYER.ONE:
+                    placementPhase = PHASE.PLAYER_ONE_PLACEMENT;
+                    break;
+                case PLAYER.TWO:
+                    placementPhase = PHASE.PLAYER_TWO_PLACEMENT;
+                    break;
+                case AI_PLAYER.HUMAN:
+                    placementPhase = AI_PHASE.HUMAN_PLACEMENT;
+                    break;
+            }
+            this.changePhase(placementPhase, true);
         });
         dockFrame.appendChild(resetBtn);
 

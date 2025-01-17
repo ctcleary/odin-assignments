@@ -170,7 +170,7 @@ body {
 .boards-container.phase-screen .screen {
     opacity: 0;
     z-index: 100;
-    animation: 0.5s screen-in 0.25s linear forwards;
+    animation: 0.25s screen-in 0.25s linear forwards;
 }
 @keyframes screen-in {
     0% {
