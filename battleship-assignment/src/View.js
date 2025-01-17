@@ -31,7 +31,10 @@ class View {
         const result = this.giveDiv([ 'boards-container' ]);
         // result.classList.add(this.game.activePlayer === PLAYER.ONE ? 'playerOne-turn' : 'playerTwo-turn');
         result.classList.add('phase-'+this.phase);
-
+        if (this.game.loser) {
+            result.classList.add('loser-'+this.game.loser);
+        }
+        
         const debugPhaseText = document.getElementById('debug-current-phase');
         if (debugPhaseText) {
             debugPhaseText.innerText = 'DEBUG - CURRENT PHASE: "' + this.phase + '"';
@@ -64,6 +67,9 @@ class View {
             result.appendChild(this.renderShipDock(this.game, PLAYER.ONE));
         } else if (this.phase === PHASE.PLAYER_TWO_PLACEMENT || this.phase === PHASE.PLAYER_TWO_PLACEMENT_COMPLETE) {
             result.appendChild(this.renderShipDock(this.game, PLAYER.TWO));
+        } else {
+            result.appendChild(this.renderShipDock(this.game, PLAYER.ONE, true));
+            result.appendChild(this.renderShipDock(this.game, PLAYER.TWO, true));
         }
 
         
@@ -81,6 +87,9 @@ class View {
         const result = this.giveDiv([ 'boards-container' ]);
         // result.classList.add(this.game.activePlayer === PLAYER.ONE ? 'playerOne-turn' : 'playerTwo-turn');
         result.classList.add('phase-'+this.phase);
+        if (this.game.loser) {
+            result.classList.add('loser-'+this.game.loser);
+        }
 
         const debugPhaseText = document.getElementById('debug-current-phase');
         if (debugPhaseText) {
@@ -110,11 +119,13 @@ class View {
         this.renderHits(this.game, aiHitLayer, AI_PLAYER.AI);
 
 
-        if (this.phase === AI_PHASE.PREGAME) {
+        if (this.phase === AI_PHASE.HUMAN_PLACEMENT || this.phase === AI_PHASE.HUMAN_PLACEMENT_COMPLETE) {
             result.appendChild(this.renderShipDock(this.game, AI_PLAYER.HUMAN));
-            result.appendChild(this.renderShipDock(this.game, AI_PLAYER.AI));
-        } else if (this.phase === AI_PHASE.HUMAN_PLACEMENT || this.phase === AI_PHASE.HUMAN_PLACEMENT_COMPLETE) {
-            result.appendChild(this.renderShipDock(this.game, AI_PLAYER.HUMAN));
+            // result.appendChild(this.renderShipDock(this.game, AI_PLAYER.AI));
+        } else {
+            // Render with `trackerMode` set to `true`
+            result.appendChild(this.renderShipDock(this.game, AI_PLAYER.HUMAN, true));
+            result.appendChild(this.renderShipDock(this.game, AI_PLAYER.AI, true));
         }
 
         if (this.phase === AI_PHASE.PREGAME || this.phase === AI_PHASE.POSTGAME ||
@@ -233,7 +244,7 @@ class View {
                 aiButton.classList.add('pregame-start-button');
                 aiButton.classList.add('start-button');
                 aiButton.classList.add('hero-content');
-                aiButton.innerText = 'Player vs. AI';
+                aiButton.innerText = 'Player vs. Computer';
                 aiButton.addEventListener('click', () => {
                     this.bus.publish('start-game', { gameType: GAME_TYPE.AI });
                 })
@@ -456,58 +467,67 @@ class View {
         return result;
     }
 
-    renderShipDock(game, player) {
+    renderShipDock(game, player, trackerMode = false) {
         const result = this.giveDivWithID(player+'-ship-dock', ['ship-dock'], { player: player });
+        if (trackerMode) {
+            result.classList.add('ship-tracker')
+        }
         const dockFrame = this.giveDiv(['ship-dock-frame']);
         result.appendChild(dockFrame);
 
         const header = document.createElement('h3');
         header.classList.add('ship-dock-header');
-        header.innerText = 'Ship Dock';
+        header.innerText = trackerMode ? 'Ship Kill Tracker' : 'Ship Dock' ;
+
         dockFrame.appendChild(header);
 
-        const resetBtn = document.createElement('button');
-        resetBtn.type = 'button';
-        resetBtn.innerText = 'Reset'
-        resetBtn.classList.add('ship-dock-button');
-        resetBtn.classList.add('reset-button');
-        resetBtn.addEventListener('click', () => {
-            game.unplaceAllShips(player);
-            let placementPhase;
-            switch(player) {
-                case PLAYER.ONE:
-                    placementPhase = PHASE.PLAYER_ONE_PLACEMENT;
-                    break;
-                case PLAYER.TWO:
-                    placementPhase = PHASE.PLAYER_TWO_PLACEMENT;
-                    break;
-                case AI_PLAYER.HUMAN:
-                    placementPhase = AI_PHASE.HUMAN_PLACEMENT;
-                    break;
-            }
-            this.changePhase(placementPhase, true);
-        });
-        dockFrame.appendChild(resetBtn);
+        if (!trackerMode) {
+            const resetBtn = document.createElement('button');
+            resetBtn.type = 'button';
+            resetBtn.innerText = 'Reset'
+            resetBtn.classList.add('ship-dock-button');
+            resetBtn.classList.add('reset-button');
+            resetBtn.addEventListener('click', () => {
+                game.unplaceAllShips(player);
+                let placementPhase;
+                switch(player) {
+                    case PLAYER.ONE:
+                        placementPhase = PHASE.PLAYER_ONE_PLACEMENT;
+                        break;
+                    case PLAYER.TWO:
+                        placementPhase = PHASE.PLAYER_TWO_PLACEMENT;
+                        break;
+                    case AI_PLAYER.HUMAN:
+                        placementPhase = AI_PHASE.HUMAN_PLACEMENT;
+                        break;
+                }
+                this.changePhase(placementPhase, true);
+            });
+            dockFrame.appendChild(resetBtn);
 
-        const randomizeBtn = document.createElement('button');
-        randomizeBtn.type = 'button';
-        randomizeBtn.innerText = 'Randomize';
-        randomizeBtn.classList.add('ship-dock-button');
-        randomizeBtn.classList.add('randomize-button');
-        randomizeBtn.addEventListener('click', () => {
-            game.randomizeAllShips(player);
-        });
-        dockFrame.appendChild(randomizeBtn);
+            const randomizeBtn = document.createElement('button');
+            randomizeBtn.type = 'button';
+            randomizeBtn.innerText = 'Randomize';
+            randomizeBtn.classList.add('ship-dock-button');
+            randomizeBtn.classList.add('randomize-button');
+            randomizeBtn.addEventListener('click', () => {
+                game.randomizeAllShips(player);
+            });
+            dockFrame.appendChild(randomizeBtn);
+        }
 
         const gb = game.gameboards[player];
         const shipObjArr = gb.getShips();
 
-        const isCurrPlayerPlacement = (player === PLAYER.ONE && this.phase === PHASE.PLAYER_ONE_PLACEMENT) ||
-            (player === PLAYER.TWO && this.phase === PHASE.PLAYER_TWO_PLACEMENT) ||
-            (player === AI_PLAYER.HUMAN && this.phase === AI_PHASE.HUMAN_PLACEMENT);
+        // const isCurrPlayerPlacement = (player === PLAYER.ONE && this.phase === PHASE.PLAYER_ONE_PLACEMENT) ||
+        //     (player === PLAYER.TWO && this.phase === PHASE.PLAYER_TWO_PLACEMENT) ||
+        //     (player === AI_PLAYER.HUMAN && this.phase === AI_PHASE.HUMAN_PLACEMENT);
+
+        const isPlacementCompletePhase = (this.phase === PHASE.PLAYER_ONE_PLACEMENT_COMPLETE || this.phase === PHASE.PLAYER_TWO_PLACEMENT_COMPLETE || this.phase === AI_PHASE.HUMAN_PLACEMENT_COMPLETE);
         const isPregame = this.phase === PHASE.PREGAME;
 
-        if (isCurrPlayerPlacement || isPregame) {
+        // if (isCurrPlayerPlacement || isPregame) {
+        if (!isPlacementCompletePhase) {
             let lastLength = 0;
             shipObjArr.forEach((shipObj) => {
                 const id = shipObj.id;
@@ -519,8 +539,8 @@ class View {
                 }
                 lastLength = length;
 
+                // const shipContainer = this.giveDiv(['ship-dock-img-container']);
                 const imgSrc = shipObj.ship.getImgSrc();
-
                 const img = document.createElement('img');
                 img.id = player+'-ship-'+id;
                 // img.draggable = true;
@@ -528,16 +548,24 @@ class View {
                 img.classList.add('dock-ship');
                 img.classList.add('ship');
                 img.classList.add('hori');
+                if (shipObj.ship.isSunk()) {
+                    img.classList.add('sunk');
+                }
 
-                const shipPlacer = new ViewShipPlacer(game, img, shipObj, player);
-                this.shipPlacers.push(shipPlacer);
+                if (!trackerMode) {
+                    const shipPlacer = new ViewShipPlacer(game, img, shipObj, player);
+                    this.shipPlacers.push(shipPlacer);
+                }
             
                 dockFrame.appendChild(img);
             });
 
-            const instructions = this.giveDiv(['instructions']);
-            instructions.innerText = 'Click to pick up | [Space] to flip | Click to place';
-            dockFrame.appendChild(instructions);
+            if (!trackerMode) {
+                const instructions = this.giveDiv(['instructions']);
+                instructions.innerText = 'Click to pick up | [Space] to flip | Click to place';
+                dockFrame.appendChild(instructions);
+            }
+
         } else { // pane === [player] PLACEMENT COMPLETE?
             const finishButton = document.createElement('button');
             finishButton.type = 'button';

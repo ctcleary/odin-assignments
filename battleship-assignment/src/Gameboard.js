@@ -65,21 +65,25 @@ class Gameboard {
         // console.log('Gameboard receiveHit', xy);
         let isShipHit = false;
         let isShipSunk = false;
-        let sunkShip = null;
-        this.getShips().forEach((shipObj) => {
+        let hitShipObj = null;
+        this.getShips().find((shipObj) => { // Should I refactor this to use .find and return `didHit`?
             const didHit = shipObj.ship.hit(xy);
             if (didHit) {
                 // console.log('didHit '+ shipObj.id);
                 isShipHit = true;
+                hitShipObj = shipObj;
                 isShipSunk = shipObj.ship.isSunk();
-                sunkShip = isShipSunk ? shipObj.ship : null;
+                // sunkShip = isShipSunk ? shipObj.ship : null;
             }
+            return didHit;
         });
 
         this.hits.push({ xy: xy, shipHit: isShipHit });
-        this.previousHitCoords = xy;
+        
+        this.previousHitCoords = xy; // For adding .shine class to most recent hit
+        
         if (isShipSunk) {
-            this.updateHitsWithSunkStatus(sunkShip);
+            this.updateHitsWithSunkStatus(hitShipObj.ship);
         }
 
         const allShipsSunk = this.allShipsSunk();
@@ -87,8 +91,11 @@ class Gameboard {
         if (allShipsSunk) {
             this.lose();
         }
-
-        return isShipHit;
+        if (isShipSunk || isShipHit) {
+            return hitShipObj;
+        } else {
+            return null;
+        }
     }
 
     getPreviousHitCoords() {
@@ -119,6 +126,13 @@ class Gameboard {
 
     getShips() {
         return this.ships;
+    }
+
+    getSunkShips() {
+        const sunkShips = this.getShips().slice().filter((shipObj) => {
+            return shipObj.ship.isSunk();
+        })
+        return sunkShips;
     }
 
     getShipByID(shipID) {

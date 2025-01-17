@@ -141,8 +141,18 @@ body {
 .phase-postgame .gameboard-container,
 .phase-pregame .ship-dock,
 .phase-ai-placement .gameboard-container,
-.phase-ai-turn .gameboard-container  {
-    opacity: 0.5;
+.phase-ai-turn .gameboard-container,
+.phase-ai-postgame .gameboard-container,
+.phase-ai-postgame .gameboard-container {
+    opacity: 0.6;
+}
+
+.loser-playerOne #gameboard-playerOne .cell,
+.loser-playerTwo #gameboard-playerTwo .cell,
+.loser-human #gameboard-human .cell,
+.loser-ai #gameboard-ai .cell {
+    background: #a91f1f;
+    border: thin solid #891c1c;
 }
 
 .phase-playerOne-turn-intro-screen .screen,
@@ -499,6 +509,25 @@ body {
 
     grid-row: 3;
 }
+
+.ship-tracker .ship {
+    opacity: 1;
+}
+
+.ship-tracker .ship.sunk {
+    /* position: relative; */
+    filter: drop-shadow(0 0 5px red);
+    opacity: 0.3;
+}
+/* .ship-tracker .ship.sunk::after {
+    position: absolute;
+    display: inline-block;
+    content: 'X';
+    font-size: 3rem;
+    color: red;
+    width: 3rem;
+    height: 3rem;
+} */
 
 .ship-dock .ship {
     margin: 0 1rem 0 1rem;

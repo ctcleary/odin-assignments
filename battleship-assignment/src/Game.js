@@ -62,7 +62,7 @@ const AI_PHASE = {
     AI_PLACEMENT : 'ai-placement',
     AI_TURN : 'ai-turn',
 
-    POSTGAME : 'vs-ai-postgame'
+    POSTGAME : 'ai-postgame'
 }
 
 const GAME_TYPE = {
@@ -355,25 +355,30 @@ class Game {
     }
 
     doHit(xy, phase) {
+        let currentPlayer;
         let attackedGB;
         let nextPhase;
         switch(phase) {
             case PHASE.PLAYER_ONE_TURN:
+                currentPlayer = PLAYER.ONE;
                 attackedGB = this.gameboards[PLAYER.TWO];
                 nextPhase = PHASE.PLAYER_TWO_INTRO_SCREEN;
                 // console.log('Game doHit => ', PLAYER.TWO);
                 break;
             case PHASE.PLAYER_TWO_TURN:
+                currentPlayer = PLAYER.TWO;
                 attackedGB = this.gameboards[PLAYER.ONE];
                 nextPhase = PHASE.PLAYER_ONE_INTRO_SCREEN;
                 // console.log('Game doHit => ', PLAYER.ONE);
                 break;
             case AI_PHASE.HUMAN_TURN:
+                currentPlayer = AI_PLAYER.HUMAN;
                 attackedGB = this.gameboards[AI_PLAYER.AI];
                 nextPhase = AI_PHASE.AI_TURN;
                 // console.log('Game dohit => '+ AI_PLAYER.AI)
                 break;
             case AI_PHASE.AI_TURN:
+                currentPlayer = AI_PLAYER.AI;
                 attackedGB = this.gameboards[AI_PLAYER.HUMAN];
                 nextPhase = AI_PHASE.HUMAN_TURN;
                 // console.log('Game dohit => '+ AI_PLAYER.HUMAN)
@@ -384,7 +389,13 @@ class Game {
         }
         if (attackedGB && !attackedGB.isAlreadyHit(xy)) {
             // console.log('attackedGB', attackedGB);
-            attackedGB.receiveHit(xy);
+            const hitShipObj = attackedGB.receiveHit(xy);
+            // if (!!hitShipObj && hitShipObj.ship.isSunk()) {
+            //     this.bus.publish('ship-sunk', {
+            //         shipId: shipObj.id,
+            //         player: currentPlayer
+            //     });
+            // }
             if (attackedGB.allShipsSunk()) {
                 this.bus.publish(attackedGB.player+'-lose');
             } else {
