@@ -1,5 +1,6 @@
 import Gameboard from "./Gameboard.js";
 import Game from "./Game.js";
+import { PLAYER, GAME_TYPE } from "./Game.js";
 
 it('Gameboard class exists', () => {
     expect(Gameboard).not.toBeUndefined();
@@ -11,7 +12,7 @@ it('Gameboard is set to the correct size', () => {
     expect(gb.size[0]).toBe(10);
     expect(gb.size[1]).toBe(10);
 
-    const gameWSize = new Game([30,50])
+    const gameWSize = new Game(GAME_TYPE.PLAYERS, [30,50])
     const gb2 = new Gameboard(gameWSize);
     expect(gb2.size[0]).toBe(30);
     expect(gb2.size[1]).toBe(50);
@@ -102,6 +103,8 @@ it('Gameboard correctly calls Gameboard.lose() when all ships are destroyed', ()
     gb.setShipCoords('1-3', [5,7], true);
     gb.setShipCoords('1-4', [7,7], true);
 
+    game.switchActivePlayer(PLAYER.ONE);
+
     //4-1
     gb.receiveHit([1,1]);
     gb.receiveHit([2,1]);
@@ -172,7 +175,7 @@ it('Gameboard.findPaddedOccupiedCoords() return correct array', () => {
         [ 4, 3 ], [ 4, 1 ], // orig-y + 1 // orig-y - 1
         [ 5, 3 ], [ 5, 1 ]  // orig-y + 1 // orig-y - 1
     ]);
-    
+
     const gb2 = new Gameboard(game);
     gb2.setShipCoords('2-1', [5,5], false);
     const occupiedCoordsPadded2 = gb2.findOccupiedCoordsPadded();

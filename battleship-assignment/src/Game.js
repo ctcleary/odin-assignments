@@ -1,6 +1,7 @@
+import AIPlayer, { aiPlayer } from "./AIPlayer.js";
 import Gameboard from "./Gameboard.js";
 import MessageBus from "./MessageBus.js";
-import Player, { PLAYER } from "./Player.js";
+import Player, { PLAYER, AI_PLAYER } from "./Player.js";
 
 const PHASE = {
     PREGAME : 'pregame',
@@ -21,60 +22,13 @@ const PHASE = {
 
     POSTGAME : 'postgame',
 }
-
-// Game is a "mediator"
-class Game {
-    constructor(sizeXY = [10,10]) {
-        this.size = sizeXY;
-        
-        this.bus = new MessageBus();
-        this.registerSubscribers();
-
-        this.gameboards = this.setupGameboards(this.bus);
-        this.players = this.setupPlayers(this.gameboards);
-        
-        // Start here, naturally.
-        this.phase = PHASE.PREGAME;
-
-        this.activePlayer = null;
-
-        this.loser = null;
-    }
-
-    changePhase(newPhase, doPublish) {
-        console.log(newPhase);
-        this.phase = newPhase;
-        switch(newPhase) {
-            case PHASE.PREGAME :
-            case PHASE.SCREEN :
-            case PHASE.POSTGAME :
-                this.unsetActivePlayer();
-                break;
-
-            case PHASE.PLAYER_ONE_PLACEMENT :
-            case PHASE.PLAYER_ONE_PLACEMENT_COMPLETE :
-            case PHASE.PLAYER_ONE_INTRO_SCREEN :
-            case PHASE.PLAYER_ONE_TURN :
-                this.switchActivePlayer(PLAYER.ONE);
-                break;
-
-            case PHASE.PLAYER_TWO_PLACEMENT :
-            case PHASE.PLAYER_TWO_PLACEMENT_COMPLETE :
-            case PHASE.PLAYER_TWO_INTRO_SCREEN :
-            case PHASE.PLAYER_TWO_TURN :
-                this.switchActivePlayer(PLAYER.TWO);
-                break;
-            default:
-                break;
-        }
-
         // switch(newPhase) {
         //     case PHASE.PREGAME :
         //         break;
         //     case PHASE.SCREEN :
-                // break;
-            // case PHASE.POSTGAME :
-            //     break;
+        //         break;
+        //     case PHASE.POSTGAME :
+        //         break;
 
         //     case PHASE.PLAYER_ONE_PLACEMENT :
         //         break;
@@ -97,13 +51,102 @@ class Game {
         //         break;
         // }
 
+
+const AI_PHASE = {
+    PREGAME : 'vs-ai-pregame',
+
+    HUMAN_PLACEMENT : AI_PLAYER.HUMAN+'-placement',
+    HUMAN_PLACEMENT_COMPLETE : AI_PLAYER.HUMAN+'-placement-complete',
+    HUMAN_TURN : AI_PLAYER.HUMAN+'-turn',
+
+    AI_PLACEMENT : 'ai-placement',
+    AI_TURN : 'ai-turn',
+
+    POSTGAME : 'vs-ai-postgame'
+}
+
+const GAME_TYPE = {
+    VS_AI : 'vs-ai',
+    PLAYERS : 'players',
+};
+
+const AI_TIMEOUT = 500;
+
+// Game is a "mediator"
+class Game {
+    constructor(gameType = GAME_TYPE.PLAYERS, sizeXY = [10,10]) {
+        this.gameType = gameType;
+        // this.phase = gameType === GAME_TYPE.PLAYERS ? PHASE.PREGAME : AI_PHASE.PREGAME;
+        this.phase = PHASE.PREGAME;
+        // this.phase = PHASE.PLAYER_ONE_PLACEMENT;
+
+        this.size = sizeXY;
+        
+        this.bus = new MessageBus();
+        this.registerSubscribers();
+
+        this.gameboards = gameType === GAME_TYPE.PLAYERS ? this.setupGameboards(this.bus) : this.setupGameboardsAI(this.bus);
+        
+        // Currently unused, consider refactoring to use them for AI mode.
+        // this.players = this.setupPlayers(this.gameboards);
+        
+
+        this.activePlayer = null;
+
+        this.loser = null;
+    }
+
+    changePhase(newPhase, doPublish) {
+        console.log('game.changePhase, doPublish ::',newPhase, doPublish);
+        this.phase = newPhase;
+        switch(newPhase) {
+            case PHASE.PREGAME :
+            case PHASE.SCREEN :
+            case PHASE.POSTGAME :
+                this.unsetActivePlayer();
+                break;
+
+            case PHASE.PLAYER_ONE_PLACEMENT :
+            case PHASE.PLAYER_ONE_PLACEMENT_COMPLETE :
+            case PHASE.PLAYER_ONE_INTRO_SCREEN :
+            case PHASE.PLAYER_ONE_TURN :
+                this.switchActivePlayer(PLAYER.ONE);
+                break;
+
+            case PHASE.PLAYER_TWO_PLACEMENT :
+            case PHASE.PLAYER_TWO_PLACEMENT_COMPLETE :
+            case PHASE.PLAYER_TWO_INTRO_SCREEN :
+            case PHASE.PLAYER_TWO_TURN :
+                this.switchActivePlayer(PLAYER.TWO);
+                break;
+
+            case AI_PHASE.HUMAN_PLACEMENT :
+            case AI_PHASE.HUMAN_PLACEMENT_COMPLETE :
+                this.switchActivePlayer(AI_PLAYER.HUMAN);
+                break;
+
+            case AI_PHASE.AI_PLACEMENT:
+                this.randomizeAllShips(AI_PLAYER.AI);
+                this.timeoutAITurn();
+                break;
+            case AI_PHASE.AI_TURN:
+                setTimeout(() => {
+                    this.aiAttack(); 
+                }, AI_TIMEOUT-100);
+                this.timeoutAITurn();
+                break;
+            default:
+                break;
+        }
+
         if (doPublish) {
             this.bus.publish('game-phase-change', { phase: newPhase })
         }
+
         this.bus.publish('request-render');
     }
 
-    setupGameboards(sizeXY, messageBus) {
+    setupGameboards(messageBus) {
         const gameboards = {
             [PLAYER.ONE] : new Gameboard(this, PLAYER.ONE),
             [PLAYER.TWO] : new Gameboard(this, PLAYER.TWO),
@@ -111,6 +154,20 @@ class Game {
         
         gameboards[PLAYER.ONE].setBus(messageBus);
         gameboards[PLAYER.TWO].setBus(messageBus);
+
+        // this.setGameboardShipCoordsDefault(gameboards);
+
+        return gameboards;
+    }
+
+    setupGameboardsAI(messageBus) {
+        const gameboards = {
+            [AI_PLAYER.HUMAN] : new Gameboard(this, AI_PLAYER.HUMAN),
+            [AI_PLAYER.AI] : new Gameboard(this, AI_PLAYER.AI),
+        }
+        
+        gameboards[AI_PLAYER.HUMAN].setBus(messageBus);
+        gameboards[AI_PLAYER.AI].setBus(messageBus);
 
         // this.setGameboardShipCoordsDefault(gameboards);
 
@@ -126,6 +183,16 @@ class Game {
         return players;
     }
 
+    setupPlayersAI(gameboards) {
+        const players = {
+            [AI_PLAYER.HUMAN] : new Player(PLAYER.ONE, gameboards[AI_PLAYER.HUMAN], gameboards[AI_PLAYER.AI]),
+            [AI_PLAYER.AI] : new Player(PLAYER.TWO, gameboards[AI_PLAYER.AI], gameboards[AI_PLAYER.HUMAN]),
+        }
+
+        return players;
+    }
+
+    // Lays out ships in orderly rows.
     setGameboardShipCoordsDefault(gameboards) {
         [
             gameboards[PLAYER.ONE], 
@@ -160,15 +227,22 @@ class Game {
         gb.unplaceAllShips();
         gb.randomizeAllShips();
 
-        const newPhase = player === PLAYER.ONE ? PHASE.PLAYER_ONE_PLACEMENT_COMPLETE : PHASE.PLAYER_TWO_PLACEMENT_COMPLETE;
-        this.changePhase(newPhase, true);
+        if (this.gameType === GAME_TYPE.PLAYERS) {
+            const newPhase = player === PLAYER.ONE ? PHASE.PLAYER_ONE_PLACEMENT_COMPLETE : PHASE.PLAYER_TWO_PLACEMENT_COMPLETE;
+            this.changePhase(newPhase, true);
+        } else if (player === AI_PLAYER.HUMAN) {
+            const newPhase = AI_PHASE.HUMAN_PLACEMENT_COMPLETE;
+            this.changePhase(newPhase, true);
+        }
     }
 
     getPlayerStr(player) {
-        if (player === PLAYER.ONE) {
+        if (player === PLAYER.ONE || player === AI_PLAYER.HUMAN) {
             return 'Player One';
         } else if (player === PLAYER.TWO) {
             return 'Player Two';
+        } else if (player === AI_PLAYER.AI) {
+            return 'The Computer';
         } else {
             return null;
         }
@@ -187,18 +261,32 @@ class Game {
         return this.activePlayer;
     }
 
+    
+    changeGameType(gameType) {
+        this.gameboards = gameType === GAME_TYPE.PLAYERS ? this.setupGameboards(this.bus) : this.setupGameboardsAI(this.bus);
+        this.gameType = gameType;
+        this.bus.publish('change-game-type', { gameType: gameType });
+    }
+
     registerSubscribers() {
-        this.bus.subscribe('start-game', () => {
-            this.changePhase(PHASE.PLAYER_ONE_PLACEMENT, true);
+        this.bus.subscribe('start-game', (data) => {
+            this.gameType = data.gameType;
+            this.changeGameType(data.gameType);
+            if (this.gameType === GAME_TYPE.PLAYERS) {
+                this.changePhase(PHASE.PLAYER_ONE_PLACEMENT, true);
+            } else {
+                this.switchActivePlayer(AI_PLAYER.HUMAN);
+                this.changePhase(AI_PHASE.HUMAN_PLACEMENT, true);
+            }
         });
 
         this.bus.subscribe('restart-game', () => {
             this.resetGameboards();
-            this.changePhase(PHASE.PLAYER_ONE_PLACEMENT, true);
+            this.changePhase(PHASE.PREGAME, true);
         });
 
         this.bus.subscribe('view-hit', (data) => { 
-            this.doHit(data) 
+            this.doHit(data.xy, data.phase);
         });
 
         this.bus.subscribe('view-phase-change', (data) => {
@@ -207,39 +295,48 @@ class Game {
 
         this.bus.subscribe(PLAYER.ONE+'-lose', () => {
             console.log('PLAYER ONE LOSES');
-            this.loser = PLAYER.ONE;
+            this.setLoser(PLAYER.ONE);
             this.changePhase(PHASE.POSTGAME, true);
         });
         this.bus.subscribe(PLAYER.TWO+'-lose', () => {
             console.log('PLAYER TWO LOSES');
-            this.loser = PLAYER.TWO;
+            this.setLoser(PLAYER.TWO);
             this.changePhase(PHASE.POSTGAME, true);
         });
 
-        // this.bus.publish('ship-placed', { shipId: shipObj.id, shipPlayer: shipObj.player, xy: xy, isHori: isHori});
-        this.bus.subscribe('ship-placed', (data) => {
-            this.shipPlacedHandler(data);
+        this.bus.subscribe(AI_PLAYER.HUMAN+'-lose', () => {
+            console.log('PLAYER ONE (HUMAN) LOSES');
+            this.setLoser(AI_PLAYER.HUMAN);
+            this.changePhase(AI_PHASE.POSTGAME, true);
+        });
+        this.bus.subscribe(AI_PLAYER.AI+'-lose', () => {
+            console.log('AI LOSES');
+            this.setLoser(AI_PLAYER.AI);
+            this.changePhase(AI_PHASE.POSTGAME, true);
         });
 
-        this.bus.subscribe(PLAYER.ONE+'-lose', () => {
-            this.setLoser(PLAYER.ONE);
-        });
-        this.bus.subscribe(PLAYER.TWO+'-lose', () => {
-            this.setLoser(PLAYER.TWO);
+        // from ViwShipPlacer.js
+        // data: { shipId: shipObj.id, shipPlayer: shipObj.player, xy: xy, isHori: isHori});
+        this.bus.subscribe('ship-placed', (data) => {
+            this.shipPlacedHandler(data);
         });
     }
 
     resetGameboards() {
-        this.gameboards = this.setupGameboards();
+        if (this.gameType === GAME_TYPE.PLAYERS) {
+            this.gameboards = this.setupGameboards(this.bus);
+        } else {
+            this.gameboards = this.setupGameboardsAI(this.bus);
+        }
     }
 
     setLoser(player) {
         this.loser = player;
-        this.bus.publish('request-render');
+        // this.bus.publish('request-render');
     }
 
     shipPlacedHandler(data) {
-        console.log('game heard ship-placed');
+        console.log('game heard ship-placed'); // from ViwShipPlacer.js
         const player = data.player;
         const shipId = data.shipId;
 
@@ -257,27 +354,37 @@ class Game {
         this.bus.publish('request-render');
     }
 
-    doHit(data) {
+    doHit(xy, phase) {
         let attackedGB;
         let nextPhase;
-        switch(data.phase) {
+        switch(phase) {
             case PHASE.PLAYER_ONE_TURN:
                 attackedGB = this.gameboards[PLAYER.TWO];
                 nextPhase = PHASE.PLAYER_TWO_INTRO_SCREEN;
-                console.log('Game doHit => ', PLAYER.TWO);
+                // console.log('Game doHit => ', PLAYER.TWO);
                 break;
             case PHASE.PLAYER_TWO_TURN:
                 attackedGB = this.gameboards[PLAYER.ONE];
                 nextPhase = PHASE.PLAYER_ONE_INTRO_SCREEN;
-                console.log('Game doHit => ', PLAYER.ONE);
+                // console.log('Game doHit => ', PLAYER.ONE);
+                break;
+            case AI_PHASE.HUMAN_TURN:
+                attackedGB = this.gameboards[AI_PLAYER.AI];
+                nextPhase = AI_PHASE.AI_TURN;
+                // console.log('Game dohit => '+ AI_PLAYER.AI)
+                break;
+            case AI_PHASE.AI_TURN:
+                attackedGB = this.gameboards[AI_PLAYER.HUMAN];
+                nextPhase = AI_PHASE.HUMAN_TURN;
+                // console.log('Game dohit => '+ AI_PLAYER.HUMAN)
                 break;
             default:
                 return;
                 break;
         }
-        if (attackedGB && !attackedGB.isAlreadyHit(data.xy)) {
-            console.log('attackedGB', attackedGB);
-            attackedGB.receiveHit(data.xy);
+        if (attackedGB && !attackedGB.isAlreadyHit(xy)) {
+            // console.log('attackedGB', attackedGB);
+            attackedGB.receiveHit(xy);
             if (attackedGB.allShipsSunk()) {
                 this.bus.publish(attackedGB.player+'-lose');
             } else {
@@ -285,13 +392,23 @@ class Game {
                 this.changePhase(nextPhase, true);
             }
         }
+    }
 
-        // this.bus.publish('game-hit-done', { game: this });
+    aiAttack() {
+        const humanHits = this.gameboards[AI_PLAYER.HUMAN].getHits();
+        const xy = aiPlayer.findAttackCoords(humanHits);
+        console.log('aiAttack found :: ', xy);
+        this.doHit(xy, this.phase);
+    }
+
+    timeoutAITurn() {
+        setTimeout(() => {
+            this.changePhase(AI_PHASE.HUMAN_TURN, true);
+        }, AI_TIMEOUT);
     }
 }
 
-export { PLAYER }
-export { PHASE }
+export { PLAYER, PHASE, AI_PHASE, GAME_TYPE }
 
 export default Game;
 

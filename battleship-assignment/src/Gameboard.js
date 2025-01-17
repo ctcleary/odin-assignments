@@ -8,6 +8,8 @@ class Gameboard {
         this.hits = [];
         this.player = playerStr;
 
+        this.previousHitCoords = null;
+
         this.bus = new MessageBus();
 
         this.ships = [
@@ -62,19 +64,23 @@ class Gameboard {
 
         // console.log('Gameboard receiveHit', xy);
         let isShipHit = false;
+        let isShipSunk = false;
+        let sunkShip = null;
         this.getShips().forEach((shipObj) => {
             const didHit = shipObj.ship.hit(xy);
             if (didHit) {
                 // console.log('didHit '+ shipObj.id);
                 isShipHit = true;
+                isShipSunk = shipObj.ship.isSunk();
+                sunkShip = isShipSunk ? shipObj.ship : null;
             }
         });
 
-        // this.bus.publish(this.player + '-hit', { xy: xy });
-
-        // console.log('1 :: this.hits.length', this.hits.length);
         this.hits.push({ xy: xy, shipHit: isShipHit });
-        // console.log('2 :: this.hits.length', this.hits.length);
+        this.previousHitCoords = xy;
+        if (isShipSunk) {
+            this.updateHitsWithSunkStatus(sunkShip);
+        }
 
         const allShipsSunk = this.allShipsSunk();
 
@@ -83,6 +89,10 @@ class Gameboard {
         }
 
         return isShipHit;
+    }
+
+    getPreviousHitCoords() {
+        return this.previousHitCoords;
     }
 
     getPlayerStr(player) {
@@ -220,9 +230,26 @@ class Gameboard {
                     foundValidCoords = detCoords;
                 }
             }
-            console.log(isHori);
+            // console.log('randomizeAllShips :: isHori' isHori);
             ship.setShipCoords(foundValidCoords[0], isHori);
         });
+    }
+
+    updateHitsWithSunkStatus(sunkShip) {
+        const sunkCoords = sunkShip.getShipCoords();
+
+        // console.log('sunkCoords', sunkCoords);
+        sunkCoords.forEach((coord) => {
+            for (let i = 0; i < this.hits.length; i++) {
+                const hit = this.hits[i];
+                if (hit.xy[0] === coord[0] && hit.xy[1] === coord[1]) { 
+                    // console.log('before update:',this.hits[i]);
+                    this.hits[i] = { xy: hit.xy, shipHit: true, isSunk: true };
+                    // console.log('after update:', this.hits[i]);
+                    break;
+                }
+            }
+        })
     }
 }
 
