@@ -236,6 +236,26 @@ class Game {
         }
     }
 
+    getWinnerPlayerStr(loser) {
+        let winner;
+        switch (loser) {
+            case PLAYER.ONE:
+                winner = PLAYER.TWO;
+                break;
+            case PLAYER.TWO:
+                winner = PLAYER.ONE;
+                break;
+            case AI_PLAYER.HUMAN:
+                winner = AI_PLAYER.AI;
+                break;
+            case AI_PLAYER.AI:
+                winner = AI_PLAYER.HUMAN;
+                break;
+        }
+
+        return this.getPlayerStr(winner);
+    }
+
     getPlayerStr(player) {
         if (player === PLAYER.ONE || player === AI_PLAYER.HUMAN) {
             return 'Player One';

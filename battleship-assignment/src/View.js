@@ -1,4 +1,4 @@
-import { AI_PLAYER, PLAYER } from "./Player.js";
+import Player, { AI_PLAYER, PLAYER } from "./Player.js";
 import ViewShipPlacer from "./ViewShipPlacer.js";
 import { AI_PHASE, GAME_TYPE, PHASE } from "./Game.js";
 
@@ -7,7 +7,7 @@ class View {
     constructor(game, gameContainerEl) {
         this.game = game;
 
-        this.renderFunc = this.game.gameType === GAME_TYPE.PLAYERS ? this.render : this.renderAI;
+        // this.renderFunc = this.game.gameType === GAME_TYPE.PLAYERS ? this.render : this.renderAI;
 
         this.bus = game.bus;
         this.gameContainerEl = gameContainerEl;
@@ -22,11 +22,21 @@ class View {
     reRender() {
         this.gameContainerEl.innerHTML = '';
         // console.log(this.renderFunc);
-        this.gameContainerEl.appendChild(this.renderFunc());
+        this.gameContainerEl.appendChild(this.render());
     }
 
     // Returns the top DOM Node.
     render() {
+        if (this.game.gameType === GAME_TYPE.PLAYERS) {
+            return this.renderPVP();
+        } else if (this.game.gameType === GAME_TYPE.AI) {
+            return this.renderAI();
+        } else {
+            throw new Error('Game.gameType is not correctly set!');
+        }
+    }
+
+    renderPVP() {
         console.log('View.render(game)');
         const result = this.giveDiv([ 'boards-container' ]);
         // result.classList.add(this.game.activePlayer === PLAYER.ONE ? 'playerOne-turn' : 'playerTwo-turn');
@@ -239,7 +249,7 @@ class View {
                     this.bus.publish('start-game', { gameType: GAME_TYPE.PLAYERS });
                 })
                 parent.appendChild(button);
-                parent.appendChild(document.createElement('br'));
+                // parent.appendChild(document.createElement('br'));
                 const aiButton = document.createElement('button');
                 aiButton.classList.add('pregame-start-button');
                 aiButton.classList.add('start-button');
@@ -251,6 +261,12 @@ class View {
                 parent.appendChild(aiButton);
                 break;
             case PHASE.POSTGAME:
+            case AI_PHASE.POSTGAME:
+                const banner = this.giveDiv(['hero-banner', 'hero-content']);
+                const winnerText = this.game.getWinnerPlayerStr(loser);
+                banner.innerText = winnerText + ' Wins!';
+                parent.appendChild(banner);
+
                 button = document.createElement('button');
                 button.classList.add('postgame-start-button');
                 button.classList.add('start-button');
@@ -469,7 +485,7 @@ class View {
         // For "intro-screen" phases
         const goBtn = document.createElement('button');
         goBtn.classList.add('go-button');
-        const playerStr = gameboard.getPlayerStr(gameboard.player);
+        const playerStr = this.game.getPlayerStr(gameboard.player);
         goBtn.innerText = `${playerStr}... Click to play!`;
         goBtn.addEventListener('click', (evt) => {
             const newPhase = gameboard.player === PLAYER.ONE ? PHASE.PLAYER_ONE_TURN : PHASE.PLAYER_TWO_TURN;
@@ -657,13 +673,13 @@ class View {
         //     this.gameContainerEl.innerHTML = '';
         //     this.gameContainerEl.appendChild(this.render(data.game)); 
         // });
-        this.bus.subscribe('change-game-type', (data) => {
-            if (data.gameType === GAME_TYPE.PLAYERS) {
-                this.renderFunc = this.render;
-            } else {
-                this.renderFunc = this.renderAI;
-            }
-        })
+        // this.bus.subscribe('change-game-type', (data) => {
+        //     if (data.gameType === GAME_TYPE.PLAYERS) {
+        //         this.renderFunc = this.render;
+        //     } else {
+        //         this.renderFunc = this.renderAI;
+        //     }
+        // })
 
         this.bus.subscribe('game-phase-change', (data) => {
             this.changePhase(data.phase, false, false);

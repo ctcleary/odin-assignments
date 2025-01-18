@@ -252,7 +252,10 @@ body {
 
 #hero-container {
     display: grid;
-    justify-content: center;
+    grid-template-columns: 1fr 4fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr;
+    row-gap: 3rem;
+    justify-items: center;
     align-items: center;
 
     /* background: rgba(125, 125, 125, 0.5); */
@@ -272,13 +275,16 @@ body {
 }
 
 .phase-pregame #hero-container,
+.phase-ai-postgame #hero-container,
 .phase-postgame #hero-container {
     pointer-events: all;
-    display: inline-block;
+    display: grid;
 }
 
 /* .start-button { */
 .hero-content {
+    grid-column: 2 / 3;
+    /* grid-row: 1 / 2; */
     display: inline-block;
     padding: 3rem;
     font-size: 2rem;
@@ -291,11 +297,34 @@ body {
 
     /* margin-bottom: 2rem; */
 }
-.start-button:first-of-type {
-    margin-top: 6rem;
+.hero-content:first-child {
+    grid-row: 2 / 3;
 }
+.hero-content:nth-child(2) {
+    grid-row: 3 / 4;
+}
+
+.hero-banner {
+    background:none;
+    border: none;
+    padding: 0;
+
+    font-size: 4.5rem;
+    font-weight: 700;
+    color: white;
+    /* margin-top: 7rem; */
+    
+    filter: drop-shadow(0px 0px 10px rgb(57, 163, 245));
+    -webkit-text-stroke-color: black;
+    -webkit-text-stroke-width: 2px;
+}
+
+
+/* .start-button:first-of-type {
+    margin-top: 6rem;
+} */
 .start-button {
-    margin-bottom: 3rem;
+    /* margin-bottom: 3rem; */
 }
 .start-button:hover {
     background-color: rgb(94, 185, 255);
