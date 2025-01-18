@@ -11,6 +11,7 @@ body {
     /* padding: 1rem; */
     font-family: system-ui, sans-serif;
 
+
     --cell-size: 2.5rem;
 }
 
@@ -24,6 +25,7 @@ body {
 
 #wrapper {
     text-align: center;
+    min-width: 1150px;
 }
 
 #wrapper>h1 {
@@ -31,7 +33,8 @@ body {
     background: #eee;
     border-bottom: thin solid #ccc;
     padding: 2rem 0 1.5rem 0;
-    margin-bottom: 1rem;
+    margin-bottom: 1rem; 
+    width: 100%;
 }
 
 
