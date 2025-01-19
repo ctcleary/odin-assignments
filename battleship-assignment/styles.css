@@ -70,25 +70,14 @@ body {
     left: -12px;
     transform-origin: center center;
     transform: scale(4);
-    transition: all 0.75s linear;
-    filter: none;
-    /* animation: 0s ping-ping 0.25s linear forwards; */
+    transition: transform 0.75s linear;
+    filter: drop-shadow(0 0 10px red);
+}
+.hit-layer .ship-hit  {
+    filter: drop-shadow(0 0 1rem red);
 }
 .hit-layer .ping-circle.shrink {
     transform: scale(0);
-}
-@keyframes ping-ping {
-    0% {
-        transform: scale(0.25);
-    }
-
-    50% {
-        transform: scale(3);
-    }
-
-    100% {
-        transform: scale(0.25);
-    }
 }
 
 

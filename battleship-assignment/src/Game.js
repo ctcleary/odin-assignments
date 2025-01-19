@@ -311,7 +311,7 @@ class Game {
         });
 
         this.bus.subscribe('view-phase-change', (data) => {
-            this.changePhase(data.phase, false, false);
+            this.changePhase(data.phase, false);
         });
 
         this.bus.subscribe(PLAYER.ONE+'-lose', () => {
