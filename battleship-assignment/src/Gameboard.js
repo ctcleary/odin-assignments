@@ -158,6 +158,10 @@ class Gameboard {
     allShipsPlaced() {
         return this.getShips().every((shipObj) => { return shipObj.ship.getShipCoords()[0][0] !== -1; })
     }
+    
+    findOccupiedCoordsPadded() {
+        return this.findOccupiedCoords(true);
+    }
 
     findOccupiedCoords(doPad = false) {
         // console.log('findOccupiedCoords');
@@ -204,9 +208,7 @@ class Gameboard {
         return occupiedCoords;
     }
 
-    findOccupiedCoordsPadded() {
-        return this.findOccupiedCoords(true);
-    }
+
 
     unplaceAllShips() {
         const ships = this.getShips().map((shipObj) => { return shipObj.ship });

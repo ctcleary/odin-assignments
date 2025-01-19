@@ -25,7 +25,7 @@ body {
 
 #wrapper {
     text-align: center;
-    min-width: 1150px;
+    min-width: 1115px;
 }
 
 #wrapper>h1 {
@@ -218,6 +218,14 @@ body {
 }
 #phase-container .phase-header {
     margin: 0;
+}
+
+.occupied-cell {
+    background: rgb(55, 88, 149, 15%);
+    display: block;
+    height: 100%;
+    width: 100%;
+    z-index: 15;
 }
 
 .phase-playerOne-turn #gameboard-playerTwo .screen,

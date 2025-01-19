@@ -7,6 +7,7 @@ import Gameboard from "./Gameboard.js";
 import Game from "./Game.js";
 import MessageBus from "./MessageBus.js";
 import { PLAYER } from "./Player.js";
+import { PHASE } from "./Game.js";
 
 it('View.giveDiv(args)/giveDiveWithID(args) returns the correct div', () => {
     const g = new Game();
@@ -42,7 +43,8 @@ it('View.makeGameboardDOM() returns the correct dom arrangement', () => {
     // AND shipLayer div +1
     // AND hitLayer div +1
     expect(gb.children.length).toBe(14);
-    // Text random yRow children counts to check x-count + 1 for number column
+
+    // Test random yRow children counts to check x-count (+ 1 for number column)
     expect(gb.children[3].children.length).toBe(11);
     expect(gb.children[6].children.length).toBe(11);
     expect(gb.children[8].children.length).toBe(11);
@@ -51,4 +53,12 @@ it('View.makeGameboardDOM() returns the correct dom arrangement', () => {
     expect(gb.children[0].children[4].textContent).toBe('4') // top x row
     expect(gb.children[0].children[10].textContent).toBe('10') // top x row
     expect(gb.children[7].children[0].textContent).toBe('7') // left y col 
+})
+
+it('View.doShowPrevHit returns correct bool', () => {
+    const g = new Game();
+    const v = new View(g);
+
+    expect(v.doShowPrevHit(PHASE.PLAYER_TWO_TURN, PLAYER.ONE)).toBe(true);
+    expect(v.doShowPrevHit(PHASE.PLAYER_ONE_TURN, PLAYER.ONE)).toBe(false);
 })

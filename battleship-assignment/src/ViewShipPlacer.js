@@ -8,7 +8,8 @@ class ViewShipPlacer {
         this.player = player;
 
         // this.occupiedCoords = this.findOccupiedCoords(game, player);
-        this.occupiedCoords = this.game.gameboards[player].findOccupiedCoords();
+        // this.occupiedCoords = this.game.gameboards[player].findOccupiedCoords();
+        this.occupiedCoords = this.game.gameboards[player].findOccupiedCoordsPadded();
 
         this.shipEl = shipEl;
         this.shipObj = shipObj;

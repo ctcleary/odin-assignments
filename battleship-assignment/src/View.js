@@ -65,6 +65,13 @@ class View {
         const pTwoShipLayer = result.querySelector(`#${PLAYER.TWO}-ship-layer`);
         this.renderShips(this.game, pTwoShipLayer, PLAYER.TWO);
 
+        if (this.phase === PHASE.PLAYER_ONE_PLACEMENT) {
+            this.appendOccupiedPaddedCells(this.game, pOneShipLayer, PLAYER.ONE);
+        }
+        if (this.phase === PHASE.PLAYER_TWO_PLACEMENT) {
+            this.appendOccupiedPaddedCells(this.game, pTwoShipLayer, PLAYER.TWO);
+        }
+
         const pOneHitLayer = result.querySelector(`#${PLAYER.ONE}-hit-layer`);
         this.renderHits(this.game, pOneHitLayer, PLAYER.ONE);
         const pTwoHitLayer = result.querySelector(`#${PLAYER.TWO}-hit-layer`);
@@ -118,6 +125,10 @@ class View {
 
         const humanShipLayer = result.querySelector(`#${AI_PLAYER.HUMAN}-ship-layer`);
         this.renderShips(this.game, humanShipLayer, AI_PLAYER.HUMAN);
+
+        if (this.phase === AI_PHASE.HUMAN_PLACEMENT) {
+            this.appendOccupiedPaddedCells(this.game, humanShipLayer, AI_PLAYER.HUMAN);
+        }
 
         const aiShipLayer = result.querySelector(`#${AI_PLAYER.AI}-ship-layer`);
         this.renderShips(this.game, aiShipLayer, AI_PLAYER.AI);
@@ -358,19 +369,42 @@ class View {
         });
     }
 
+    appendOccupiedPaddedCells(game, shipLayer, player) {
+        const gameboard = game.gameboards[player];
+        const occupiedPaddedCoords = gameboard.findOccupiedCoordsPadded();
+
+        occupiedPaddedCoords.forEach((coord) => {
+            const occDiv = this.giveDiv(['occupied-cell']);
+            const x = coord[0]+1;
+            const y = coord[1]+1;
+            const existingOccDiv = shipLayer.querySelector(`[data-x="${x}"][data-y="${y}"]`);
+
+            if (!existingOccDiv) {
+                occDiv.dataset.x = x;
+                occDiv.dataset.y = y;
+                occDiv.style = `grid-row: ${y}; grid-column: ${x};`;
+                shipLayer.appendChild(occDiv);
+            }
+        });
+    }
+
     renderHits(game, parent, player) {
         // console.log('renderHits', player);
         const gameboard = game.gameboards[player];
         const hits = gameboard.getHits();
+        let prevHitCoords;
+        
 
-        const prevHitCoords = game.gameboards[player].getPreviousHitCoords();
+        if (this.doShowPrevHit(this.phase, player)) {
+            prevHitCoords = game.gameboards[player].getPreviousHitCoords();
+        }
         hits.forEach((hit) => {
             const classes = ['hit-marker'];
             if (hit.shipHit) {
                 classes.push('ship-hit');
             }
             // Add a shine to the most recent hit.
-            if (hit.xy[0] === prevHitCoords[0] && hit.xy[1] === prevHitCoords[1]) {
+            if (prevHitCoords && hit.xy[0] === prevHitCoords[0] && hit.xy[1] === prevHitCoords[1]) {
                 classes.push('shine');
             }
             const hitDiv = this.giveDiv(classes);            
@@ -386,6 +420,10 @@ class View {
             parent.appendChild(hitDiv);
         });
 
+    }
+
+    doShowPrevHit(phase, player) {
+        return true;
     }
 
     makeGameboardDOM(gameboard) {
