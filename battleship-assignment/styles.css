@@ -403,7 +403,7 @@ body {
     position: absolute;
     color: red;
     font-size: 3rem;
-    top: -0.9rem;
+    top: -1rem;
     left: 0.3rem;
     pointer-events: none;
 }
