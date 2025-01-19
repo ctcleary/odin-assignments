@@ -48,10 +48,6 @@ class AIPlayer {
         let uncheckedDirs = [0, 1, 2, 3];
         while (!hitXY) {
             let newDirIdx = Math.round(Math.random()*(uncheckedDirs.length-1)); // 0 - 3 at first
-            // if (uncheckedDirs.indexOf(newDirIdx) === -1) {
-            //     continue; // Just start again if we've already checked this direction.
-            //     // I'm sure there's a more performant way to do this, but this seems fine for this application..
-            // }
 
             const newDirValue = uncheckedDirs[newDirIdx]; // Get value before removing it from array.
             if (typeof newDirValue === 'undefined') {
@@ -61,7 +57,6 @@ class AIPlayer {
             uncheckedDirs.splice(newDirIdx, 1); // Remove the item from array.
 
             const mod = directionMod[newDirValue];
-            // console.log('mod',mod);
 
             const newCoords = this.addDirection(shipHit.xy, mod);
             if (this.isValidCoords(newCoords) && !this.isAlreadyHit(newCoords, humanHits)) {
@@ -190,10 +185,6 @@ class AIPlayer {
     }
 }
 
-//     return {
-//         findAttackCoords
-//     };
-// })();
 
 const aiPlayer = new AIPlayer();
 export { aiPlayer }

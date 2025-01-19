@@ -36,9 +36,6 @@ class Gameboard {
 
     setBus(messageBus) {
         this.bus = messageBus;
-        // this.getShips().forEach((shipObj) => {
-        //     shipObj.ship.setBus(this.bus);
-        // })
     }
 
     areValidCoords(xy) {
@@ -106,13 +103,6 @@ class Gameboard {
         return player === PLAYER.ONE ? 'Player One' : 'Player Two';
     }
 
-    
-
-    // dispatchHitEv(xy) {
-    //     const hitEv = new CustomEvent('hit', { detail: { xy: xy } });
-    //     this.dispatchEvent(hitEv);
-    // }
-
     registerShip(length, xy, isHori) {
         const ship = new Ship(length, xy, isHori);
 
@@ -143,8 +133,6 @@ class Gameboard {
 
     lose() {
         console.log(this.player + ' has LOST');
-
-        // this.bus.publish(this.player+'-lose');
     }
 
     getPlayer() {

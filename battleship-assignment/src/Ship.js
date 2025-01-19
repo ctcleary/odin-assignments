@@ -100,21 +100,6 @@ class Ship {
 
         return imgSrc;
     }
-
-    // setGameboard(gb) {
-    //     this.gb = gb;
-    //     this.gb.addEventListener('hit', this.hitListener);
-    // }
-
-    // hitListener(e) {
-    //     const hitCoords = e.detail.xy;
-    //     if (this.areShipCoords(hitCoords)) {
-    //         this.hit(hitCoords);
-    //         return this.getHits();
-    //     }
-        
-    //     return false;
-    // }
 }
 
 export default Ship;

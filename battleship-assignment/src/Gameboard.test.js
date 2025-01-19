@@ -43,19 +43,6 @@ it('Gameboard.receiveAttack() logs the attack correctly', () => {
     expect(gb.getHits()).toEqual([ { xy: [3,3], shipHit: false }, { xy: [8,9], shipHit: false } ]);
 })
 
-// it('Gameboard.receiveAttack() correctly emits CustomEvent', () => {
-//     const gb = new Gameboard();
-
-//     const hitListener = jest.fn((e) => { return e.detail; });
-//     // hitListener.mockImplementation();
-//     gb.addEventListener('hit', hitListener);
-
-//     gb.receiveAttack([1,3]);
-//     expect(hitListener.mock.results[0].value).toEqual({ xy: [1,3] });
-
-//     gb.removeEventListener('hit', hitListener);
-// })
-
 it('Gameboard correctly assesses Gameboard.isAlreadyHit(xy)', () => {
     const game = new Game();
     const gb = new Gameboard(game);
@@ -63,15 +50,6 @@ it('Gameboard correctly assesses Gameboard.isAlreadyHit(xy)', () => {
     gb.receiveHit([10,7]);
     expect(gb.isAlreadyHit([10,7])).toBe(true);
 })
-
-// it('Gameboard.registerShip() correctly stores the ship', () => {
-//     const gb = new Gameboard();
-    
-//     gb.registerShip(4, [4,4], true);
-//     expect(gb.getShips()[0]).not.toBeUndefined();
-//     gb.registerShip(2, [10,8], false);
-//     expect(gb.getShips()[1]).not.toBeUndefined();
-// })
 
 it('Gameboard.setShipCoords(args) correctly sets the ship coords', () => {
     const game = new Game();

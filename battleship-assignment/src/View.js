@@ -7,8 +7,6 @@ class View {
     constructor(game, gameContainerEl) {
         this.game = game;
 
-        // this.renderFunc = this.game.gameType === GAME_TYPE.PLAYERS ? this.render : this.renderAI;
-
         this.bus = game.bus;
         this.gameContainerEl = gameContainerEl;
 
@@ -49,11 +47,6 @@ class View {
         if (debugPhaseText) {
             debugPhaseText.innerText = 'DEBUG - CURRENT PHASE: "' + this.phase + '"';
         }
-
-        // const tempPhase = document.createElement('h5');
-        // tempPhase.innerText = 'DEBUG - CURRENT PHASE: "' + this.phase + '"';
-        // tempPhase.classList.add('temp-phase')
-        // result.appendChild(tempPhase);
 
         result.appendChild(this.renderPhaseHeader(this.phase));
 
@@ -112,11 +105,6 @@ class View {
         if (debugPhaseText) {
             debugPhaseText.innerText = 'DEBUG - CURRENT PHASE: "' + this.phase + '"';
         }
-
-        // const tempPhase = document.createElement('h5');
-        // tempPhase.innerText = 'DEBUG - CURRENT PHASE: "' + this.phase + '"';
-        // tempPhase.classList.add('temp-phase')
-        // result.appendChild(tempPhase);
 
         result.appendChild(this.renderPhaseHeader(this.phase));
 
@@ -239,10 +227,6 @@ class View {
         header.innerText = headerText;
 
         result.appendChild(header);
-
-        // // const hero = this.giveDivWithID('hero-container');
-        // const heroContent = this.giveDivWithID('hero-content');
-        // result.appendChild(heroContent);
 
         return result;
     }
@@ -717,19 +701,6 @@ class View {
     }
 
     registerSubscribers() {
-        // this.bus.subscribe('game-hit-done', (data) => { 
-        //     console.log('game-hit-done', data.game);
-        //     this.gameContainerEl.innerHTML = '';
-        //     this.gameContainerEl.appendChild(this.render(data.game)); 
-        // });
-        // this.bus.subscribe('change-game-type', (data) => {
-        //     if (data.gameType === GAME_TYPE.PLAYERS) {
-        //         this.renderFunc = this.render;
-        //     } else {
-        //         this.renderFunc = this.renderAI;
-        //     }
-        // })
-
         this.bus.subscribe('game-phase-change', (data) => {
             this.changePhase(data.phase, false, false);
         });

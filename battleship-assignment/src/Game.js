@@ -76,9 +76,7 @@ const AI_TIMEOUT = 500;
 class Game {
     constructor(gameType = GAME_TYPE.PLAYERS, sizeXY = [10,10]) {
         this.gameType = gameType;
-        // this.phase = gameType === GAME_TYPE.PLAYERS ? PHASE.PREGAME : AI_PHASE.PREGAME;
         this.phase = PHASE.PREGAME;
-        // this.phase = PHASE.PLAYER_ONE_PLACEMENT;
 
         this.size = sizeXY;
         
@@ -86,10 +84,6 @@ class Game {
         this.registerSubscribers();
 
         this.gameboards = gameType === GAME_TYPE.PLAYERS ? this.setupGameboards(this.bus) : this.setupGameboardsAI(this.bus);
-        
-        // Currently unused, consider refactoring to use them for AI mode.
-        // this.players = this.setupPlayers(this.gameboards);
-        
 
         this.activePlayer = null;
 
@@ -412,12 +406,7 @@ class Game {
         if (attackedGB && !attackedGB.isAlreadyHit(xy)) {
             // console.log('attackedGB', attackedGB);
             const hitShipObj = attackedGB.receiveHit(xy);
-            // if (!!hitShipObj && hitShipObj.ship.isSunk()) {
-            //     this.bus.publish('ship-sunk', {
-            //         shipId: shipObj.id,
-            //         player: currentPlayer
-            //     });
-            // }
+
             if (attackedGB.allShipsSunk()) {
                 this.bus.publish(attackedGB.player+'-lose');
             } else {
