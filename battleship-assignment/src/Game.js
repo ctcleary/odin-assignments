@@ -302,6 +302,7 @@ class Game {
         });
 
         this.bus.subscribe('restart-game', () => {
+            this.changeGameType(GAME_TYPE.PLAYERS);
             this.resetGameboards();
             this.changePhase(PHASE.PREGAME, true);
         });
