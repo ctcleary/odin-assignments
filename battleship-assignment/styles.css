@@ -71,10 +71,13 @@ body {
     transform-origin: center center;
     transform: scale(4);
     transition: transform 0.75s linear;
-    filter: drop-shadow(0 0 10px red);
+}
+.hit-layer .hit-marker {
+    /* filter: drop-shadow(0 0 1rem rgb(91, 133, 210)); */
+    filter: drop-shadow(0 0 7px rgb(174, 200, 221));
 }
 .hit-layer .ship-hit  {
-    filter: drop-shadow(0 0 1rem red);
+    filter: drop-shadow(0 0 10px red);
 }
 .hit-layer .ping-circle.shrink {
     transform: scale(0);
@@ -446,7 +449,7 @@ body {
     height: 100%;
 }
 .hit-marker.shine .hit-x {
-    filter: drop-shadow(0 0 10px blue);
+    filter: drop-shadow(0 0 10px rgb(47, 0, 255));
 }
 /* @keyframes hit-shine {
     0% {
