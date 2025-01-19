@@ -96,8 +96,8 @@ class Game {
         this.loser = null;
     }
 
-    changePhase(newPhase, doPublish) {
-        console.log('game.changePhase, doPublish ::',newPhase, doPublish);
+    changePhase(newPhase, doPublish, reRender = true) {
+        console.log('game.changePhase, doPublish, reRender ::',newPhase, doPublish, reRender);
         this.phase = newPhase;
         switch(newPhase) {
             case PHASE.PREGAME :
@@ -132,8 +132,8 @@ class Game {
             case AI_PHASE.AI_TURN:
                 setTimeout(() => {
                     this.aiAttack(); 
-                }, AI_TIMEOUT-100);
-                this.timeoutAITurn();
+                }, AI_TIMEOUT);
+                // this.timeoutAITurn();
                 break;
             default:
                 break;
@@ -142,8 +142,9 @@ class Game {
         if (doPublish) {
             this.bus.publish('game-phase-change', { phase: newPhase })
         }
-
-        this.bus.publish('request-render');
+        if (reRender) {
+            this.bus.publish('request-render');
+        }
     }
 
     setupGameboards(messageBus) {
@@ -310,7 +311,7 @@ class Game {
         });
 
         this.bus.subscribe('view-phase-change', (data) => {
-            this.changePhase(data.phase);
+            this.changePhase(data.phase, false, false);
         });
 
         this.bus.subscribe(PLAYER.ONE+'-lose', () => {

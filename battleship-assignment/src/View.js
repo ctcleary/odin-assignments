@@ -538,7 +538,7 @@ class View {
         goBtn.innerText = `${playerStr}... Click to play!`;
         goBtn.addEventListener('click', (evt) => {
             const newPhase = gameboard.player === PLAYER.ONE ? PHASE.PLAYER_ONE_TURN : PHASE.PLAYER_TWO_TURN;
-            this.changePhase(newPhase, true);
+            this.changePhase(newPhase, true, false);
         });
         screen.appendChild(goBtn);
 
