@@ -395,7 +395,7 @@ class View {
         let prevHitCoords;
         
 
-        if (this.doShowPrevHit(this.phase, player)) {
+        if (this.doShowPrevHit(player, this.phase)) {
             prevHitCoords = game.gameboards[player].getPreviousHitCoords();
         }
         hits.forEach((hit) => {
@@ -416,14 +416,25 @@ class View {
             xDiv.innerText = 'X';
 
             hitDiv.appendChild(xDiv);
+            if (prevHitCoords && hit.xy[0] === prevHitCoords[0] && hit.xy[1] === prevHitCoords[1]) {
+                const pingImg = document.createElement('img');
+                pingImg.src = './assets/battleship-ping-circle.png';
+                pingImg.classList.add('ping-circle');
+                hitDiv.appendChild(pingImg);
+                setTimeout(() => {
+                    pingImg.classList.add('shrink');
+                }, 0);
+            }
 
             parent.appendChild(hitDiv);
         });
 
     }
 
-    doShowPrevHit(phase, player) {
-        return true;
+    doShowPrevHit(hitLayerPlayer, phase) {
+        return (hitLayerPlayer === PLAYER.ONE && phase === PHASE.PLAYER_ONE_TURN) ||
+            (hitLayerPlayer === PLAYER.TWO && phase === PHASE.PLAYER_TWO_TURN) ||
+            (hitLayerPlayer === AI_PLAYER.HUMAN && phase === AI_PHASE.HUMAN_TURN);
     }
 
     makeGameboardDOM(gameboard) {

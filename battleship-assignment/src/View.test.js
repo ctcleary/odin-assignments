@@ -4,9 +4,9 @@
 
 import View from "./View.js";
 import Gameboard from "./Gameboard.js";
-import Game from "./Game.js";
+import Game, { AI_PHASE } from "./Game.js";
 import MessageBus from "./MessageBus.js";
-import { PLAYER } from "./Player.js";
+import { AI_PLAYER, PLAYER } from "./Player.js";
 import { PHASE } from "./Game.js";
 
 it('View.giveDiv(args)/giveDiveWithID(args) returns the correct div', () => {
@@ -59,6 +59,7 @@ it('View.doShowPrevHit returns correct bool', () => {
     const g = new Game();
     const v = new View(g);
 
-    expect(v.doShowPrevHit(PHASE.PLAYER_TWO_TURN, PLAYER.ONE)).toBe(true);
-    expect(v.doShowPrevHit(PHASE.PLAYER_ONE_TURN, PLAYER.ONE)).toBe(false);
+    expect(v.doShowPrevHit(PLAYER.ONE, PHASE.PLAYER_ONE_TURN)).toBe(true);
+    expect(v.doShowPrevHit(PLAYER.ONE, PHASE.PLAYER_TWO_TURN)).toBe(false);
+    expect(v.doShowPrevHit(AI_PLAYER.HUMAN, AI_PHASE.HUMAN_TURN)).toBe(true);
 })

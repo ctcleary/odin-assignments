@@ -64,6 +64,33 @@ body {
     grid-template-columns: repeat(11, var(--cell-size));
 }
 
+.hit-layer .ping-circle {
+    position: absolute;
+    top: -12px;
+    left: -12px;
+    transform-origin: center center;
+    transform: scale(4);
+    transition: all 0.75s linear;
+    filter: none;
+    /* animation: 0s ping-ping 0.25s linear forwards; */
+}
+.hit-layer .ping-circle.shrink {
+    transform: scale(0);
+}
+@keyframes ping-ping {
+    0% {
+        transform: scale(0.25);
+    }
+
+    50% {
+        transform: scale(3);
+    }
+
+    100% {
+        transform: scale(0.25);
+    }
+}
+
 
 .gameboard-container {
     position: relative;
@@ -423,12 +450,14 @@ body {
 }
 
 .hit-marker.shine {
-    /* content: ' '; */
+    position: relative;
+
     z-index: 50;
     width: 100%;
     height: 100%;
+}
+.hit-marker.shine .hit-x {
     filter: drop-shadow(0 0 10px blue);
-    animation: 0s hit-shine 0.5s linear forwards;
 }
 /* @keyframes hit-shine {
     0% {
