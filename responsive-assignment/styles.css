@@ -6,8 +6,8 @@
 body {
     background-color: white;
     margin: 0;
-    /* font-family: system-ui, sans-serif; */
     font-family: "Playfair Display", serif;
+    font-weight: 400;
     text-align: center;
 
     --max-width: 960px;
@@ -18,14 +18,12 @@ body {
 }
 h1 {
     margin: 0 auto;
+    font-weight: 400;
 }
+h2, h3 {
 
-/* Note breakpoints
-
-phone: ?
-tablet: max-width: 800?
-widescreen: min-width: 1650?
-*/
+    font-weight: 400;
+}
 
 #wrapper {
     position: relative;
@@ -52,7 +50,6 @@ li {
 #top-bg-block {
     position: absolute;
     display: block;
-    /* display: none; */
     top: 0;
     left: 0;
     background: var(--bg-color);
@@ -92,10 +89,6 @@ li {
 }
 
 #main-header-container {
-    /* display: grid; 
-    grid-template-columns: 300px 1fr;
-    grid-template-rows: 2rem 1fr 2rem 2rem; */
-    
     position: relative;
     padding: var(--top-level-padding);
 
@@ -104,8 +97,6 @@ li {
 }
 
 #main-header-container h1 {
-    /* grid-column: 1;
-    grid-row: 3 / 5; */
     position: absolute;
     top: 324px;
     left: 8%;
@@ -114,7 +105,6 @@ li {
     margin: 0;
     z-index: 1;
     color:white;
-    /* color: red;. */
 }
 @media (min-width: 1500px) {
     #main-header-container h1 {
@@ -128,9 +118,6 @@ li {
     float: left;
     left: -22px;
     top: -70px;
-    /* grid-row: 1 / 5;
-    grid-column: 1 / 2; */
-    /* border: thin solid red; */
     height: 400px;
     width: 300px;
 }
@@ -211,6 +198,8 @@ li {
 
 }
 
+
+
 /* Phone */
 @media (max-width: 590px) { 
     #main-header-container {
@@ -257,11 +246,7 @@ li {
     #about-me-icons {
         text-align: center;
     }
-    
-    #project-tiles-header h1 {
-        text-align: center;
-        width: 100%;
-    }
+
 }
 
 
@@ -274,7 +259,7 @@ li {
 }
 
 #project-tiles-header {
-    text-align: left;
+    text-align: center;
     max-width: var(--max-width);
     margin: 0 auto;
     margin-bottom: 2rem;
@@ -385,6 +370,7 @@ li {
 #contact-socials a {
     margin: 0 0.2rem;
 }
+
 /* Phone */
 @media (max-width: 600px) { 
     
@@ -409,10 +395,8 @@ li {
 
 
 .icon {
-    /* background-color: lightgray; */
     width: 1.5rem;
     height: 1.5rem;
-    /* background-size: 110% 110%; */
 }
 .icon:hover {
     background-color: rgba(200, 200, 200, 0.25);
@@ -420,23 +404,4 @@ li {
 
 .icon-contact-me {
     filter: invert(100%) saturate(0%) brightness(102%);
-}
-
-.icon-github {
-    background: url('./assets/icon/github-original.svg');
-}
-.icon-twitter {
-    background: url('./assets/icon/twitter-original.svg');
-}
-.icon-linkedin {
-    background: url('./assets/icon/linkedin-plain.svg');
-}
-.icon-codepen {
-    background: url('./assets/icon/codepen-original.svg');
-}
-.icon-phone {
-    /* background: url('./assets/icon/github-original.svg'); */
-}
-.icon-email {
-    /* background: url('./assets/icon/github-original.svg'); */
 }
