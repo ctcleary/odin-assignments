@@ -151,6 +151,9 @@ li {
     text-align: right;
     width: 100%;
 }
+#about-me-icons a {
+    margin: 0 0.2rem;
+}
 
 /* Tablet */
 @media (max-width: 900px) { 
@@ -289,8 +292,52 @@ li {
     border: thin solid #ccc;
     /* max-width: 250px; */
 }
+.project-tile .fake-img {
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 150px;
 
+    background: maroon;
+}
 
+.project-tile:nth-child(2) .fake-img { background: darkgreen; }
+.project-tile:nth-child(3) .fake-img { background: darkblue; }
+.project-tile:nth-child(4) .fake-img { background: darkgoldenrod; }
+.project-tile:nth-child(5) .fake-img { background: darkmagenta; }
+.project-tile:nth-child(6) .fake-img { background: darkorange; }
+
+.project-tile .fake-img p {
+    color: white;
+}
+
+.project-info {
+    display: grid;
+    width: 100%;
+    grid-template-columns: 3fr 1fr;
+    grid-template-rows: 1fr auto;
+    column-gap: 0.5rem;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem 0.5rem;
+}
+
+.project-info h2 {
+    font-size: 1.2rem;
+    text-align: left;
+    margin: 0;
+}
+.project-info .tile-icons {
+    text-align: right;
+}
+
+.project-info p {
+    grid-column: 1 / 3;
+    text-align: left;
+    margin: 0;
+    margin-top: 0.5rem;
+}
 #footer-wrapper {
     background: var(--bg-color);
     min-height: 250px;
@@ -322,6 +369,34 @@ li {
     object-fit: cover;
 }
 
+.contact-me-methods p {
+    display: flex;
+    align-content: center;
+}
+.contact-me-methods p a {
+    margin-right: 0.75rem;
+}
+
+#contact-socials {
+    text-align: center;
+}
+
+#contact-socials a {
+    margin: 0 0.2rem;
+}
+/* Phone */
+@media (max-width: 600px) { 
+    
+    #contact .get-in-touch {
+        text-align: left;
+    }
+    #contact address {
+        text-align: left;
+    }
+    #contact p span {
+        display: block;
+    }
+}
 
 
 
@@ -329,4 +404,38 @@ li {
     border: thin solid red;
     min-height: 30px;
     min-width: 30px;
+}
+
+
+.icon {
+    /* background-color: lightgray; */
+    width: 1.5rem;
+    height: 1.5rem;
+    /* background-size: 110% 110%; */
+}
+.icon:hover {
+    background-color: rgba(200, 200, 200, 0.25);
+}
+
+.icon-contact-me {
+    filter: invert(100%) saturate(0%) brightness(102%);
+}
+
+.icon-github {
+    background: url('./assets/icon/github-original.svg');
+}
+.icon-twitter {
+    background: url('./assets/icon/twitter-original.svg');
+}
+.icon-linkedin {
+    background: url('./assets/icon/linkedin-plain.svg');
+}
+.icon-codepen {
+    background: url('./assets/icon/codepen-original.svg');
+}
+.icon-phone {
+    /* background: url('./assets/icon/github-original.svg'); */
+}
+.icon-email {
+    /* background: url('./assets/icon/github-original.svg'); */
 }
