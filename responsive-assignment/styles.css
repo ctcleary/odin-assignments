@@ -329,7 +329,6 @@ li {
     min-height: 250px;
     height: 100%;
 
-    padding: var(--top-level-padding);
     bottom: 0;
     min-width: 100%;
 }
@@ -341,6 +340,7 @@ li {
     padding-bottom: 3rem; */
     max-width: var(--max-width);
     margin: 0 auto;
+    padding: var(--top-level-padding);
 }
 
 #contact {
@@ -373,6 +373,13 @@ li {
 
 /* Phone */
 @media (max-width: 600px) { 
+    #footer-content-wrapper {
+        display: block;
+        padding: 0;
+    }
+    #contact {
+        padding: var(--top-level-padding);
+    }
     
     #contact .get-in-touch {
         text-align: left;
